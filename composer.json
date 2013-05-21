@@ -1,0 +1,14 @@
+{
+    "require": {
+        "php": ">=5.3.2",
+        "hoa/core"    : "master",
+        "hoa/iterator": "master",
+        "hoa/compiler": "master"
+    },
+    "autoload":     {
+        "psr-0": {
+            "Rulez": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
