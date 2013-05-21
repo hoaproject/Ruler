@@ -20,6 +20,7 @@
 %token  float         \d+\.\d+
 %token  bracket_      \(
 %token _bracket       \)
+%token  comma          ,
 
 %token  operator      [^\s]+
 
@@ -29,7 +30,7 @@ expression:
 
 condition:
     (::bracket_:: expression() ::_bracket::)
-    | ((key() | string()) operator() value()) #condition
+    | (value() operator() value()) #condition
 
 string:
     <string>
@@ -44,7 +45,12 @@ float:
     <float>
 
 operator:
-    <operator> | <is> | <isNot>
+    <operator> | <key> | <is> | <isNot>
 
 value:
-    <true> | <false> | <null> | string() | number() | float()
+    <true> | <false> | <null> | number() | float() | string() | key() | function()
+
+#function:
+    <key> ::bracket_::
+    ( value() ( ::comma:: value() )* )?
+    ::_bracket::
