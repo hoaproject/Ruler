@@ -1,15 +1,17 @@
 <?php
 
-namespace Rulez\Asserter;
+namespace Rulez\Asserter\Bag;
 
+use Rulez\Asserter\Context;
 use Rulez\Exception\UnknownFunctionReferenceException;
 
 /**
- * FunctionReference
+ * FunctionBag
  *
+ * @uses BagInterface
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-class FunctionReference
+class FunctionBag implements BagInterface
 {
     /**
      * @var string
@@ -32,9 +34,15 @@ class FunctionReference
     }
 
     /**
-     * @param Context $context context
-     *
-     * @return mixed
+     * {@inheritdoc}
+     */
+    public function __toString()
+    {
+        return sprintf('%s(%s)', $this->functionName, implode(', ', $this->arguments));
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function transform(Context $context)
     {
@@ -45,7 +53,7 @@ class FunctionReference
         }
 
         foreach ($this->arguments as $k => $argument) {
-            if ($argument instanceof ContextReference || $argument instanceof FunctionReference) {
+            if ($argument instanceof BagInterface) {
                 $this->arguments[$k] = $argument->transform($context);
             }
         }
@@ -53,21 +61,5 @@ class FunctionReference
         $function = $ruler->getFunction($this->functionName);
 
         return $function($this->arguments);
-    }
-
-    /**
-     * @return string
-     */
-    public function getFunctionName()
-    {
-        return $this->functionName;
-    }
-
-    /**
-     * @return array
-     */
-    public function getArguments()
-    {
-        return $this->arguments;
     }
 }

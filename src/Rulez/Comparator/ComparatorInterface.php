@@ -22,7 +22,7 @@ interface ComparatorInterface
     /**
      * @param Context $context context
      */
-    public function transformContextReferences(Context $context);
+    public function transform(Context $context);
 
     /**
      * @return string

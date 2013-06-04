@@ -3,8 +3,7 @@
 namespace Rulez\Comparator;
 
 use Rulez\Asserter\Context;
-use Rulez\Asserter\ContextReference;
-use Rulez\Asserter\FunctionReference;
+use Rulez\Asserter\Bag\BagInterface;
 use Rulez\Exception\UnknownContextReferenceException;
 
 /**
@@ -37,6 +36,14 @@ abstract class AbstractComparator
     /**
      * @return string
      */
+    public function __toString()
+    {
+        return (string) $this->left.' '.$this->getToken().' '.(string) $this->right;
+    }
+
+    /**
+     * @return string
+     */
     public function getLeft()
     {
         return $this->left;
@@ -53,13 +60,13 @@ abstract class AbstractComparator
     /**
      * @param Context $context context
      */
-    public function transformContextReferences(Context $context)
+    public function transform(Context $context)
     {
-        if ($this->left instanceof ContextReference || $this->left instanceof FunctionReference) {
+        if ($this->left instanceof BagInterface) {
             $this->left = $this->left->transform($context);
         }
 
-        if ($this->right instanceof ContextReference || $this->right instanceof FunctionReference) {
+        if ($this->right instanceof BagInterface) {
             $this->right = $this->right->transform($context);
         }
     }

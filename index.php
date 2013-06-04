@@ -2,7 +2,6 @@
 
 require "vendor/autoload.php";
 
-//$str = '("\"a \" toto" babidou 1 AND "b" = true AND ("c" = false OR "c" = false)) AND "c" = false';
 
 //$str = '("a.toto" = "toto" AND "b" = true AND "c" != NULL) OR "d" = "pouet"';
 $str = '("a.toto" IS "toto" AND "b" = true AND "c" IS NOT NULL) OR "d" = "pouet"';
@@ -11,7 +10,11 @@ $str = '("a.toto" IS "toto" AND "b" = true AND "c" IS NOT NULL) OR "d" = "pouet"
 //$str = 'key = key AND pouet = "1"';
 $str = 'key = "key" XOR pouet = "4" XOR key = key';
 
-$str = 'DATE("Y-m-d", now) > "2013-02-25"';
+$str = 'DATE(\'Y-m-d\', now) > "2013-02-25"';
+
+$str = 'toto = [1, "toto", DATE(100)]';
+//$str = '("a.toto" IS "toto" AND "b" = true AND "c" IS NOT NULL) OR "d" = "pouet"';
+//$str = '("\"a \" toto" = 1 AND "b" = true AND ("c" = false OR "c" = false)) AND "c" = false';
 
 //$str = 'key = key';
 
@@ -25,7 +28,9 @@ $ruler->addFunction('DATE', function(array $arguments) {
 });
 $result = $ruler->decode($str);
 
-$str    = $ruler->encode($result);
+print "<pre>";
+var_dump((string) $result);
+print "</pre>";
 
 $context = new \Rulez\Asserter\Context();
 $context['key'] = 'douda';

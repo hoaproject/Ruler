@@ -1,15 +1,17 @@
 <?php
 
-namespace Rulez\Asserter;
+namespace Rulez\Asserter\Bag;
 
+use Rulez\Asserter\Context;
 use Rulez\Exception\UnknownContextReferenceException;
 
 /**
- * ContextReference
+ * ContextBag
  *
+ * @uses BagInterface
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-class ContextReference
+class ContextBag implements BagInterface
 {
     /**
      * @var string
@@ -25,7 +27,7 @@ class ContextReference
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function __toString()
     {
@@ -33,9 +35,7 @@ class ContextReference
     }
 
     /**
-     * @param Context $context context
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function transform(Context $context)
     {
@@ -45,4 +45,5 @@ class ContextReference
 
         return $context[$this->str];
     }
+
 }

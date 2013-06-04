@@ -42,6 +42,7 @@ class Ruler
         $this->addComparator('<=', '\Rulez\Comparator\LessThanEqual');
         $this->addComparator('IS', '\Rulez\Comparator\Is');
         $this->addComparator('IS NOT', '\Rulez\Comparator\IsNot');
+        $this->addComparator('IN', '\Rulez\Comparator\In');
     }
 
     /**
@@ -66,24 +67,6 @@ class Ruler
     }
 
     /**
-     * Encode data as string
-     *
-     * @param LogicalOperatorInterface|ComparatorInterface $data data
-     *
-     * @return string
-     */
-    public function encode($data)
-    {
-        if (!$data instanceof LogicalOperatorInterface && !$data instanceof ComparatorInterface) {
-            throw new \LogicException('Ruler can encode only comparators or logical operators');
-        }
-
-        $visitor = new Visitor\EncodeVisitor();
-
-        return $visitor->visit($data);
-    }
-
-    /**
      * @param string|LogicalOperatorInterface|ComparatorInterface| $data    data
      * @param Context                                              $context context
      *
@@ -100,7 +83,7 @@ class Ruler
         }
 
         $context->setRuler($this);
-        $data->transformContextReferences($context);
+        $data->transform($context);
 
         return $data->assert();
     }

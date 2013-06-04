@@ -20,6 +20,8 @@
 %token  float         \d+\.\d+
 %token  bracket_      \(
 %token _bracket       \)
+%token  hook_         \[
+%token  _hook         \]
 %token  comma          ,
 
 %token  operator      [^\s]+
@@ -47,8 +49,11 @@ float:
 operator:
     <operator> | <key> | <is> | <isNot>
 
+#array:
+    ::hook_:: value() ( ::comma:: value() )* ::_hook::
+
 value:
-    <true> | <false> | <null> | number() | float() | string() | key() | function()
+    <true> | <false> | <null> | number() | float() | string() | key() | function() | array()
 
 #function:
     <key> ::bracket_::

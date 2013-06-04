@@ -5,8 +5,7 @@ namespace Rulez\Visitor;
 use Rulez\Ruler;
 use Rulez\Exception;
 use Rulez\LogicalOperator;
-use Rulez\Asserter\ContextReference;
-use Rulez\Asserter\FunctionReference;
+use Rulez\Asserter\Bag;
 
 from('Hoa')
 
@@ -55,8 +54,11 @@ class DecodeVisitor implements \Hoa\Visitor\Visit
             case '#function':
                 $functionName = (string) array_shift($children);
 
-                return new FunctionReference($functionName, $children);
+                return new Bag\FunctionBag($functionName, $children);
             break;
+            case '#array':
+                return new Bag\ArrayBag($children);
+                break;
             case '#and':
                 return $operator('\Rulez\LogicalOperator\LogicalAnd', $children);
             break;
@@ -76,44 +78,50 @@ class DecodeVisitor implements \Hoa\Visitor\Visit
                 return $operator('\Rulez\LogicalOperator\LogicalXOr', $children);
             break;
             case '#condition':
-                if (!$this->ruler->hasComparator($children[1])) {
-                    throw new Exception\UnknownComparatorException(sprintf('Comparator "%s" is not supported.', $children[1]));
+                $comparator = (string) $children[1];
+                if (!$this->ruler->hasComparator($comparator)) {
+                    throw new Exception\UnknownComparatorException(sprintf('Comparator "%s" is not supported.', $comparator));
                 }
 
-                $class = $this->ruler->getComparator($children[1]);
+                $class = $this->ruler->getComparator($comparator);
 
                 return new $class($children[0], $children[2]);
             break;
             case 'token':
                 $value = $element->getValueValue();
                 $token = $element->getValueToken();
+                $quote = null;
 
                 switch ($token) {
                     case 'null':
-                        return null;
+                        $v = null;
                         break;
                     case 'true':
-                        return true;
+                        $v = true;
                         break;
                     case 'false':
-                        return false;
+                        $v = false;
                         break;
                     case 'number':
-                        return (int) $value;
+                        $v = (int) $value;
                         break;
                     case 'float':
-                        return (float) $value;
+                        $v = (float) $value;
                     case 'string':
                         // If string begins by " or ', we first and end char.
-                        return substr($value, 1, -1);
+                        $quote = $value[0];
+                        $v     = substr($value, 1, -1);
                         break;
                     case 'key':
-                        return new ContextReference($value);
+                        return new Bag\ContextBag($value);
                         break;
                     default:
-                        return $value;
+                        $v = $value;
                         break;
                 }
+
+                return new Bag\ScalarBag($v, $quote);
+
                 break;
             default:
                 throw new \LogicException(sprintf('"%s" type not supported in decode system.', $type));

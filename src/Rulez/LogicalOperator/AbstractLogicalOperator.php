@@ -36,6 +36,24 @@ class AbstractLogicalOperator
     }
 
     /**
+     * @return string
+     */
+    public function __toString()
+    {
+        $parts = array();
+
+        foreach ($this->getConditions() as $condition) {
+            if ($condition instanceof LogicalOperatorInterface) {
+                $condition = '('.(string) $condition.')';
+            }
+
+            $parts[] = $condition;
+        }
+
+        return implode(sprintf(' %s ', $this->getToken()), $parts);
+    }
+
+    /**
      * @param Context $context context
      */
     public function transformContextReferences(Context $context)
