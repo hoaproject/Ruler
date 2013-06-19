@@ -117,6 +117,43 @@ Binary:
 - XNOr
 - XOr
 
+Transformers
+------------
+
+Object as string:
+
+```php
+$rule = new Rulez\LogicalOperator\LogicalAnd(
+    Rulez\Comparator\Equal('foo', 'bar'),
+    new Rulez\LogicalOperator\LogicalNot(
+        Rulez\Comparator\Equal('baz', 1),
+    )
+);
+
+echo (string) $rule; // 'foo' = 'bar' AND NOT ('baz' = 1)
+```
+
+String as object
+
+```php
+$rule = "foo = 'bar' AND NOT (baz = 1)";
+
+// =
+new Rulez\LogicalOperator\LogicalAnd(
+    Rulez\Comparator\Equal(
+        new Rulez\Asserter\Bag\ContextBag('foo'),
+        new Rulez\Asserter\Bag\ScalarBag('bar')
+    ),
+    new Rulez\LogicalOperator\LogicalNot(
+        Rulez\Comparator\Equal(
+            new Rulez\Asserter\Bag\ContextBag('baz'),
+            new Rulez\Asserter\Bag\ScalarBag('1')
+        )
+    )
+);
+
+```
+
 Assert rules
 ------------
 
@@ -128,7 +165,7 @@ $context['customer.id'] = function() {
 $context['otherkey'] = 1234;
 
 $ruler = new Rulez\Ruler();
-$ruler->assert('customer.id IN [1, 2, 3] AND otherkey = 1234', $context);
+$ruler->assert('customer.id IN (1, 2, 3) AND otherkey = 1234', $context);
 ```
 
 Wishlist

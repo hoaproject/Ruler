@@ -4,6 +4,7 @@ namespace Rulez\Comparator;
 
 use Rulez\Asserter\Context;
 use Rulez\Asserter\Bag\BagInterface;
+use Rulez\Asserter\Bag\ScalarBag;
 use Rulez\Exception\UnknownContextReferenceException;
 
 /**
@@ -29,7 +30,15 @@ abstract class AbstractComparator {
      */
     public function __construct ( $left, $right ) {
 
-        $this->left = $left;
+        if (!$left instanceof BagInterface) {
+            $left = new ScalarBag($left);
+        }
+
+        if (!$right instanceof BagInterface) {
+            $right = new ScalarBag($right);
+        }
+
+        $this->left  = $left;
         $this->right = $right;
     }
 
