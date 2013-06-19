@@ -11,8 +11,8 @@ use Rulez\Exception\UnknownFunctionReferenceException;
  * @uses BagInterface
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-class FunctionBag implements BagInterface
-{
+class FunctionBag implements BagInterface {
+
     /**
      * @var string
      */
@@ -27,8 +27,8 @@ class FunctionBag implements BagInterface
      * @param string $functionName functionName
      * @param array  $arguments    arguments
      */
-    public function __construct($functionName, array $arguments = array())
-    {
+    public function __construct ( $functionName, array $arguments = array() ) {
+
         $this->functionName = $functionName;
         $this->arguments    = $arguments;
     }
@@ -36,21 +36,20 @@ class FunctionBag implements BagInterface
     /**
      * {@inheritdoc}
      */
-    public function __toString()
-    {
+    public function __toString ( ) {
+
         return sprintf('%s(%s)', $this->functionName, implode(', ', $this->arguments));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function transform(Context $context)
-    {
+    public function transform ( Context $context ) {
+
         $ruler = $context->getRuler();
 
-        if (!$ruler->hasFunction($this->functionName)) {
+        if (!$ruler->hasFunction($this->functionName))
             throw new UnknownFunctionReferenceException(sprintf('Function reference "%s" does not exists.', $this->functionName));
-        }
 
         foreach ($this->arguments as $k => $argument) {
             if ($argument instanceof BagInterface) {

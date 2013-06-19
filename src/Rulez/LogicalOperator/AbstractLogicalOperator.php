@@ -10,8 +10,8 @@ use Rulez\Asserter\Context;
  *
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-class AbstractLogicalOperator
-{
+class AbstractLogicalOperator {
+
     /**
      * @var array
      */
@@ -20,8 +20,8 @@ class AbstractLogicalOperator
     /**
      * Constructor, pass as many condition|operator as you want
      */
-    public function __construct()
-    {
+    public function __construct ( ) {
+
         $args = func_get_args();
 
         foreach ($args as $arg) {
@@ -38,8 +38,8 @@ class AbstractLogicalOperator
     /**
      * @return string
      */
-    public function __toString()
-    {
+    public function __toString ( ) {
+
         $parts = array();
 
         foreach ($this->getConditions() as $condition) {
@@ -56,8 +56,8 @@ class AbstractLogicalOperator
     /**
      * @param Context $context context
      */
-    public function transformContextReferences(Context $context)
-    {
+    public function transformContextReferences ( Context $context ) {
+
         foreach ($this->getConditions() as $condition) {
             $condition->transformContextReferences($context);
         }
@@ -66,10 +66,10 @@ class AbstractLogicalOperator
     /**
      * @param Condition|Operator $data data
      */
-    public function append($data)
-    {
+    public function append ( $data ) {
+
         if (!$data instanceof ComparatorInterface && !$data instanceof LogicalOperatorInterface) {
-            throw new \LogicException('LogicalOperator accepts only comparator and logical operators');
+            throw new \InvalidArgumentException('LogicalOperator accepts only comparator and logical operators');
         }
 
         $this->conditions[] = $data;
@@ -78,10 +78,10 @@ class AbstractLogicalOperator
     /**
      * @param Condition|Operator $data data
      */
-    public function prepend($data)
-    {
+    public function prepend ( $data ) {
+
         if (!$data instanceof ComparatorInterface && !$data instanceof LogicalOperatorInterface) {
-            throw new \LogicException('LogicalOperator accepts only comparator and logical operators');
+            throw new \InvalidArgumentException('LogicalOperator accepts only comparator and logical operators');
         }
 
         array_unshift($this->conditions, $data);
@@ -90,9 +90,8 @@ class AbstractLogicalOperator
     /**
      * @return array
      */
-    public function getConditions()
-    {
+    public function getConditions ( ) {
+
         return $this->conditions;
     }
-
 }

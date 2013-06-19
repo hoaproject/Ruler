@@ -10,8 +10,8 @@ use Rulez\Ruler;
  * @uses \Pimple
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-class Context extends \Pimple
-{
+class Context extends \Pimple {
+
     /**
      * @var Ruler
      */
@@ -20,16 +20,16 @@ class Context extends \Pimple
     /**
      * @param Ruler $ruler ruler
      */
-    public function setRuler(Ruler $ruler)
-    {
+    public function setRuler ( Ruler $ruler ) {
+
         $this->ruler = $ruler;
     }
 
     /**
      * @return Ruler
      */
-    public function getRuler()
-    {
+    public function getRuler ( ) {
+
         return $this->ruler;
     }
 }

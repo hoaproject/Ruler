@@ -15,13 +15,11 @@
 %token  xnor          XNOR
 // Value
 %token  string        ("|')(.*?)(?<!\\)\1
-%token  key           [a-zA-Z0-9-_\.]+
 %token  number        \d+
 %token  float         \d+\.\d+
+%token  key           [a-zA-Z0-9-_\.]+
 %token  bracket_      \(
 %token _bracket       \)
-%token  hook_         \[
-%token  _hook         \]
 %token  comma          ,
 
 %token  operator      [^\s]+
@@ -34,26 +32,14 @@ condition:
     (::bracket_:: expression() ::_bracket::)
     | (value() operator() value()) #condition
 
-string:
-    <string>
-
-key:
-    <key>
-
-number:
-    <number>
-
-float:
-    <float>
-
 operator:
     <operator> | <key> | <is> | <isNot>
 
 #array:
-    ::hook_:: value() ( ::comma:: value() )* ::_hook::
+    ::bracket_:: value() ( ::comma:: value() )* ::_bracket::
 
 value:
-    <true> | <false> | <null> | number() | float() | string() | key() | function() | array()
+    <true> | <false> | <null> | <number> | <float> | <string> | <key> | function() | array()
 
 #function:
     <key> ::bracket_::

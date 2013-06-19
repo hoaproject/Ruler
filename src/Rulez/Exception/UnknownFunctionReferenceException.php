@@ -7,6 +7,5 @@ namespace Rulez\Exception;
  *
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-class UnknownFunctionReferenceException extends \Exception
-{
+class UnknownFunctionReferenceException extends \Exception {
 }

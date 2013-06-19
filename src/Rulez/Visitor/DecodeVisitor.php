@@ -14,8 +14,8 @@ from('Hoa')
  */
 -> import('Visitor.Visit');
 
-class DecodeVisitor implements \Hoa\Visitor\Visit
-{
+class DecodeVisitor implements \Hoa\Visitor\Visit {
+
     /**
      * @var Ruler
      */
@@ -24,13 +24,13 @@ class DecodeVisitor implements \Hoa\Visitor\Visit
     /**
      * @param Rumer $ruler ruler
      */
-    public function __construct(Ruler $ruler)
-    {
+    public function __construct ( Ruler $ruler ) {
+
         $this->ruler = $ruler;
     }
 
-    public function visit ( \Hoa\Visitor\Element $element, &$handle = null, $eldnah = null )
-    {
+    public function visit ( \Hoa\Visitor\Element $element, &$handle = null, $eldnah = null ) {
+
         $type     = $element->getId();
         $children = $element->getChildren();
 
@@ -79,9 +79,9 @@ class DecodeVisitor implements \Hoa\Visitor\Visit
             break;
             case '#condition':
                 $comparator = (string) $children[1];
-                if (!$this->ruler->hasComparator($comparator)) {
+
+                if (!$this->ruler->hasComparator($comparator))
                     throw new Exception\UnknownComparatorException(sprintf('Comparator "%s" is not supported.', $comparator));
-                }
 
                 $class = $this->ruler->getComparator($comparator);
 

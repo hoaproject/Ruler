@@ -37,7 +37,7 @@ Boolean: `foo = true` or `foo = false`
 Integer: `foo = 2`
 Float: `foo = 3.14`
 Null: `foo is NULL`
-Array: `[1, "string", true]`
+Array: `(1, "string", true)`
 Function: `DATE('y-m-d', key)`,
 
 You have to define theses functions and give them to the ruler:
@@ -45,7 +45,7 @@ You have to define theses functions and give them to the ruler:
 ```php
 $ruler = new \Rulez\Ruler();
 $ruler->addFunction('DATE', function(array $arguments) {
-    if (count($arguments) > 2) {
+    if (count($arguments) != 2) {
         throw new \LogicException('Date function accepts 2 arguments');
     }
 
@@ -93,7 +93,7 @@ Accepts at this moment:
 - equal (=)
 - greater than (>)
 - greater than equal (>=)
-- in (IN), assert than a key exists in an array `key IN [1, 2, 3]`
+- in (IN), assert than a key exists in an array `key IN (1, 2, 3)`
 - is (IS)  `foo IS NULL`
 - is not (IS NOT) `foo IS NOT NULL`
 - less than (<)

@@ -14,19 +14,18 @@ class In extends AbstractComparator implements ComparatorInterface
     /**
      * {@inheritdoc}
      */
-    public function getToken()
-    {
+    public function getToken ( ) {
+
         return 'IN';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function assert()
-    {
-        if (!is_array($this->right)) {
+    public function assert ( ) {
+
+        if (!is_array($this->right))
             return false;
-        }
 
         return in_array($this->left, $this->right);
     }

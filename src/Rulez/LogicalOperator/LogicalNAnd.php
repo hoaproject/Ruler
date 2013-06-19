@@ -9,21 +9,21 @@ namespace Rulez\LogicalOperator;
  * @uses LogicalOperatorInterface
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-class LogicalNAnd extends LogicalAnd implements LogicalOperatorInterface
-{
+class LogicalNAnd extends LogicalAnd implements LogicalOperatorInterface {
+
     /**
      * {@inheritdoc}
      */
-    public function getToken()
-    {
+    public function getToken ( ) {
+
         return 'NAND';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function assert()
-    {
+    public function assert ( ) {
+
         return !parent::assert();
     }
 }

@@ -9,21 +9,21 @@ namespace Rulez\LogicalOperator;
  * @uses LogicalOperatorInterface
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-class LogicalXNOr extends AbstractLogicalOperator implements LogicalOperatorInterface
-{
+class LogicalXNOr extends AbstractLogicalOperator implements LogicalOperatorInterface {
+
     /**
      * {@inheritdoc}
      */
-    public function getToken()
-    {
+    public function getToken ( ) {
+
         return 'XNOR';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function assert()
-    {
+    public function assert ( ) {
+
         $left = null;
 
         foreach ($this->getConditions() as $condition) {

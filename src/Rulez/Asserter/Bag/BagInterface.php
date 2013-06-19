@@ -9,15 +9,15 @@ use Rulez\Asserter\Context;
  *
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-interface BagInterface
-{
+interface BagInterface {
+
     /**
      * @return string
      */
-    public function __toString();
+    public function __toString ( );
 
     /**
      * @param Context $context context
      */
-    public function transform(Context $context);
+    public function transform ( Context $context );
 }

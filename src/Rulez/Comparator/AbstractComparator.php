@@ -11,8 +11,8 @@ use Rulez\Exception\UnknownContextReferenceException;
  *
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-abstract class AbstractComparator
-{
+abstract class AbstractComparator {
+
     /**
      * @var string
      */
@@ -27,8 +27,8 @@ abstract class AbstractComparator
      * @param string $left  left
      * @param mixed  $right right
      */
-    public function __construct($left, $right)
-    {
+    public function __construct ( $left, $right ) {
+
         $this->left = $left;
         $this->right = $right;
     }
@@ -36,38 +36,36 @@ abstract class AbstractComparator
     /**
      * @return string
      */
-    public function __toString()
-    {
+    public function __toString ( ) {
+
         return (string) $this->left.' '.$this->getToken().' '.(string) $this->right;
     }
 
     /**
      * @return string
      */
-    public function getLeft()
-    {
+    public function getLeft ( ) {
+
         return $this->left;
     }
 
     /**
      * @return mixed
      */
-    public function getRight()
-    {
+    public function getRight ( ) {
+
         return $this->right;
     }
 
     /**
      * @param Context $context context
      */
-    public function transform(Context $context)
-    {
-        if ($this->left instanceof BagInterface) {
-            $this->left = $this->left->transform($context);
-        }
+    public function transform ( Context $context ) {
 
-        if ($this->right instanceof BagInterface) {
+        if ($this->left instanceof BagInterface)
+            $this->left = $this->left->transform($context);
+
+        if ($this->right instanceof BagInterface)
             $this->right = $this->right->transform($context);
-        }
     }
 }

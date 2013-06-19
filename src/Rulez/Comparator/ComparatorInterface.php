@@ -10,22 +10,21 @@ use Rulez\Exception\InvalidValueException;
  *
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-interface ComparatorInterface
-{
+interface ComparatorInterface {
     /**
      * @throws InvalidValueException
      *
      * @return boolean
      */
-    public function assert();
+    public function assert ( );
 
     /**
      * @param Context $context context
      */
-    public function transform(Context $context);
+    public function transform( Context $context );
 
     /**
      * @return string
      */
-    public function getToken();
+    public function getToken ( );
 }

@@ -12,8 +12,8 @@ use Rulez\LogicalOperator\LogicalOperatourInterface;
  *
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-class Ruler
-{
+class Ruler {
+
     /**
      * @var Parser|null
      */
@@ -32,8 +32,8 @@ class Ruler
     /**
      * @param array $comparators comparators
      */
-    public function __construct(array $comparators = array())
-    {
+    public function __construct ( array $comparators = array() ) {
+
         $this->addComparator('=', '\Rulez\Comparator\Equal');
         $this->addComparator('!=', '\Rulez\Comparator\NotEqual');
         $this->addComparator('>', '\Rulez\Comparator\GreaterThan');
@@ -52,8 +52,8 @@ class Ruler
      *
      * @return LogicalOperator\LogicalOperatorInterface|Comparator\ComparatorInterface
      */
-    public function decode($str)
-    {
+    public function decode ( $str ) {
+
         $compiler = $this->getCompiler();
         $ast      = $compiler->parse($str);
 
@@ -72,15 +72,13 @@ class Ruler
      *
      * @return boolean
      */
-    public function assert($data, Context $context)
-    {
-        if (is_scalar($data)) {
-            $data = $this->decode($data);
-        }
+    public function assert ( $data, Context $context ) {
 
-        if (!$data instanceof LogicalOperatorInterface && !$data instanceof ComparatorInterface) {
-            throw new \LogicException('Ruler can encode only comparators or logical operators');
-        }
+        if (is_scalar($data))
+            $data = $this->decode($data);
+
+        if (!$data instanceof LogicalOperatorInterface && !$data instanceof ComparatorInterface)
+            throw new \InvalidArgumentException('Ruler can encode only comparators or logical operators');
 
         $context->setRuler($this);
         $data->transform($context);
@@ -94,8 +92,8 @@ class Ruler
      *
      * @return Ruler
      */
-    public function addComparator($token, $class)
-    {
+    public function addComparator ( $token, $class ) {
+
         $this->comparators[$token] = $class;
 
         return $this;
@@ -106,8 +104,8 @@ class Ruler
      *
      * @return boolean
      */
-    public function hasComparator($token)
-    {
+    public function hasComparator ( $token ) {
+
         return array_key_exists((string) $token, $this->comparators);
     }
 
@@ -116,8 +114,8 @@ class Ruler
      *
      * @return string|null
      */
-    public function getComparator($token)
-    {
+    public function getComparator ( $token ) {
+
         return $this->hasComparator($token) ? $this->comparators[$token] : null;
     }
 
@@ -127,8 +125,8 @@ class Ruler
      *
      * @return Ruler
      */
-    public function addFunction($name, \Closure $closure)
-    {
+    public function addFunction ( $name, \Closure $closure ) {
+
         $this->functions[$name] = $closure;
 
         return $this;
@@ -139,8 +137,8 @@ class Ruler
      *
      * @return boolean
      */
-    public function hasFunction($name)
-    {
+    public function hasFunction ( $name ) {
+
         return array_key_exists((string) $name, $this->functions);
     }
 
@@ -149,16 +147,16 @@ class Ruler
      *
      * @return \Closure|null
      */
-    public function getFunction($name)
-    {
+    public function getFunction ( $name ) {
+
         return $this->hasFunction($name) ? $this->functions[$name] : null;
     }
 
     /**
      * @return Parser
      */
-    protected function getCompiler()
-    {
+    protected function getCompiler ( ) {
+
         if (null === $this->compiler) {
             from('Hoa')
                 ->import('Compiler.Llk')

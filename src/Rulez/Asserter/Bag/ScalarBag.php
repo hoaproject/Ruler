@@ -10,20 +10,24 @@ use Rulez\Asserter\Context;
  * @uses BagInterface
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-class ScalarBag implements BagInterface
-{
+class ScalarBag implements BagInterface {
+
     /**
      * @var string
      */
     protected $str;
 
+    /**
+     * @var string
+     */
     protected $quote;
 
     /**
-     * @param string $str str
+     * @param string $str   str
+     * @param string $quote quote
      */
-    public function __construct($str, $quote)
-    {
+    public function __construct ( $str, $quote ) {
+
         $this->str = $str;
         $this->quote = $quote;
     }
@@ -31,8 +35,8 @@ class ScalarBag implements BagInterface
     /**
      * {@inheritdoc}
      */
-    public function __toString()
-    {
+    public function __toString ( ) {
+
         if (null === $this->str) {
             return 'NULL';
         } elseif (false === $this->str) {
@@ -53,8 +57,8 @@ class ScalarBag implements BagInterface
     /**
      * {@inheritdoc}
      */
-    public function transform(Context $context)
-    {
+    public function transform ( Context $context ) {
+
         return $this->str;
     }
 }

@@ -10,8 +10,8 @@ use Rulez\Asserter\Context;
  * @uses BagInterface
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-class ArrayBag implements BagInterface
-{
+class ArrayBag implements BagInterface {
+
     /**
      * @var array
      */
@@ -20,24 +20,24 @@ class ArrayBag implements BagInterface
     /**
      * @param array $data data
      */
-    public function __construct(array $data)
-    {
+    public function __construct ( array $data ) {
+
         $this->data = $data;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function __toString()
-    {
-        return sprintf('[%s]', implode(', ', $this->data));
+    public function __toString ( ) {
+
+        return sprintf('(%s)', implode(', ', $this->data));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function transform(Context $context)
-    {
+    public function transform ( Context $context ) {
+
         foreach ($this->data as $k => $data) {
             if ($data instanceof BagInterface) {
                 $this->data[$k] = $data->transform($context);

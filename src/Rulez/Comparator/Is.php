@@ -14,16 +14,16 @@ class Is extends AbstractComparator implements ComparatorInterface
     /**
      * {@inheritdoc}
      */
-    public function getToken()
-    {
+    public function getToken ( ) {
+
         return 'IS';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function assert()
-    {
+    public function assert ( ) {
+
         return $this->left == $this->right;
     }
 }
