@@ -7,6 +7,7 @@
 %token  isNot         (is not|IS NOT)
 %token  is            (is|IS)
 // Logical operators
+%token  not           NOT
 %token  and           AND
 %token  nand          NAND
 %token  or            OR
@@ -25,12 +26,16 @@
 %token  operator      [^\s]+
 
 expression:
-    condition()
+    unary_expression()
     ( (::and:: #and | ::nand:: #nand | ::or:: #or | ::nor:: #nor | ::xor:: #xor | ::xnor:: #xnor) expression())?
+
+unary_expression:
+    (::not:: #not) ? condition()
 
 condition:
     (::bracket_:: expression() ::_bracket::)
     | (value() operator() value()) #condition
+    | value()
 
 operator:
     <operator> | <key> | <is> | <isNot>
@@ -39,7 +44,8 @@ operator:
     ::bracket_:: value() ( ::comma:: value() )* ::_bracket::
 
 value:
-    <true> | <false> | <null> | <number> | <float> | <string> | <key> | function() | array()
+    (::not:: #not) ?
+    (<true> | <false> | <null> | <number> | <float> | <string> | <key> | function() | array())
 
 #function:
     <key> ::bracket_::

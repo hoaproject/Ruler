@@ -2,14 +2,16 @@
 
 namespace Rulez\LogicalOperator;
 
+use Rulez\Asserter\Bag\BagInterface;
+
 /**
  * LogicalNot
  *
- * @uses AbstractLogicalOperator
+ * @uses UnaryLogicalOperator
  * @uses LogicalOperatorInterface
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-class LogicalNot extends LogicalAnd implements LogicalOperatorInterface {
+class LogicalNot extends UnaryLogicalOperator implements LogicalOperatorInterface {
 
     /**
      * {@inheritdoc}
@@ -24,6 +26,10 @@ class LogicalNot extends LogicalAnd implements LogicalOperatorInterface {
      */
     public function assert ( ) {
 
-        return !parent::assert();
+        if ($this->condition instanceof BagInterface) {
+            return ! $this->condition->getValue();
+        } else {
+            return ! $this->condition->assert();
+        }
     }
 }

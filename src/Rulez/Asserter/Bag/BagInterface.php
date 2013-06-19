@@ -20,4 +20,9 @@ interface BagInterface {
      * @param Context $context context
      */
     public function transform ( Context $context );
+
+    /**
+     * @return mixed
+     */
+    public function getValue ( );
 }

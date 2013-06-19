@@ -6,11 +6,11 @@ use Rulez\Comparator\ComparatorInterface;
 use Rulez\Asserter\Context;
 
 /**
- * AbstractLogicalOperator
+ * LogicalOperator
  *
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-class AbstractLogicalOperator {
+abstract class LogicalOperator {
 
     /**
      * @var array
@@ -18,11 +18,33 @@ class AbstractLogicalOperator {
     protected $conditions = array();
 
     /**
+     * @return string
+     */
+    public function __toString ( ) {
+
+        $parts = array();
+
+        foreach ($this->getConditions() as $condition) {
+            if ($condition instanceof LogicalOperator) {
+                $condition = '('.(string) $condition.')';
+            }
+
+            $parts[] = $condition;
+        }
+
+        return implode(sprintf(' %s ', $this->getToken()), $parts);
+    }
+
+    /**
      * Constructor, pass as many condition|operator as you want
      */
     public function __construct ( ) {
 
         $args = func_get_args();
+
+        if (count($args) < 2) {
+            throw new \InvalidArgumentException('Logical operators accepts minimum 2 arguments');
+        }
 
         foreach ($args as $arg) {
             if (!is_array($arg)) {
@@ -36,30 +58,12 @@ class AbstractLogicalOperator {
     }
 
     /**
-     * @return string
-     */
-    public function __toString ( ) {
-
-        $parts = array();
-
-        foreach ($this->getConditions() as $condition) {
-            if ($condition instanceof LogicalOperatorInterface) {
-                $condition = '('.(string) $condition.')';
-            }
-
-            $parts[] = $condition;
-        }
-
-        return implode(sprintf(' %s ', $this->getToken()), $parts);
-    }
-
-    /**
      * @param Context $context context
      */
-    public function transformContextReferences ( Context $context ) {
+    public function transform ( Context $context ) {
 
         foreach ($this->getConditions() as $condition) {
-            $condition->transformContextReferences($context);
+            $condition->transform($context);
         }
     }
 

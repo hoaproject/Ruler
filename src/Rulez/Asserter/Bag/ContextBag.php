@@ -19,6 +19,11 @@ class ContextBag implements BagInterface {
     protected $str;
 
     /**
+     * @var mixed
+     */
+    protected $value;
+
+    /**
      * @param string $str str
      */
     public function __construct ( $str ) {
@@ -42,6 +47,14 @@ class ContextBag implements BagInterface {
         if (!isset($context[$this->str]))
             throw new UnknownContextReferenceException(sprintf('Context reference "%s" does not exists.', $this->str));
 
-        return $context[$this->str];
+        $this->value = $context[$this->str];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getValue()
+    {
+        return $this->value;
     }
 }

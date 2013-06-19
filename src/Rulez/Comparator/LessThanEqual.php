@@ -24,6 +24,6 @@ class LessThanEqual extends AbstractComparator implements ComparatorInterface
      */
     public function assert ( ) {
 
-        return $this->left <= $this->right;
+        return $this->left->getValue() <= $this->right->getValue();
     }
 }

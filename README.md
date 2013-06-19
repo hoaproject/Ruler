@@ -39,6 +39,7 @@ Float: `foo = 3.14`
 Null: `foo is NULL`
 Array: `(1, "string", true)`
 Function: `DATE('y-m-d', key)`,
+Not: `NOT foo = 3.14` or `NOT (foo = 1 and bar = 2)` or `NOT foo`,
 
 You have to define theses functions and give them to the ruler:
 
@@ -49,7 +50,7 @@ $ruler->addFunction('DATE', function(array $arguments) {
         throw new \LogicException('Date function accepts 2 arguments');
     }
 
-    return date($arguments[0], $arguments[1]);
+    return date($arguments[0]->getValue(), $arguments[1]->getValue());
 });
 
 ```
@@ -103,8 +104,14 @@ Accepts at this moment:
 Logical operators
 -----------------
 
+Unary:
+
+- Not
+
+Binary:
+
 - And
-- NAnd | Not
+- NAnd
 - NOr
 - Or
 - XNOr

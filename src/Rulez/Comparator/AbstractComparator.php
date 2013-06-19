@@ -63,9 +63,9 @@ abstract class AbstractComparator {
     public function transform ( Context $context ) {
 
         if ($this->left instanceof BagInterface)
-            $this->left = $this->left->transform($context);
+            $this->left->transform($context);
 
         if ($this->right instanceof BagInterface)
-            $this->right = $this->right->transform($context);
+            $this->right->transform($context);
     }
 }

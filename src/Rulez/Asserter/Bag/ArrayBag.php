@@ -18,6 +18,11 @@ class ArrayBag implements BagInterface {
     protected $data;
 
     /**
+     * @var mixed
+     */
+    protected $value;
+
+    /**
      * @param array $data data
      */
     public function __construct ( array $data ) {
@@ -40,10 +45,16 @@ class ArrayBag implements BagInterface {
 
         foreach ($this->data as $k => $data) {
             if ($data instanceof BagInterface) {
-                $this->data[$k] = $data->transform($context);
+                $this->value[$k] = $data->transform($context);
             }
         }
+    }
 
-        return $this->data;
+    /**
+     * {@inheritdoc}
+     */
+    public function getValue()
+    {
+        return $this->value;
     }
 }

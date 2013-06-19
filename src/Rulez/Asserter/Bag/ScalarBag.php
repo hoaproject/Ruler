@@ -61,4 +61,13 @@ class ScalarBag implements BagInterface {
 
         return $this->str;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getValue()
+    {
+        return $this->str;
+    }
+
 }

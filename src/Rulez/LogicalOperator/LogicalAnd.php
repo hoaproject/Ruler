@@ -5,11 +5,11 @@ namespace Rulez\LogicalOperator;
 /**
  * LogicalAnd
  *
- * @uses AbstractLogicalOperator
+ * @uses LogicalOperator
  * @uses LogicalOperatorInterface
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-class LogicalAnd extends AbstractLogicalOperator implements LogicalOperatorInterface {
+class LogicalAnd extends LogicalOperator implements LogicalOperatorInterface {
 
     /**
      * {@inheritdoc}

@@ -24,9 +24,11 @@ class In extends AbstractComparator implements ComparatorInterface
      */
     public function assert ( ) {
 
-        if (!is_array($this->right))
+        $right = $this->right->getValue();
+
+        if (!is_array($right))
             return false;
 
-        return in_array($this->left, $this->right);
+        return in_array($this->left->getValue(), $right);
     }
 }

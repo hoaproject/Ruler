@@ -59,6 +59,9 @@ class DecodeVisitor implements \Hoa\Visitor\Visit {
             case '#array':
                 return new Bag\ArrayBag($children);
                 break;
+            case '#not':
+                return new \Rulez\LogicalOperator\LogicalNot($children);
+            break;
             case '#and':
                 return $operator('\Rulez\LogicalOperator\LogicalAnd', $children);
             break;

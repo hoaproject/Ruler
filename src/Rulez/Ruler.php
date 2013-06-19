@@ -5,7 +5,7 @@ namespace Rulez;
 use Hoa\Compiler\Llk\Parser;
 use Rulez\Asserter\Context;
 use Rulez\Comparator\ComparatorInterface;
-use Rulez\LogicalOperator\LogicalOperatourInterface;
+use Rulez\LogicalOperator\LogicalOperatorInterface;
 
 /**
  * Ruler

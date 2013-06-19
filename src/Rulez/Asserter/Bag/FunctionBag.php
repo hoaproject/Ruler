@@ -24,6 +24,11 @@ class FunctionBag implements BagInterface {
     protected $arguments = array();
 
     /**
+     * @var mixed
+     */
+    protected $value;
+
+    /**
      * @param string $functionName functionName
      * @param array  $arguments    arguments
      */
@@ -51,14 +56,24 @@ class FunctionBag implements BagInterface {
         if (!$ruler->hasFunction($this->functionName))
             throw new UnknownFunctionReferenceException(sprintf('Function reference "%s" does not exists.', $this->functionName));
 
+        $arguments = array();
         foreach ($this->arguments as $k => $argument) {
             if ($argument instanceof BagInterface) {
-                $this->arguments[$k] = $argument->transform($context);
+                $arguments[$k] = $argument->transform($context);
             }
         }
 
         $function = $ruler->getFunction($this->functionName);
 
-        return $function($this->arguments);
+        $this->value = $function($this->arguments);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
 }

@@ -5,7 +5,7 @@ namespace Rulez\LogicalOperator;
 /**
  * LogicalNAnd
  *
- * @uses AbstractLogicalOperator
+ * @uses LogicalAnd
  * @uses LogicalOperatorInterface
  * @author Stephane PY <py.stephane1@gmail.com>
  */

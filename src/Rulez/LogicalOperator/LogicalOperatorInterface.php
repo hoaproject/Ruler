@@ -21,25 +21,10 @@ interface LogicalOperatorInterface {
     /**
      * @param Context $context context
      */
-    public function transformContextReferences( Context $context );
+    public function transform ( Context $context );
 
     /**
      * @return string
      */
     public function getToken ( );
-
-    /**
-     * @param Condition|Operator $data data
-     */
-    public function append( $data );
-
-    /**
-     * @param Condition|Operator $data data
-     */
-    public function prepend( $data );
-
-    /**
-     * @return array
-     */
-    public function getConditions ( );
 }
