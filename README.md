@@ -104,7 +104,7 @@ Logical operators
 -----------------
 
 - And
-- NAnd
+- NAnd | Not
 - NOr
 - Or
 - XNOr
