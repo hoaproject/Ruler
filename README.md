@@ -1,14 +1,23 @@
 Ruler
 =====
 
-Defining a rule is pretty simple, there is many libraries which offer it. But how do you set theses rules in a storage to re use them later ?
-If you want to create a redeem which would be assigned to a cart if some conditions are met, you'll have to save this redeem in a storage.
-Hoa\Ruler allows it, create your rules via object or string is easily and store them as string in your favorite storage.
+## About
 
-A rule can be defined in 2 formats:
+RThe ruler library aims to help you creating rules with an abstract language, very close to SQL.
 
-String
-------
+So, this way you can easily write a simple & readable one line string rule and ruler will manage the rule for you in the background.
+It ensures compilation, serialization & de-serialization of the rule from string to objects (or what you want, feel free to implement your own serializers).
+
+## Use cases
+
+- My boss asked me a complex system of dynamic rules to attribute promo codes into our e-commerce website.
+- I've written a piece of software that needs to take realtime decisions depending on some context and I don't want to write spaghetti code.
+- ...
+
+## Ok, How can I write rules ?
+
+### With simple strings
+
 
 Ruler can parse the string and create an object from it.
 
@@ -57,8 +66,8 @@ $ruler->addFunction('DATE', function(array $arguments) {
 
 ```
 
-Object
-------
+### The Object way
+
 
 1) Simple
 
@@ -97,8 +106,10 @@ $rule = new Hoa\Ruler\LogicalOperator\LogicalAnd(
 );
 ```
 
-Comparators
------------
+## Toolkit
+
+### Comparators
+
 
 Accepts at this moment:
 
@@ -112,8 +123,7 @@ Accepts at this moment:
 - less than equal (<=)
 - not equal (!=)
 
-Logical operators
------------------
+### Logical operators
 
 Unary:
 
@@ -128,8 +138,8 @@ Binary:
 - XNOr
 - XOr
 
-Transformers
-------------
+### Transformers
+
 
 Object as string:
 
@@ -174,8 +184,7 @@ new Hoa\Ruler\LogicalOperator\LogicalAnd(
 
 ```
 
-Assert rules
-------------
+### Assert rules
 
 ```php
 from('Hoa')
