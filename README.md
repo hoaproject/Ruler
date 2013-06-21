@@ -44,7 +44,9 @@ Not: `NOT foo = 3.14` or `NOT (foo = 1 and bar = 2)` or `NOT foo`,
 You have to define theses functions and give them to the ruler:
 
 ```php
-$ruler = new \Rulez\Ruler();
+from('Hoa')->import('Ruler.Ruler');
+
+$ruler = new \Hoa\Ruler\Ruler();
 $ruler->addFunction('DATE', function(array $arguments) {
     if (count($arguments) != 2) {
         throw new \LogicException('Date function accepts 2 arguments');
@@ -61,15 +63,20 @@ Object
 1) Simple
 
 ```php
-$rule = new Rulez\Comparator\Equal('foo', 'bar');
+from('Hoa')->import('Ruler.Comparator.Equal');
+$rule = new Hoa\Ruler\Comparator\Equal('foo', 'bar');
 ```
 
 2) Logical operator
 
 ```php
-$rule = new Rulez\LogicalOperator\LogicalAnd(
-    Rulez\Comparator\Equal('foo', 'bar'),
-    Rulez\Comparator\Equal('baz', 1)
+from('Hoa')
+    ->import('Ruler.LogicalOperator.LogicalAnd')
+    ->import('Ruler.Comparator.*');
+
+$rule = new Hoa\Ruler\LogicalOperator\LogicalAnd(
+    Hoa\Ruler\Comparator\Equal('foo', 'bar'),
+    Hoa\Ruler\Comparator\Equal('baz', 1)
     // ....
 );
 ```
@@ -77,10 +84,14 @@ $rule = new Rulez\LogicalOperator\LogicalAnd(
 3) Nested logical operators
 
 ```php
-$rule = new Rulez\LogicalOperator\LogicalAnd(
-    Rulez\Comparator\Equal('foo', 'bar'),
-    new Rulez\LogicalOperator\LogicalAnd(
-        Rulez\Comparator\Equal('baz', 1),
+from('Hoa')
+    ->import('Ruler.LogicalOperator.LogicalAnd')
+    ->import('Ruler.Comparator.*');
+
+$rule = new Hoa\Ruler\LogicalOperator\LogicalAnd(
+    Hoa\Ruler\Comparator\Equal('foo', 'bar'),
+    new Hoa\Ruler\LogicalOperator\LogicalAnd(
+        Hoa\Ruler\Comparator\Equal('baz', 1),
         // ....
     )
 );
@@ -123,10 +134,14 @@ Transformers
 Object as string:
 
 ```php
-$rule = new Rulez\LogicalOperator\LogicalAnd(
-    Rulez\Comparator\Equal('foo', 'bar'),
-    new Rulez\LogicalOperator\LogicalNot(
-        Rulez\Comparator\Equal('baz', 1),
+from('Hoa')
+    ->import('Ruler.LogicalOperator.LogicalAnd')
+    ->import('Ruler.Comparator.*');
+
+$rule = new Hoa\Ruler\LogicalOperator\LogicalAnd(
+    Hoa\Ruler\Comparator\Equal('foo', 'bar'),
+    new Hoa\Ruler\LogicalOperator\LogicalNot(
+        Hoa\Ruler\Comparator\Equal('baz', 1),
     )
 );
 
@@ -136,18 +151,23 @@ echo (string) $rule; // 'foo' = 'bar' AND NOT ('baz' = 1)
 String as object
 
 ```php
-$rule = "foo = 'bar' AND NOT (baz = 1)";
+from('Hoa')->import('Ruler.Ruler');
+
+$rule   = "foo = 'bar' AND NOT (baz = 1)";
+
+$ruler  = new \Hoa\Ruler\Ruler();
+$object = $ruler->decode($rule);
 
 // =
-new Rulez\LogicalOperator\LogicalAnd(
-    Rulez\Comparator\Equal(
-        new Rulez\Asserter\Bag\ContextBag('foo'),
-        new Rulez\Asserter\Bag\ScalarBag('bar')
+new Hoa\Ruler\LogicalOperator\LogicalAnd(
+    Hoa\Ruler\Comparator\Equal(
+        new Hoa\Ruler\Asserter\Bag\ContextBag('foo'),
+        new Hoa\Ruler\Asserter\Bag\ScalarBag('bar')
     ),
-    new Rulez\LogicalOperator\LogicalNot(
-        Rulez\Comparator\Equal(
-            new Rulez\Asserter\Bag\ContextBag('baz'),
-            new Rulez\Asserter\Bag\ScalarBag('1')
+    new Hoa\Ruler\LogicalOperator\LogicalNot(
+        Hoa\Ruler\Comparator\Equal(
+            new Hoa\Ruler\Asserter\Bag\ContextBag('baz'),
+            new Hoa\Ruler\Asserter\Bag\ScalarBag('1')
         )
     )
 );
@@ -158,17 +178,17 @@ Assert rules
 ------------
 
 ```php
-$context = new Rulez\Asserter\Context();
+from('Hoa')
+    ->import('Ruler.Asserter.Context')
+    ->import('Ruler.Ruler')
+    ;
+
+$context = new Hoa\Ruler\Asserter\Context();
 $context['customer.id'] = function() {
     // closure to fetch customer.id
 };
 $context['otherkey'] = 1234;
 
-$ruler = new Rulez\Ruler();
+$ruler = new Hoa\Ruler\Ruler();
 $ruler->assert('customer.id IN (1, 2, 3) AND otherkey = 1234', $context);
 ```
-
-Wishlist
-========
-
-1) Write many tests
