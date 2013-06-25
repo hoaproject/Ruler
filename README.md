@@ -3,7 +3,7 @@ Ruler
 
 ## About
 
-RThe ruler library aims to help you creating rules with an abstract language, very close to SQL.
+The ruler library aims to help you creating rules with an abstract language, very close to SQL.
 
 So, this way you can easily write a simple & readable one line string rule and ruler will manage the rule for you in the background.
 It ensures compilation, serialization & de-serialization of the rule from string to objects (or what you want, feel free to implement your own serializers).
@@ -41,13 +41,21 @@ You can (as on php/sql or other languages) define many levels of conditions
 4) Left and right accepts theses formats:
 
 Strings:  `foo = "bar"` or `foo = 'bar'` or `foo = 'Let\'s go'`
+
 Context Key: `foo = "1"` (here `foo` is a context key)
+
 Boolean: `foo = true` or `foo = false`
+
 Integer: `foo = 2`
+
 Float: `foo = 3.14`
+
 Null: `foo is NULL`
+
 Array: `(1, "string", true)`
+
 Function: `DATE('y-m-d', key)`,
+
 Not: `NOT foo = 3.14` or `NOT (foo = 1 and bar = 2)` or `NOT foo`,
 
 You have to define theses functions and give them to the ruler:
@@ -170,12 +178,12 @@ $object = $ruler->decode($rule);
 
 // =
 new Hoa\Ruler\LogicalOperator\LogicalAnd(
-    Hoa\Ruler\Comparator\Equal(
-        new Hoa\Ruler\Asserter\Bag\ContextBag('foo'),
+    new Hoa\Ruler\Comparator\Equal(
+        new new Hoa\Ruler\Asserter\Bag\ContextBag('foo'),
         new Hoa\Ruler\Asserter\Bag\ScalarBag('bar')
     ),
     new Hoa\Ruler\LogicalOperator\LogicalNot(
-        Hoa\Ruler\Comparator\Equal(
+        new Hoa\Ruler\Comparator\Equal(
             new Hoa\Ruler\Asserter\Bag\ContextBag('baz'),
             new Hoa\Ruler\Asserter\Bag\ScalarBag('1')
         )
