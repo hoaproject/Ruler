@@ -15,9 +15,9 @@ from('Hoa')
 -> import('Ruler.Exception.UnknownComparatorException')
 
 /**
- * \Hoa\Ruler\LogicalOperator\*
+ * \Hoa\Ruler\Model\Operator\*
  */
--> import('Ruler.LogicalOperator.*')
+-> import('Ruler.Model.Operator.*')
 
 /**
  * \Hoa\Ruler\Ruler
@@ -66,7 +66,7 @@ class DecodeVisitor implements \Hoa\Visitor\Visit {
             $left = $children[0];
             $right = $children[1];
 
-            if ($right instanceof Hoa\Ruler\LogicalOperator\LogicalOperatorInterface && $right instanceof $class) {
+            if ($right instanceof Hoa\Ruler\Model\Operator\LogicalInterface && $right instanceof $class) {
                 $right->prepend($left);
                 return $right;
             }
@@ -84,25 +84,16 @@ class DecodeVisitor implements \Hoa\Visitor\Visit {
                 return new \Hoa\Ruler\Asserter\Bag\ArrayBag($children);
                 break;
             case '#not':
-                return new \Hoa\Ruler\LogicalOperator\LogicalNot($children);
+                return new \Hoa\Ruler\Model\Operator\LogicalNot($children);
             break;
             case '#and':
-                return $operator('\Hoa\Ruler\LogicalOperator\LogicalAnd', $children);
-            break;
-            case '#nand':
-                return $operator('\Hoa\Ruler\LogicalOperator\LogicalNAnd', $children);
+                return $operator('\Hoa\Ruler\Model\Operator\LogicalAnd', $children);
             break;
             case '#or':
-                return $operator('\Hoa\Ruler\LogicalOperator\LogicalOr', $children);
-            break;
-            case '#nor':
-                return $operator('\Hoa\Ruler\LogicalOperator\LogicalNOr', $children);
-            break;
-            case '#xnor':
-                return $operator('\Hoa\Ruler\LogicalOperator\LogicalXNOr', $children);
+                return $operator('\Hoa\Ruler\Model\Operator\LogicalOr', $children);
             break;
             case '#xor':
-                return $operator('\Hoa\Ruler\LogicalOperator\LogicalXOr', $children);
+                return $operator('\Hoa\Ruler\Model\Operator\LogicalXOr', $children);
             break;
             case '#condition':
                 $comparator = (string) $children[1];

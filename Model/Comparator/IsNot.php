@@ -1,22 +1,22 @@
 <?php
 
-namespace Hoa\Ruler\Comparator {
+namespace Hoa\Ruler\Model\Comparator {
 
 /**
- * LessThanEqual
+ * IsNot
  *
  * @uses AbstractComparator
  * @uses ComparatorInterface
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-class LessThanEqual extends AbstractComparator implements ComparatorInterface
+class IsNot extends AbstractComparator implements ComparatorInterface
 {
     /**
      * {@inheritdoc}
      */
     public function getToken ( ) {
 
-        return '<=';
+        return 'IS NOT';
     }
 
     /**
@@ -24,7 +24,7 @@ class LessThanEqual extends AbstractComparator implements ComparatorInterface
      */
     public function assert ( ) {
 
-        return $this->left->getValue() <= $this->right->getValue();
+        return $this->left->getValue() != $this->right->getValue();
     }
 }
 

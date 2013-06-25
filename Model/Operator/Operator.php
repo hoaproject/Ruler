@@ -10,20 +10,20 @@ from('Hoa')
 -> import('Ruler.Asserter.Context')
 
 /**
- * \Hoa\Ruler\Comparator\ComparatorInterface
+ * \Hoa\Ruler\Model\Comparator\ComparatorInterface
  */
--> import('Ruler.Comparator.ComparatorInterface');
+-> import('Ruler.Model.Comparator.ComparatorInterface');
 
 }
 
-namespace Hoa\Ruler\LogicalOperator {
+namespace Hoa\Ruler\Model\Operator {
 
 /**
- * LogicalOperator
+ * Operator
  *
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-abstract class LogicalOperator {
+abstract class Operator {
 
     /**
      * @var array
@@ -38,7 +38,7 @@ abstract class LogicalOperator {
         $parts = array();
 
         foreach ($this->getConditions() as $condition) {
-            if ($condition instanceof LogicalOperator) {
+            if ($condition instanceof Operator) {
                 $condition = '('.(string) $condition.')';
             }
 
@@ -56,7 +56,7 @@ abstract class LogicalOperator {
         $args = func_get_args();
 
         if (count($args) < 2) {
-            throw new \InvalidArgumentException('Logical operators accepts minimum 2 arguments');
+            throw new \InvalidArgumentException('Operators accepts minimum 2 arguments');
         }
 
         foreach ($args as $arg) {
@@ -81,24 +81,24 @@ abstract class LogicalOperator {
     }
 
     /**
-     * @param Condition|Operator $data data
+     * @param ComparatorInterface|Operator $data data
      */
     public function append ( $data ) {
 
-        if (!$data instanceof \Hoa\Ruler\Comparator\ComparatorInterface && !$data instanceof LogicalOperatorInterface) {
-            throw new \InvalidArgumentException('LogicalOperator accepts only comparator and logical operators');
+        if (!$data instanceof \Hoa\Ruler\Model\Comparator\ComparatorInterface && !$data instanceof LogicalInterface) {
+            throw new \InvalidArgumentException('Operator accepts only comparator and logical operators');
         }
 
         $this->conditions[] = $data;
     }
 
     /**
-     * @param Condition|Operator $data data
+     * @param ComparatorInterface|Operator $data data
      */
     public function prepend ( $data ) {
 
-        if (!$data instanceof \Hoa\Ruler\Comparator\ComparatorInterface && !$data instanceof LogicalOperatorInterface) {
-            throw new \InvalidArgumentException('LogicalOperator accepts only comparator and logical operators');
+        if (!$data instanceof \Hoa\Ruler\Model\Comparator\ComparatorInterface && !$data instanceof LogicalInterface) {
+            throw new \InvalidArgumentException('Operator accepts only comparator and logical operators');
         }
 
         array_unshift($this->conditions, $data);

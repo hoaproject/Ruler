@@ -11,15 +11,15 @@ from('Hoa')
 
 }
 
-namespace Hoa\Ruler\LogicalOperator {
+namespace Hoa\Ruler\Model\Operator {
 
 /**
- * UnaryLogicalOperator
+ * UnaryOperator
  *
- * @uses LogicalOperator
+ * @uses LogicalInterface
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-abstract class UnaryLogicalOperator implements LogicalOperatorInterface {
+abstract class UnaryOperator implements LogicalInterface {
 
     /**
      * @var mixed
@@ -53,7 +53,7 @@ abstract class UnaryLogicalOperator implements LogicalOperatorInterface {
 
         $condition = $this->condition;
 
-        if ($condition instanceof LogicalOperator) {
+        if ($condition instanceof Operator) {
             $condition = sprintf('(%s)', (string) $condition);
         }
 

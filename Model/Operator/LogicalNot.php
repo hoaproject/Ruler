@@ -11,16 +11,16 @@ from('Hoa')
 
 }
 
-namespace Hoa\Ruler\LogicalOperator {
+namespace Hoa\Ruler\Model\Operator {
 
 /**
  * LogicalNot
  *
- * @uses UnaryLogicalOperator
- * @uses LogicalOperatorInterface
+ * @uses UnaryOperator
+ * @uses LogicalInterface
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-class LogicalNot extends UnaryLogicalOperator implements LogicalOperatorInterface {
+class LogicalNot extends UnaryOperator implements LogicalInterface {
 
     /**
      * {@inheritdoc}

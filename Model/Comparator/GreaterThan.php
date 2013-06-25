@@ -1,22 +1,22 @@
 <?php
 
-namespace Hoa\Ruler\Comparator {
+namespace Hoa\Ruler\Model\Comparator {
 
 /**
- * LessThan
+ * GreaterThan
  *
  * @uses AbstractComparator
  * @uses ComparatorInterface
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-class LessThan extends AbstractComparator implements ComparatorInterface
+class GreaterThan extends AbstractComparator implements ComparatorInterface
 {
     /**
      * {@inheritdoc}
      */
     public function getToken ( ) {
 
-        return '<';
+        return '>';
     }
 
     /**
@@ -24,7 +24,7 @@ class LessThan extends AbstractComparator implements ComparatorInterface
      */
     public function assert ( ) {
 
-        return $this->left->getValue() < $this->right->getValue();
+        return $this->left->getValue() > $this->right->getValue();
     }
 }
 

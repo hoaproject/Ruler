@@ -1,15 +1,15 @@
 <?php
 
-namespace Hoa\Ruler\LogicalOperator {
+namespace Hoa\Ruler\Model\Operator {
 
 /**
  * LogicalAnd
  *
- * @uses LogicalOperator
- * @uses LogicalOperatorInterface
+ * @uses Operator
+ * @uses LogicalInterface
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-class LogicalAnd extends LogicalOperator implements LogicalOperatorInterface {
+class LogicalAnd extends Operator implements LogicalInterface {
 
     /**
      * {@inheritdoc}

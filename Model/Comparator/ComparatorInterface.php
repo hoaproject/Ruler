@@ -11,17 +11,17 @@ from('Hoa')
 
 }
 
-namespace Hoa\Ruler\LogicalOperator {
+namespace Hoa\Ruler\Model\Comparator {
 
 /**
- * LogicalOperatorInterface
+ * ComparatorInterface
  *
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-interface LogicalOperatorInterface {
+interface ComparatorInterface {
 
     /**
-     * @param Context $context context
+     * @throws InvalidValueException
      *
      * @return boolean
      */
@@ -30,7 +30,7 @@ interface LogicalOperatorInterface {
     /**
      * @param \Hoa\Ruler\Asserter\Context $context context
      */
-    public function transform ( \Hoa\Ruler\Asserter\Context $context );
+    public function transform( \Hoa\Ruler\Asserter\Context $context );
 
     /**
      * @return string

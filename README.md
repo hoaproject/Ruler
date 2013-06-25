@@ -80,20 +80,20 @@ $ruler->addFunction('DATE', function(array $arguments) {
 1) Simple
 
 ```php
-from('Hoa')->import('Ruler.Comparator.Equal');
-$rule = new Hoa\Ruler\Comparator\Equal('foo', 'bar');
+from('Hoa')->import('Ruler.Model.Comparator.Equal');
+$rule = new Hoa\Ruler\Model\Comparator\Equal('foo', 'bar');
 ```
 
 2) Logical operator
 
 ```php
 from('Hoa')
-    ->import('Ruler.LogicalOperator.LogicalAnd')
-    ->import('Ruler.Comparator.*');
+    ->import('Ruler.Model.Operator.LogicalAnd')
+    ->import('Ruler.Model.Comparator.*');
 
-$rule = new Hoa\Ruler\LogicalOperator\LogicalAnd(
-    Hoa\Ruler\Comparator\Equal('foo', 'bar'),
-    Hoa\Ruler\Comparator\Equal('baz', 1)
+$rule = new Hoa\Ruler\Model\Operator\LogicalAnd(
+    Hoa\Ruler\Model\Comparator\Equal('foo', 'bar'),
+    Hoa\Ruler\Model\Comparator\Equal('baz', 1)
     // ....
 );
 ```
@@ -102,13 +102,13 @@ $rule = new Hoa\Ruler\LogicalOperator\LogicalAnd(
 
 ```php
 from('Hoa')
-    ->import('Ruler.LogicalOperator.LogicalAnd')
-    ->import('Ruler.Comparator.*');
+    ->import('Ruler.Model.Operator.LogicalAnd')
+    ->import('Ruler.Model.Comparator.*');
 
-$rule = new Hoa\Ruler\LogicalOperator\LogicalAnd(
-    Hoa\Ruler\Comparator\Equal('foo', 'bar'),
-    new Hoa\Ruler\LogicalOperator\LogicalAnd(
-        Hoa\Ruler\Comparator\Equal('baz', 1),
+$rule = new Hoa\Ruler\Model\Operator\LogicalAnd(
+    Hoa\Ruler\Model\Comparator\Equal('foo', 'bar'),
+    new Hoa\Ruler\Model\Operator\LogicalAnd(
+        Hoa\Ruler\Model\Comparator\Equal('baz', 1),
         // ....
     )
 );
@@ -150,13 +150,13 @@ Object as string:
 
 ```php
 from('Hoa')
-    ->import('Ruler.LogicalOperator.LogicalAnd')
-    ->import('Ruler.Comparator.*');
+    ->import('Ruler.Model.Operator.LogicalAnd')
+    ->import('Ruler.Model.Comparator.*');
 
-$rule = new Hoa\Ruler\LogicalOperator\LogicalAnd(
-    Hoa\Ruler\Comparator\Equal('foo', 'bar'),
-    new Hoa\Ruler\LogicalOperator\LogicalNot(
-        Hoa\Ruler\Comparator\Equal('baz', 1),
+$rule = new Hoa\Ruler\Model\Operator\LogicalAnd(
+    Hoa\Ruler\Model\Comparator\Equal('foo', 'bar'),
+    new Hoa\Ruler\Model\Operator\LogicalNot(
+        Hoa\Ruler\Model\Comparator\Equal('baz', 1),
     )
 );
 
@@ -174,13 +174,13 @@ $ruler  = new \Hoa\Ruler\Ruler();
 $object = $ruler->decode($rule);
 
 // =
-new Hoa\Ruler\LogicalOperator\LogicalAnd(
-    new Hoa\Ruler\Comparator\Equal(
+new Hoa\Ruler\Model\Operator\LogicalAnd(
+    new Hoa\Ruler\Model\Comparator\Equal(
         new new Hoa\Ruler\Asserter\Bag\ContextBag('foo'),
         new Hoa\Ruler\Asserter\Bag\ScalarBag('bar')
     ),
-    new Hoa\Ruler\LogicalOperator\LogicalNot(
-        new Hoa\Ruler\Comparator\Equal(
+    new Hoa\Ruler\Model\Operator\LogicalNot(
+        new Hoa\Ruler\Model\Comparator\Equal(
             new Hoa\Ruler\Asserter\Bag\ContextBag('baz'),
             new Hoa\Ruler\Asserter\Bag\ScalarBag('1')
         )

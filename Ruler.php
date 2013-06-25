@@ -25,14 +25,14 @@ from('Hoa')
 -> import('Ruler.Asserter.Context')
 
 /**
- * \Hoa\Ruler\Comparator\*
+ * \Hoa\Ruler\Model\Comparator\*
  */
--> import('Ruler.Comparator.*')
+-> import('Ruler.Model.Comparator.*')
 
 /**
- * \Hoa\Ruler\LogicalOperator\LogicalOperatorInterface
+ * \Hoa\Ruler\Model\Operator\LogicalInterface
  */
--> import('Ruler.LogicalOperator.LogicalOperatorInterface')
+-> import('Ruler.Model.Operator.LogicalInterface')
 
 /**
  * \Hoa\Ruler\Visitor\DecodeVisitor
@@ -70,15 +70,15 @@ class Ruler {
      */
     public function __construct ( array $comparators = array() ) {
 
-        $this->addComparator('=', '\Hoa\Ruler\Comparator\Equal');
-        $this->addComparator('!=', '\Hoa\Ruler\Comparator\NotEqual');
-        $this->addComparator('>', '\Hoa\Ruler\Comparator\GreaterThan');
-        $this->addComparator('>=', '\Hoa\Ruler\Comparator\GreaterThanEqual');
-        $this->addComparator('<', '\Hoa\Ruler\Comparator\LessThan');
-        $this->addComparator('<=', '\Hoa\Ruler\Comparator\LessThanEqual');
-        $this->addComparator('IS', '\Hoa\Ruler\Comparator\Is');
-        $this->addComparator('IS NOT', '\Hoa\Ruler\Comparator\IsNot');
-        $this->addComparator('IN', '\Hoa\Ruler\Comparator\In');
+        $this->addComparator('=', '\Hoa\Ruler\Model\Comparator\Equal');
+        $this->addComparator('!=', '\Hoa\Ruler\Model\Comparator\NotEqual');
+        $this->addComparator('>', '\Hoa\Ruler\Model\Comparator\GreaterThan');
+        $this->addComparator('>=', '\Hoa\Ruler\Model\Comparator\GreaterThanEqual');
+        $this->addComparator('<', '\Hoa\Ruler\Model\Comparator\LessThan');
+        $this->addComparator('<=', '\Hoa\Ruler\Model\Comparator\LessThanEqual');
+        $this->addComparator('IS', '\Hoa\Ruler\Model\Comparator\Is');
+        $this->addComparator('IS NOT', '\Hoa\Ruler\Model\Comparator\IsNot');
+        $this->addComparator('IN', '\Hoa\Ruler\Model\Comparator\In');
     }
 
     /**
@@ -86,7 +86,7 @@ class Ruler {
      *
      * @param string               $str
      *
-     * @return LogicalOperator\LogicalOperatorInterface|Comparator\ComparatorInterface
+     * @return Model\Operator\LogicalInterface|Model\Comparator\ComparatorInterface
      */
     public function decode ( $str ) {
 
@@ -109,7 +109,7 @@ class Ruler {
         if (is_scalar($data))
             $data = $this->decode($data);
 
-        if (!$data instanceof LogicalOperator\LogicalOperatorInterface && !$data instanceof Comparator\ComparatorInterface)
+        if (!$data instanceof Model\Operator\LogicalInterface && !$data instanceof Model\Comparator\ComparatorInterface)
             throw new \InvalidArgumentException('Ruler can encode only comparators or logical operators');
 
         $context->setRuler($this);

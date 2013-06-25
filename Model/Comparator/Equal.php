@@ -1,6 +1,6 @@
 <?php
 
-namespace Hoa\Ruler\Comparator {
+namespace Hoa\Ruler\Model\Comparator {
 
 /**
  * Equal
