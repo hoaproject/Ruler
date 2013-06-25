@@ -35,9 +35,9 @@ class ScalarBag implements BagInterface {
      * @param string $str   str
      * @param string $quote quote
      */
-    public function __construct ( $str, $quote ) {
+    public function __construct ( $str, $quote = '"' ) {
 
-        $this->str = $str;
+        $this->str   = $str;
         $this->quote = $quote;
     }
 

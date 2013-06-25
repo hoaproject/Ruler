@@ -114,6 +114,28 @@ $rule = new Hoa\Ruler\Model\Operator\LogicalAnd(
 );
 ```
 
+### The Fluent way
+
+```php
+from('Hoa')->import('Ruler.Model');
+
+$model = new Hoa\Ruler\Model();
+$rule  = $model->and(
+    $model->equals($model->context('foo'), 100)),
+    $model->in(1, $model->array(array(
+        $model->context('user.id'),
+        $model->function('rand', array(1, 10))
+    ))),
+    $model->or(
+        $model->not($model->context('user.registered')),
+        $model->gt($model->context('foo'), 100)
+    )
+);
+
+// foo = 100 AND 1 IN (user.id, rand(1,10)) AND (NOT customer.registered OR foo > 100)
+```
+
+
 ## Toolkit
 
 ### Comparators
