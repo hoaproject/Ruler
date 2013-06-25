@@ -9,11 +9,8 @@
 // Logical operators
 %token  not           NOT
 %token  and           AND
-%token  nand          NAND
 %token  or            OR
-%token  nor           NOR
 %token  xor           XOR
-%token  xnor          XNOR
 // Value
 %token  string        ("|')(.*?)(?<!\\)\1
 %token  number        \d+
@@ -27,7 +24,7 @@
 
 expression:
     unary_expression()
-    ( (::and:: #and | ::nand:: #nand | ::or:: #or | ::nor:: #nor | ::xor:: #xor | ::xnor:: #xnor) expression())?
+    ( (::and:: #and | ::or:: #or | ::xor:: #xor) expression())?
 
 unary_expression:
     (::not:: #not) ? condition()

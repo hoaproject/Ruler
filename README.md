@@ -140,10 +140,7 @@ Unary:
 Binary:
 
 - And
-- NAnd
-- NOr
 - Or
-- XNOr
 - XOr
 
 ### Transformers
