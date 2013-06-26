@@ -35,9 +35,9 @@ from('Hoa')
 -> import('Ruler.Model.Operator.LogicalInterface')
 
 /**
- * \Hoa\Ruler\Visitor\DecodeVisitor
+ * \Hoa\Ruler\Visitor\Interpreter
  */
--> import('Ruler.Visitor.DecodeVisitor');
+-> import('Ruler.Visitor.Interpreter');
 
 }
 
@@ -82,18 +82,18 @@ class Ruler {
     }
 
     /**
-     * Decode string as Condition(s)|Operator(s)
+     * Interprete string as Condition(s)|Operator(s)
      *
      * @param string               $str
      *
      * @return Model\Operator\LogicalInterface|Model\Comparator\ComparatorInterface
      */
-    public function decode ( $str ) {
+    public function interprete( $str ) {
 
         $compiler = $this->getCompiler();
         $ast      = $compiler->parse($str);
 
-        $visitor = new Visitor\DecodeVisitor($this);
+        $visitor = new Visitor\Interpreter($this);
 
         return $visitor->visit($ast);
     }
@@ -107,7 +107,7 @@ class Ruler {
     public function assert ( $data, \Hoa\Ruler\Asserter\Context $context ) {
 
         if (is_scalar($data))
-            $data = $this->decode($data);
+            $data = $this->interprete($data);
 
         if (!$data instanceof Model\Operator\LogicalInterface && !$data instanceof Model\Comparator\ComparatorInterface)
             throw new \InvalidArgumentException('Ruler can encode only comparators or logical operators');

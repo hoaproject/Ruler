@@ -34,11 +34,11 @@ from('Hoa')
 namespace Hoa\Ruler\Visitor {
 
 /**
- * DecodeVisitor
+ * Interpreter
  *
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-class DecodeVisitor implements \Hoa\Visitor\Visit {
+class Interpreter implements \Hoa\Visitor\Visit {
 
     /**
      * @var Ruler
@@ -142,7 +142,7 @@ class DecodeVisitor implements \Hoa\Visitor\Visit {
 
                 break;
             default:
-                throw new \LogicException(sprintf('"%s" type not supported in decode system.', $type));
+                throw new \LogicException(sprintf('"%s" type not supported in interpretation system.', $type));
                 break;
         }
     }

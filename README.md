@@ -193,7 +193,7 @@ from('Hoa')->import('Ruler.Ruler');
 $rule   = "foo = 'bar' AND NOT (baz = 1)";
 
 $ruler  = new \Hoa\Ruler\Ruler();
-$object = $ruler->decode($rule);
+$object = $ruler->interprete($rule);
 
 // =
 new Hoa\Ruler\Model\Operator\LogicalAnd(
