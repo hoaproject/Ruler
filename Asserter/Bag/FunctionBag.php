@@ -72,13 +72,15 @@ class FunctionBag implements BagInterface {
         $arguments = array();
         foreach ($this->arguments as $k => $argument) {
             if ($argument instanceof BagInterface) {
-                $arguments[$k] = $argument->transform($context);
+                $argument->transform($context);
+
+                $arguments[$k] = $argument->getValue();
             }
         }
 
         $function = $ruler->getFunction($this->functionName);
 
-        $this->value = $function($this->arguments);
+        $this->value = $function($arguments);
     }
 
     /**

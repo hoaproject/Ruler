@@ -79,6 +79,22 @@ class Ruler {
         $this->addComparator('IS', '\Hoa\Ruler\Model\Comparator\Is');
         $this->addComparator('IS NOT', '\Hoa\Ruler\Model\Comparator\IsNot');
         $this->addComparator('IN', '\Hoa\Ruler\Model\Comparator\In');
+
+        $this->addFunction('date', function(array $arguments) {
+            if (count($arguments) > 2) {
+                throw new \InvalidArgumentException('Date function accepts 2 arguments maximum');
+            }
+
+            if (!isset($arguments[1])) {
+                $arguments[1] = new \DateTime();
+            } elseif (is_scalar($arguments[1])) {
+                $arguments[1] = new \DateTime($arguments[1]);
+            } elseif (!$arguments[1] instanceof \DateTime) {
+                throw new \InvalidArgumentException('date function accepts in second argument: scalar, \DateTime');
+            }
+
+            return $arguments[1]->format($arguments[0]);
+        });
     }
 
     /**
