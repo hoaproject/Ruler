@@ -35,7 +35,7 @@ condition:
     | value()
 
 operator:
-    <operator> | <key> | <is> | <isNot>
+     <key> | <is> | <isNot> | <operator>
 
 #array:
     ::bracket_:: value() ( ::comma:: value() )* ::_bracket::
