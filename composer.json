@@ -1,0 +1,38 @@
+{
+    "name"       : "hoa/ruler",
+    "description": "The Hoa\\Ruler library.",
+    "type"       : "library",
+    "keywords"   : ["library", "ruler"],
+    "homepage"   : "http://hoa-project.net/",
+    "license"    : "BSD-3-Clause",
+    "authors"    : [
+        {
+            "name" : "Stéphane PY",
+            "email": "stephane.py@hoa-project.net"
+        },
+        {
+            "name" : "Ivan Enderlin",
+            "email": "ivan.enderlin@hoa-project.net"
+        },
+        {
+            "name"    : "Hoa community",
+            "homepage": "http://hoa-project.net/"
+        }
+    ],
+    "support": {
+        "email" : "ivan.enderlin@hoa-project.net",
+        "forum" : "http://forum.hoa-project.net",
+        "irc"   : "irc://irc.freenode.org/hoaproject",
+        "source": "http://git.hoa-project.net/"
+    },
+    "require": {
+        "hoa/compiler": "master"
+    },
+    "require-dev": {
+        "atoum/atoum": "*"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "minimum-stability": "dev"
+}
