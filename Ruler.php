@@ -53,7 +53,7 @@ class Ruler {
     /**
      * @var \Hoa\Compiler\Llk\Parser|null
      */
-    protected $compiler;
+    protected static $compiler;
 
     /**
      * @var array
@@ -205,12 +205,12 @@ class Ruler {
      */
     protected function getCompiler ( ) {
 
-        if (null === $this->compiler) {
+        if (!self::$compiler) {
             $read           = new \Hoa\File\Read(__DIR__.'/Grammar.pp');
-            $this->compiler = \Hoa\Compiler\Llk::load($read);
+            self::$compiler = \Hoa\Compiler\Llk::load($read);
         }
 
-        return $this->compiler;
+        return self::$compiler;
     }
 }
 
