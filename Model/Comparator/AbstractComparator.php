@@ -26,7 +26,7 @@ namespace Hoa\Ruler\Model\Comparator {
 /**
  * AbstractComparator
  *
- * @author Stephane PY <py.stephane1@gmail.com>
+ * @author Stephane PY <stephane.py@hoa-project.net>
  */
 abstract class AbstractComparator {
 

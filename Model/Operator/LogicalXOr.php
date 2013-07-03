@@ -7,7 +7,7 @@ namespace Hoa\Ruler\Model\Operator {
  *
  * @uses Operator
  * @uses LogicalInterface
- * @author Stephane PY <py.stephane1@gmail.com>
+ * @author Stephane PY <stephane.py@hoa-project.net>
  */
 class LogicalXOr extends Operator implements LogicalInterface {
 

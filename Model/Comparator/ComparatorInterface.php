@@ -16,7 +16,7 @@ namespace Hoa\Ruler\Model\Comparator {
 /**
  * ComparatorInterface
  *
- * @author Stephane PY <py.stephane1@gmail.com>
+ * @author Stephane PY <stephane.py@hoa-project.net>
  */
 interface ComparatorInterface {
 

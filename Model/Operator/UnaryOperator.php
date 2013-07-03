@@ -17,7 +17,7 @@ namespace Hoa\Ruler\Model\Operator {
  * UnaryOperator
  *
  * @uses LogicalInterface
- * @author Stephane PY <py.stephane1@gmail.com>
+ * @author Stephane PY <stephane.py@hoa-project.net>
  */
 abstract class UnaryOperator implements LogicalInterface {
 

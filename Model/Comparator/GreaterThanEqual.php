@@ -7,7 +7,7 @@ namespace Hoa\Ruler\Model\Comparator {
  *
  * @uses AbstractComparator
  * @uses ComparatorInterface
- * @author Stephane PY <py.stephane1@gmail.com>
+ * @author Stephane PY <stephane.py@hoa-project.net>
  */
 class GreaterThanEqual extends AbstractComparator implements ComparatorInterface
 {

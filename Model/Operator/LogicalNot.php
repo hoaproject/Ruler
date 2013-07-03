@@ -18,7 +18,7 @@ namespace Hoa\Ruler\Model\Operator {
  *
  * @uses UnaryOperator
  * @uses LogicalInterface
- * @author Stephane PY <py.stephane1@gmail.com>
+ * @author Stephane PY <stephane.py@hoa-project.net>
  */
 class LogicalNot extends UnaryOperator implements LogicalInterface {
 

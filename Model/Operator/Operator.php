@@ -21,7 +21,7 @@ namespace Hoa\Ruler\Model\Operator {
 /**
  * Operator
  *
- * @author Stephane PY <py.stephane1@gmail.com>
+ * @author Stephane PY <stephane.py@hoa-project.net>
  */
 abstract class Operator {
 

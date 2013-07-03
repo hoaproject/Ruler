@@ -17,7 +17,7 @@ namespace Hoa\Ruler\Asserter\Bag {
  * ArrayBag
  *
  * @uses BagInterface
- * @author Stephane PY <py.stephane1@gmail.com>
+ * @author Stephane PY <stephane.py@hoa-project.net>
  */
 class ArrayBag implements BagInterface {
 

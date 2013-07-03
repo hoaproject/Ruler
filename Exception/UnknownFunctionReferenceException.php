@@ -5,7 +5,7 @@ namespace Hoa\Ruler\Exception {
 /**
  * UnknownFunctionReferenceException
  *
- * @author Stephane PY <py.stephane1@gmail.com>
+ * @author Stephane PY <stephane.py@hoa-project.net>
  */
 class UnknownFunctionReferenceException extends \Exception {
 }

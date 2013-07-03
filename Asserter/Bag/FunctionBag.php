@@ -22,7 +22,7 @@ namespace Hoa\Ruler\Asserter\Bag {
  * FunctionBag
  *
  * @uses BagInterface
- * @author Stephane PY <py.stephane1@gmail.com>
+ * @author Stephane PY <stephane.py@hoa-project.net>
  */
 class FunctionBag implements BagInterface {
 
