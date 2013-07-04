@@ -1,28 +1,52 @@
 <?php
 
+/**
+ * Hoa
+ *
+ *
+ * @license
+ *
+ * New BSD License
+ *
+ * Copyright © 2007-2013, Ivan Enderlin. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the Hoa nor the names of its contributors may be
+ *       used to endorse or promote products derived from this software without
+ *       specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 namespace {
 
 from('Hoa')
 
 /**
- * \Hoa\Ruler\Asserter\Bag\*
+ * \Hoa\Ruler\Exception\Interpreter
  */
--> import('Ruler.Asserter.Bag.*')
+-> import('Ruler.Exception.Interpreter')
 
 /**
- * \Hoa\Ruler\Exception\UnknownComparatorException
+ * \Hoa\Ruler\Model
  */
--> import('Ruler.Exception.UnknownComparatorException')
-
-/**
- * \Hoa\Ruler\Model\Operator\*
- */
--> import('Ruler.Model.Operator.*')
-
-/**
- * \Hoa\Ruler\Ruler
- */
--> import('Ruler.Ruler')
+-> import('Ruler.Model.~')
 
 /**
  * \Hoa\Visitor\Visit
@@ -34,117 +58,181 @@ from('Hoa')
 namespace Hoa\Ruler\Visitor {
 
 /**
- * Interpreter
+ * Class \Hoa\Ruler\Visitor\Interpreter.
  *
- * @author Stephane PY <stephane.py@hoa-project.net>
+ * Interpreter: rule to model.
+ *
+ * @author     Stéphane Py <stephane.py@hoa-project.net>
+ * @author     Ivan Enderlin <ivan.enderlin@hoa-project.net>
+ * @copyright  Copyright © 2007-2013 Stéphane Py, Ivan Enderlin.
+ * @license    New BSD License
  */
+
 class Interpreter implements \Hoa\Visitor\Visit {
 
     /**
-     * @var Ruler
+     * Root.
+     *
+     * @var \Hoa\Ruler\Model object
      */
-    protected $ruler;
+    protected $_root    = null;
 
     /**
-     * @param Rumer $ruler ruler
+     * Current node.
+     *
+     * @var \Hoa\Ruler\Visitor\Interpreter object
      */
-    public function __construct ( \Hoa\Ruler\Ruler $ruler ) {
+    protected $_current = null;
 
-        $this->ruler = $ruler;
-    }
 
+
+    /**
+     * Visit an element.
+     *
+     * @access  public
+     * @param   \Hoa\Visitor\Element  $element    Element to visit.
+     * @param   mixed                 &$handle    Handle (reference).
+     * @param   mixed                 $eldnah     Handle (not reference).
+     * @return  mixed
+     * @throw   \Hoa\Ruler\Exception\Interpreter
+     */
     public function visit ( \Hoa\Visitor\Element $element, &$handle = null, $eldnah = null ) {
 
-        $type     = $element->getId();
-        $children = $element->getChildren();
+        $id       = $element->getId();
+        $variable = false !== $eldnah;
 
-        foreach ($children as &$child) {
-            $child = $child->accept($this, $handle, $eldnah);
-        }
+        switch($id) {
 
-        $operator = function($class, $children) {
-            $left = $children[0];
-            $right = $children[1];
+            case '#expression':
+                $this->_root             =
+                $this->_current          = new \Hoa\Ruler\Model();
+                $this->_root->expression = $element->getChild(0)->accept(
+                    $this,
+                    $handle,
+                    $eldnah
+                );
 
-            if ($right instanceof Hoa\Ruler\Model\Operator\LogicalInterface && $right instanceof $class) {
-                $right->prepend($left);
-                return $right;
-            }
+                return $this->_root;
+              break;
 
-            return new $class($left, $right);
-        };
+            case '#operation':
+                $previous = $this->_current;
 
-        switch ($type) {
-            case '#function':
-                $functionName = (string) array_shift($children);
+                $children = $element->getChildren();
+                $left     = $children[0]->accept($this, $handle, $eldnah);
+                $right    = $children[2]->accept($this, $handle, $eldnah);
+                $name     = $children[1]->accept($this, $handle, false);
 
-                return new \Hoa\Ruler\Asserter\Bag\FunctionBag($functionName, $children);
-            break;
+                return $this->_current = $previous->operation(
+                    $name,
+                    array($left, $right)
+                );
+              break;
+
             case '#array':
-                return new \Hoa\Ruler\Asserter\Bag\ArrayBag($children);
-                break;
-            case '#not':
-                return new \Hoa\Ruler\Model\Operator\LogicalNot($children);
-            break;
+                $out = array();
+
+                foreach($element->getChildren() as $child)
+                    $out[] = $child->accept($this, $handle, $eldnah);
+
+                return $out;
+              break;
+
+            case '#function':
+                $previous = $this->_current;
+
+                $children = $element->getChildren();
+                $name     = $children[0]->accept($this, $handle, false);
+                array_shift($children);
+
+                $arguments = array();
+
+                foreach($children as $child)
+                    $arguments[] = $child->accept($this, $handle, $eldnah);
+
+                return $this->_current = $previous->operation(
+                    $name,
+                    $arguments
+                );
+              break;
+
             case '#and':
-                return $operator('\Hoa\Ruler\Model\Operator\LogicalAnd', $children);
-            break;
             case '#or':
-                return $operator('\Hoa\Ruler\Model\Operator\LogicalOr', $children);
-            break;
             case '#xor':
-                return $operator('\Hoa\Ruler\Model\Operator\LogicalXOr', $children);
-            break;
-            case '#condition':
-                $comparator = (string) $children[1];
+                $previous = $this->_current;
 
-                if (!$this->ruler->hasComparator($comparator))
-                    throw new \Hoa\Ruler\Exception\UnknownComparatorException(sprintf('Comparator "%s" is not supported.', $comparator));
+                $name     = '_' . substr($id, 1);
+                $children = $element->getChildren();
+                $left     = $children[0]->accept($this, $handle, $eldnah);
+                $right    = $children[1]->accept($this, $handle, $eldnah);
 
-                $class = $this->ruler->getComparator($comparator);
+                return $this->_current = $previous->operation(
+                    $name,
+                    array($left, $right)
+                );
 
-                return new $class($children[0], $children[2]);
-            break;
+            case '#not':
+                return $this->_current = $this->_current->operation(
+                    '_not',
+                    array($element->getChild(0)->accept($this, $handle, $eldnah))
+                );
+
             case 'token':
-                $value = $element->getValueValue();
                 $token = $element->getValueToken();
-                $quote = null;
+                $value = $element->getValueValue();
 
-                switch ($token) {
-                    case 'null':
-                        $v = null;
-                        break;
+                switch($token) {
+
+                    case 'identifier':
+                        return true === $variable
+                                   ? $this->_root->variable($value)
+                                   : $value;
+
                     case 'true':
-                        $v = true;
-                        break;
+                        return true;
+
                     case 'false':
-                        $v = false;
-                        break;
-                    case 'number':
-                        $v = (int) $value;
-                        break;
+                        return false;
+
+                    case 'null':
+                        return null;
+
                     case 'float':
-                        $v = (float) $value;
+                        return floatval($value);
+
+                    case 'integer':
+                        return intval($value);
+
                     case 'string':
-                        // If string begins by " or ', we first and end char.
-                        $quote = $value[0];
-                        $v     = substr($value, 1, -1);
-                        break;
-                    case 'key':
-                        return new \Hoa\Ruler\Asserter\Bag\ContextBag($value);
-                        break;
+                        return str_replace(
+                            '\\' . $value[0],
+                            $value[0],
+                            substr($value, 1, -1)
+                        );
+
                     default:
-                        $v = $value;
-                        break;
+                        throw new \Hoa\Ruler\Exception\Interpreter(
+                            'Token %s is unknown.', 0, $token);
                 }
+              break;
 
-                return new \Hoa\Ruler\Asserter\Bag\ScalarBag($v, $quote);
-
-                break;
             default:
-                throw new \LogicException(sprintf('"%s" type not supported in interpretation system.', $type));
-                break;
+                throw new \Hoa\Ruler\Exception\Interpreter(
+                    'Element %s is unknown.', 1, $id);
         }
+
+        return;
+    }
+
+    /**
+     * Get root.
+     *
+     * @access  public
+     * @return  \Hoa\Ruler\Model
+     */
+    public function getRoot ( ) {
+
+        return $this->_root;
     }
 }
 

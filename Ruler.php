@@ -1,8 +1,57 @@
 <?php
 
+/**
+ * Hoa
+ *
+ *
+ * @license
+ *
+ * New BSD License
+ *
+ * Copyright © 2007-2013, Ivan Enderlin. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the Hoa nor the names of its contributors may be
+ *       used to endorse or promote products derived from this software without
+ *       specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 namespace {
 
 from('Hoa')
+
+/**
+ * \Hoa\Ruler\Context
+ */
+-> import('Ruler.Context')
+
+/**
+ * \Hoa\Ruler\Visitor\Interpreter
+ */
+-> import('Ruler.Visitor.Interpreter')
+
+/**
+ * \Hoa\Ruler\Visitor\Asserter
+ */
+-> import('Ruler.Visitor.Asserter')
 
 /**
  * \Hoa\Compiler\Llk
@@ -10,207 +59,169 @@ from('Hoa')
 -> import('Compiler.Llk')
 
 /**
- * \Hoa\Compiler\Llk\Parser
- */
--> import('Compiler.Llk.Parser')
-
-/**
  * \Hoa\File\Read
  */
--> import('File.Read')
-
-/**
- * \Hoa\Ruler\Asserter\Context
- */
--> import('Ruler.Asserter.Context')
-
-/**
- * \Hoa\Ruler\Model\Comparator\*
- */
--> import('Ruler.Model.Comparator.*')
-
-/**
- * \Hoa\Ruler\Model\Operator\LogicalInterface
- */
--> import('Ruler.Model.Operator.LogicalInterface')
-
-/**
- * \Hoa\Ruler\Visitor\Interpreter
- */
--> import('Ruler.Visitor.Interpreter');
+-> import('File.Read');
 
 }
 
 namespace Hoa\Ruler {
 
 /**
- * Ruler
+ * Class \Hoa\Ruler.
  *
- * @author Stephane PY <stephane.py@hoa-project.net>
+ * Ruler helpers.
+ *
+ * @author     Stéphane Py <stephane.py@hoa-project.net>
+ * @author     Ivan Enderlin <ivan.enderlin@hoa-project.net>
+ * @copyright  Copyright © 2007-2013 Stéphane Py, Ivan Enderlin.
+ * @license    New BSD License
  */
+
 class Ruler {
 
     /**
-     * @var \Hoa\Compiler\Llk\Parser|null
+     * Compiler.
+     *
+     * @var \Hoa\Compiler\Llk\Parser object
      */
-    protected static $compiler;
+    protected static $_compiler        = null;
 
     /**
-     * @var array
+     * Interpreter.
+     *
+     * @var \Hoa\Ruler\Visitor\Interpreter object
      */
-    protected $comparators = array();
+    protected static $_interpreter     = null;
 
     /**
-     * @var array
+     * Default asserter.
+     *
+     * @var \Hoa\Visitor\Visit object
      */
-    protected $functions = array();
+    protected $_asserter               = null;
 
     /**
-     * @param array $comparators comparators
+     * Default asserter.
+     *
+     * @var \Hoa\Ruler\Visitor\Asserter object
      */
-    public function __construct ( array $comparators = array() ) {
+    protected static $_defaultAsserter = null;
 
-        $this->addComparator('=', '\Hoa\Ruler\Model\Comparator\Equal');
-        $this->addComparator('!=', '\Hoa\Ruler\Model\Comparator\NotEqual');
-        $this->addComparator('>', '\Hoa\Ruler\Model\Comparator\GreaterThan');
-        $this->addComparator('>=', '\Hoa\Ruler\Model\Comparator\GreaterThanEqual');
-        $this->addComparator('<', '\Hoa\Ruler\Model\Comparator\LessThan');
-        $this->addComparator('<=', '\Hoa\Ruler\Model\Comparator\LessThanEqual');
-        $this->addComparator('IS', '\Hoa\Ruler\Model\Comparator\Is');
-        $this->addComparator('IS NOT', '\Hoa\Ruler\Model\Comparator\IsNot');
-        $this->addComparator('IN', '\Hoa\Ruler\Model\Comparator\In');
 
-        $this->addFunction('date', function(array $arguments) {
-            if (count($arguments) > 2) {
-                throw new \InvalidArgumentException('Date function accepts 2 arguments maximum');
-            }
 
-            if (!isset($arguments[1])) {
-                $arguments[1] = new \DateTime();
-            } elseif (is_scalar($arguments[1])) {
-                $arguments[1] = new \DateTime($arguments[1]);
-            } elseif (!$arguments[1] instanceof \DateTime) {
-                throw new \InvalidArgumentException('date function accepts in second argument: scalar, \DateTime');
-            }
+    /**
+     * Assert.
+     *
+     * @access  public
+     * @param   mixed                 $rule       Rule (string or model)
+     * @param   \Hoa\Ruler\Context    $context    Context.
+     * @return  bool
+     * @throw   \Hoa\Ruler\Exception
+     */
+    public function assert ( $rule, Context $context = null ) {
 
-            return $arguments[1]->format($arguments[0]);
-        });
+        if(is_string($rule))
+            $rule = static::interprete($rule);
+
+        if(null === $context)
+            $context = new Context();
+
+        return $this->getAsserter($context)->visit($rule);
     }
 
     /**
-     * Interprete string as Condition(s)|Operator(s)
+     * Short interpreter.
      *
-     * @param string               $str
-     *
-     * @return Model\Operator\LogicalInterface|Model\Comparator\ComparatorInterface
+     * @access  public
+     * @param   string  $rule    Rule.
+     * @return  \Hoa\Ruler\Model
+     * @throw   \Hoa\Ruler\Exception
      */
-    public function interprete( $str ) {
+    public static function interprete ( $rule ) {
 
-        $compiler = $this->getCompiler();
-        $ast      = $compiler->parse($str);
-
-        $visitor = new Visitor\Interpreter($this);
-
-        return $visitor->visit($ast);
+        return static::getInterpreter()->visit(
+            static::getCompiler()->parse($rule)
+        );
     }
 
     /**
-     * @param string|object               $data    data
-     * @param \Hoa\Ruler\Asserter\Context $context context
+     * Get interpreter.
      *
-     * @return boolean
+     * @access  public
+     * @return  \Hoa\Ruler\Visitor\Interpreter
      */
-    public function assert ( $data, \Hoa\Ruler\Asserter\Context $context ) {
+    public static function getInterpreter ( ) {
 
-        if (is_scalar($data))
-            $data = $this->interprete($data);
+        if(null === static::$_interpreter)
+            static::$_interpreter = new Visitor\Interpreter();
 
-        if (!$data instanceof Model\Operator\LogicalInterface && !$data instanceof Model\Comparator\ComparatorInterface)
-            throw new \InvalidArgumentException('Ruler can encode only comparators or logical operators');
-
-        $context->setRuler($this);
-        $data->transform($context);
-
-        return $data->assert();
+        return static::$_interpreter;
     }
 
     /**
-     * @param string $token token
-     * @param string $class class
+     * Set current asserter.
      *
-     * @return Ruler
+     * @access  public
+     * @param   \Hoa\Visitor\Visit  $visitor    Visitor.
+     * @return  \Hoa\Visitor\Visit
      */
-    public function addComparator ( $token, $class ) {
+    public function setAsserter ( \Hoa\Visitor\Visit $visitor ) {
 
-        $this->comparators[$token] = $class;
+        $old             = $this->_asserter;
+        $this->_asserter = $visitor;
 
-        return $this;
+        return $old;
     }
 
     /**
-     * @param string $token token
+     * Get asserter.
      *
-     * @return boolean
+     * @access  public
+     * @param   \Hoa\Ruler\Context  $context    Context.
+     * @return  \Hoa\Visitor\Visit
      */
-    public function hasComparator ( $token ) {
+    public function getAsserter ( Context $context ) {
 
-        return array_key_exists((string) $token, $this->comparators);
+        if(null === $asserter = $this->_asserter)
+            return static::getDefaultAsserter($context);
+
+        $asserter->setContext($context);
+
+        return $asserter;
     }
 
     /**
-     * @param string $token token
+     * Get default asserter.
      *
-     * @return string|null
+     * @access  public
+     * @param   \Hoa\Ruler\Context    $context    Context.
+     * @return  \Hoa\Ruler\Visitor\Asserter
      */
-    public function getComparator ( $token ) {
+    public static function getDefaultAsserter ( Context $context ) {
 
-        return $this->hasComparator($token) ? $this->comparators[$token] : null;
+        if(null === static::$_defaultAsserter)
+            static::$_defaultAsserter = new Visitor\Asserter($context);
+
+        static::$_defaultAsserter->setContext($context);
+
+        return static::$_defaultAsserter;
     }
 
     /**
-     * @param string   $name    name
-     * @param \Closure $closure closure
+     * Get compiler.
      *
-     * @return Ruler
+     * @access  public
+     * @return  \Hoa\Compiler\Llk\Parser
      */
-    public function addFunction ( $name, \Closure $closure ) {
+    public static function getCompiler ( ) {
 
-        $this->functions[$name] = $closure;
+        if(null === static::$_compiler)
+            static::$_compiler = \Hoa\Compiler\Llk::load(
+                new \Hoa\File\Read('hoa://Library/Ruler/Grammar.pp')
+            );
 
-        return $this;
-    }
-
-    /**
-     * @param string $name name
-     *
-     * @return boolean
-     */
-    public function hasFunction ( $name ) {
-
-        return array_key_exists((string) $name, $this->functions);
-    }
-
-    /**
-     * @param string $name name
-     *
-     * @return \Closure|null
-     */
-    public function getFunction ( $name ) {
-
-        return $this->hasFunction($name) ? $this->functions[$name] : null;
-    }
-
-    /**
-     * @return \Hoa\Compiler\Llk\Parser
-     */
-    protected function getCompiler ( ) {
-
-        if (!self::$compiler) {
-            $read           = new \Hoa\File\Read(__DIR__.'/Grammar.pp');
-            self::$compiler = \Hoa\Compiler\Llk::load($read);
-        }
-
-        return self::$compiler;
+        return static::$_compiler;
     }
 }
 
