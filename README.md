@@ -1,230 +1,167 @@
-Ruler
-=====
+![Hoa](http://static.hoa-project.net/Image/Hoa_small.png)
 
-## About
+Hoa is a **modular**, **extensible** and **structured** set of PHP libraries.
+Moreover, Hoa aims at being a bridge between industrial and research worlds.
 
-The ruler library aims to help you creating rules with an abstract language, very close to SQL.
+# Hoa\Ruler
 
-So, this way you can easily write a simple & readable one line string rule and ruler will manage the rule for you in the background.
-It ensures compilation, serialization & de-serialization of the rule from string to objects (or what you want, feel free to implement your own serializers).
+This library allows to manipulate a rule engine. Rules can be written by using a
+dedicated language, very close to SQL. Therefore, they can be written by a user
+and saved in a database.
 
-## Use cases
+Such rules are useful, for example, for commercial solutions that need to
+manipulate promotion or special offer rules written by a user.
 
-- My boss asked me a complex system of dynamic rules to attribute promo codes into our e-commerce website.
-- I've written a piece of software that needs to take realtime decisions depending on some context and I don't want to write spaghetti code.
-- ...
+## Quick usage
 
-## Ok, How can I write rules ?
+As a quick overview, we propose to see a very simple example that manipulate a
+simple rule with a simple context. After, we will add a new operator in the
+rule. And finally, we will see how to save a rule in a database.
 
-### With simple strings
+So first, we create a context with two variables: `group` and `points`, and we
+then assert a rule. A context holds values to concretize a rule. A value can
+also be the result of a callable. Thus:
 
+    $ruler             = new Hoa\Ruler();
+    $context           = new Hoa\Ruler\Context();
+    $context['group']  = 'customer';
+    $context['points'] = function ( ) {
 
-Ruler can parse the string and create an object from it.
+        return 42;
+    };
 
-1) Simple
+    var_dump(
+        $ruler->assert(
+            'group in ("customer", "guest") and points > 30',
+            $context
+        )
+    );
 
-If we have only one assertion, the format is simple: `left comparator right`
+    /**
+     * Will output:
+     *     bool(true)
+     */
 
-`foo = "bar"`
+In the next example, we have a `User` object and a context that is populated
+dynamically (when the `user` variable is concretized, two new variables, `group`
+and `points` are created). Moreover, we will create a new operator/function
+called `logged`. There is no difference between an operator and a function
+except that an operator has two operands (so arguments).
 
-2) Logical operator
+For now, we have the following operators/functions by default: `and`, `or`,
+`xor`, `not`, `=` (`is` as an alias), `!=`, `>`, `>=`, `<`, `<=`, `in` and
+`sum`. We can add our own by different way. The simplest and volatile one is
+given in the following example. Thus:
 
-`foo = "bar" AND baz = 1`
+    // The User object.
+    class User {
 
-3) Parenthesis
+        const DISCONNECTED = 0;
+        const CONNECTED    = 1;
 
-You can (as on php/sql or other languages) define many levels of conditions
+        public $group      = 'customer';
+        public $points     = 42;
+        protected $_status = 1;
 
-`foo = "bar" AND (baz = 1 or baz = 2)`
-`foo = "bar" AND (baz = 1 or (baz = 2 AND toto != "1"))`
+        public function getStatus ( ) {
 
-4) Left and right accepts theses formats:
-
-Strings:  `foo = "bar"` or `foo = 'bar'` or `foo = 'Let\'s go'`
-
-Context Key: `foo = "1"` (here `foo` is a context key)
-
-Boolean: `foo = true` or `foo = false`
-
-Integer: `foo = 2`
-
-Float: `foo = 3.14`
-
-Null: `foo is NULL`
-
-Array: `(1, "string", true)`
-
-Function: `DATE('y-m-d', key)`,
-
-Not: `NOT foo = 3.14` or `NOT (foo = 1 and bar = 2)` or `NOT foo`,
-
-You have to define theses functions and give them to the ruler:
-
-```php
-from('Hoa')->import('Ruler.Ruler');
-
-$ruler = new \Hoa\Ruler\Ruler();
-$ruler->addFunction('DATE', function(array $arguments) {
-    if (count($arguments) != 2) {
-        throw new \LogicException('Date function accepts 2 arguments');
+            return $this->_status;
+        }
     }
 
-    return date($arguments[0]->getValue(), $arguments[1]->getValue());
-});
+    $ruler = new Hoa\Ruler();
 
-```
+    // Our context.
+    $context         = new Hoa\Ruler\Context();
+    $context['user'] = function ( ) use ( $context ) {
 
-### The Object way
+        $user              = new User();
+        $context['group']  = $user->group;
+        $context['points'] = $user->points;
 
+        return $user;
+    };
 
-1) Simple
+    // We add the logged() operator.
+    $ruler->getDefaultAsserter()->setOperator('logged', function ( User $user ) {
 
-```php
-from('Hoa')->import('Ruler.Model.Comparator.Equal');
-$rule = new Hoa\Ruler\Model\Comparator\Equal('foo', 'bar');
-```
+        return $user::CONNECTED === $user->getStatus();
+    });
 
-2) Logical operator
-
-```php
-from('Hoa')
-    ->import('Ruler.Model.Operator.LogicalAnd')
-    ->import('Ruler.Model.Comparator.*');
-
-$rule = new Hoa\Ruler\Model\Operator\LogicalAnd(
-    Hoa\Ruler\Model\Comparator\Equal('foo', 'bar'),
-    Hoa\Ruler\Model\Comparator\Equal('baz', 1)
-    // ....
-);
-```
-
-3) Nested logical operators
-
-```php
-from('Hoa')
-    ->import('Ruler.Model.Operator.LogicalAnd')
-    ->import('Ruler.Model.Comparator.*');
-
-$rule = new Hoa\Ruler\Model\Operator\LogicalAnd(
-    Hoa\Ruler\Model\Comparator\Equal('foo', 'bar'),
-    new Hoa\Ruler\Model\Operator\LogicalAnd(
-        Hoa\Ruler\Model\Comparator\Equal('baz', 1),
-        // ....
-    )
-);
-```
-
-### The Fluent way
-
-```php
-from('Hoa')->import('Ruler.Model');
-
-$model = new Hoa\Ruler\Model();
-$rule  = $model->and(
-    $model->equals($model->context('foo'), 100)),
-    $model->in(1, $model->array(array(
-        $model->context('user.id'),
-        $model->function('rand', array(1, 10))
-    ))),
-    $model->or(
-        $model->not($model->context('user.registered')),
-        $model->gt($model->context('foo'), 100)
-    )
-);
-
-// foo = 100 AND 1 IN (user.id, rand(1,10)) AND (NOT customer.registered OR foo > 100)
-```
-
-
-## Toolkit
-
-### Comparators
-
-
-Accepts at this moment:
-
-- equal (=)
-- greater than (>)
-- greater than equal (>=)
-- in (IN), assert than a key exists in an array `key IN (1, 2, 3)`
-- is (IS)  `foo IS NULL`
-- is not (IS NOT) `foo IS NOT NULL`
-- less than (<)
-- less than equal (<=)
-- not equal (!=)
-
-### Logical operators
-
-Unary:
-
-- Not
-
-Binary:
-
-- And
-- Or
-- XOr
-
-### Transformers
-
-
-Object as string:
-
-```php
-from('Hoa')
-    ->import('Ruler.Model.Operator.LogicalAnd')
-    ->import('Ruler.Model.Comparator.*');
-
-$rule = new Hoa\Ruler\Model\Operator\LogicalAnd(
-    Hoa\Ruler\Model\Comparator\Equal('foo', 'bar'),
-    new Hoa\Ruler\Model\Operator\LogicalNot(
-        Hoa\Ruler\Model\Comparator\Equal('baz', 1),
-    )
-);
-
-echo (string) $rule; // 'foo' = 'bar' AND NOT ('baz' = 1)
-```
-
-String as object
-
-```php
-from('Hoa')->import('Ruler.Ruler');
-
-$rule   = "foo = 'bar' AND NOT (baz = 1)";
-
-$ruler  = new \Hoa\Ruler\Ruler();
-$object = $ruler->interprete($rule);
-
-// =
-new Hoa\Ruler\Model\Operator\LogicalAnd(
-    new Hoa\Ruler\Model\Comparator\Equal(
-        new new Hoa\Ruler\Asserter\Bag\ContextBag('foo'),
-        new Hoa\Ruler\Asserter\Bag\ScalarBag('bar')
-    ),
-    new Hoa\Ruler\Model\Operator\LogicalNot(
-        new Hoa\Ruler\Model\Comparator\Equal(
-            new Hoa\Ruler\Asserter\Bag\ContextBag('baz'),
-            new Hoa\Ruler\Asserter\Bag\ScalarBag('1')
+    // Finally, we assert the rule.
+    var_dump(
+        $ruler->assert(
+            'logged(user) and group in ("customer", "guest") and points > 30',
+            $context
         )
-    )
-);
+    );
 
-```
+    /**
+     * Will output:
+     *     bool(true)
+     */
 
-### Assert rules
+Now, we have two options to save the rule, for example, in a database. Either we
+save the rule as a string directly, or we will save the serialization of the
+rule which will avoid further compilations. In the next example, we see how to
+serialize and unserialize a rule by using the `Hoa\Ruler::interprete` static
+method:
 
-```php
-from('Hoa')
-    ->import('Ruler.Asserter.Context')
-    ->import('Ruler.Ruler')
-    ;
+    $database->save(
+        serialize(
+            Hoa\Ruler::interprete(
+                'logged(user) and group in ("customer", "guest") and points > 30'
+            )
+        )
+    );
 
-$context = new Hoa\Ruler\Asserter\Context();
-$context['customer.id'] = function() {
-    // closure to fetch customer.id
-};
-$context['otherkey'] = 1234;
+And for next executions:
 
-$ruler = new Hoa\Ruler\Ruler();
-$ruler->assert('customer.id IN (1, 2, 3) AND otherkey = 1234', $context);
-```
+    $rule = unserialize($database->read());
+    var_dump(
+        $ruler->assert($rule, $context)
+    );
+
+When a rule is interpreted, its object model is created. We serialize and
+unserialize this model. To see the PHP code needed to create such a model, we
+can print the model itself (as an example). Thus:
+
+    echo Hoa\Ruler::interprete(
+        'logged(user) and group in ("customer", "guest") and points > 30'
+    );
+
+    /**
+     * Will output:
+     *     $model = new \Hoa\Ruler\Model();
+     *     $model->expression =
+     *         $model->and(
+     *             $model->logged(
+     *                 $model->variable('user')
+     *             ),
+     *             $model->and(
+     *                 $model->in(
+     *                     $model->variable('group'),
+     *                     array(
+     *                         'customer',
+     *                         'guest'
+     *                     )
+     *                 ),
+     *                 $model->{'>'}(
+     *                     $model->variable('points'),
+     *                     30
+     *                 )
+     *             )
+     *         );
+     */
+
+Have fun!
+
+## Documentation
+
+Different documentations can be found on the website:
+[http://hoa-project.net/](http://hoa-project.net/).
+
+## License
+
+Hoa is under the New BSD License (BSD-3-Clause). Please, see
+[`LICENSE`](http://hoa-project.net/LICENSE).
