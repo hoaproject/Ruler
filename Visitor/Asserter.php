@@ -132,7 +132,7 @@ class Asserter implements \Hoa\Visitor\Visit {
         $out = null;
 
         if($element instanceof \Hoa\Ruler\Model)
-            $out = $element->getExpression()->accept($this, $handle, $eldnah);
+            $out = (bool) $element->getExpression()->accept($this, $handle, $eldnah);
         elseif($element instanceof \Hoa\Ruler\Model\Operator) {
 
             $name      = $element->getName();
