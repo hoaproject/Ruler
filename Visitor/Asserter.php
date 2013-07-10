@@ -88,9 +88,10 @@ class Asserter implements \Hoa\Visitor\Visit {
      * @param   \Hoa\Ruler\Context  $context    Context.
      * @return  void
      */
-    public function __construct ( \Hoa\Ruler\Context $context ) {
+    public function __construct ( \Hoa\Ruler\Context $context = null ) {
 
-        $this->setContext($context);
+        if(null !== $context)
+            $this->setContext($context);
 
         $namespace = 'Hoa\Ruler\Operator\\';
         $this->setOperator('_and', $namespace . '_And');
@@ -122,6 +123,12 @@ class Asserter implements \Hoa\Visitor\Visit {
      */
     public function visit ( \Hoa\Visitor\Element $element, &$handle = null, $eldnah = null ) {
 
+        $context = $this->getContext();
+
+        if(null === $context)
+            throw new \Hoa\Ruler\Exeption\Asserter(
+                'Assert needs a context to work properly.', 0);
+
         $out = null;
 
         if($element instanceof \Hoa\Ruler\Model)
@@ -139,7 +146,7 @@ class Asserter implements \Hoa\Visitor\Visit {
 
             if(false === $this->operatorExists($name))
                 throw new \Hoa\Ruler\Exception\Asserter(
-                    'Operator %s does not exist.', 0, $name);
+                    'Operator %s does not exist.', 1, $name);
 
             $out = $this->getOperator($name)->distributeArguments($arguments);
         }
