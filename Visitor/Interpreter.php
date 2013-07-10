@@ -154,7 +154,7 @@ class Interpreter implements \Hoa\Visitor\Visit {
             case '#and':
             case '#or':
             case '#xor':
-                $name     = '_' . substr($id, 1);
+                $name     = substr($id, 1);
                 $children = $element->getChildren();
                 $left     = $children[0]->accept($this, $handle, $eldnah);
                 $right    = $children[1]->accept($this, $handle, $eldnah);

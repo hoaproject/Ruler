@@ -94,10 +94,10 @@ class Asserter implements \Hoa\Visitor\Visit {
             $this->setContext($context);
 
         $namespace = 'Hoa\Ruler\Operator\\';
-        $this->setOperator('_and', $namespace . '_And');
-        $this->setOperator('_or',  $namespace . '_Or');
-        $this->setOperator('_xor', $namespace . '_Xor');
-        $this->setOperator('_not', $namespace . '_Not');
+        $this->setOperator('and',  $namespace . '_And');
+        $this->setOperator('or',   $namespace . '_Or');
+        $this->setOperator('xor',  $namespace . '_Xor');
+        $this->setOperator('not',  $namespace . '_Not');
         $this->setOperator('=',    $namespace . 'Equal');
         $this->setOperator('is',   $namespace . 'Equal');
         $this->setOperator('!=',   $namespace . 'NotEqual');
