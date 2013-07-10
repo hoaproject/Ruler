@@ -22,7 +22,12 @@ So first, we create a context with two variables: `group` and `points`, and we
 then assert a rule. A context holds values to concretize a rule. A value can
 also be the result of a callable. Thus:
 
-    $ruler             = new Hoa\Ruler();
+    $ruler = new Hoa\Ruler();
+
+    // 1. Write a rule.
+    $rule  = 'group in ("customer", "guest") and points > 30';
+
+    // 2. Create a context.
     $context           = new Hoa\Ruler\Context();
     $context['group']  = 'customer';
     $context['points'] = function ( ) {
@@ -30,11 +35,9 @@ also be the result of a callable. Thus:
         return 42;
     };
 
+    // 3. Assert!
     var_dump(
-        $ruler->assert(
-            'group in ("customer", "guest") and points > 30',
-            $context
-        )
+        $ruler->assert($rule, $context)
     );
 
     /**
@@ -71,7 +74,10 @@ given in the following example. Thus:
 
     $ruler = new Hoa\Ruler();
 
-    // Our context.
+    // New rule.
+    $rule  = 'logged(user) and group in ("customer", "guest") and points > 30';
+
+    // New context.
     $context         = new Hoa\Ruler\Context();
     $context['user'] = function ( ) use ( $context ) {
 
@@ -90,10 +96,7 @@ given in the following example. Thus:
 
     // Finally, we assert the rule.
     var_dump(
-        $ruler->assert(
-            'logged(user) and group in ("customer", "guest") and points > 30',
-            $context
-        )
+        $ruler->assert($rule, $context)
     );
 
     /**
