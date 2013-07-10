@@ -198,12 +198,13 @@ class Ruler {
      * @param   \Hoa\Ruler\Context    $context    Context.
      * @return  \Hoa\Ruler\Visitor\Asserter
      */
-    public static function getDefaultAsserter ( Context $context ) {
+    public static function getDefaultAsserter ( Context $context = null ) {
 
         if(null === static::$_defaultAsserter)
             static::$_defaultAsserter = new Visitor\Asserter($context);
 
-        static::$_defaultAsserter->setContext($context);
+        if(null !== $context)
+            static::$_defaultAsserter->setContext($context);
 
         return static::$_defaultAsserter;
     }

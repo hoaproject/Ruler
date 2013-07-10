@@ -104,8 +104,7 @@ class Interpreter implements \Hoa\Visitor\Visit {
         switch($id) {
 
             case '#expression':
-                $this->_root             =
-                $this->_current          = new \Hoa\Ruler\Model();
+                $this->_root             = new \Hoa\Ruler\Model();
                 $this->_root->expression = $element->getChild(0)->accept(
                     $this,
                     $handle,
@@ -116,14 +115,12 @@ class Interpreter implements \Hoa\Visitor\Visit {
               break;
 
             case '#operation':
-                $previous = $this->_current;
-
                 $children = $element->getChildren();
                 $left     = $children[0]->accept($this, $handle, $eldnah);
                 $right    = $children[2]->accept($this, $handle, $eldnah);
                 $name     = $children[1]->accept($this, $handle, false);
 
-                return $this->_current = $previous->operation(
+                return $this->_root->operation(
                     $name,
                     array($left, $right)
                 );
@@ -139,8 +136,6 @@ class Interpreter implements \Hoa\Visitor\Visit {
               break;
 
             case '#function':
-                $previous = $this->_current;
-
                 $children = $element->getChildren();
                 $name     = $children[0]->accept($this, $handle, false);
                 array_shift($children);
@@ -150,7 +145,7 @@ class Interpreter implements \Hoa\Visitor\Visit {
                 foreach($children as $child)
                     $arguments[] = $child->accept($this, $handle, $eldnah);
 
-                return $this->_current = $previous->operation(
+                return $this->_root->operation(
                     $name,
                     $arguments
                 );
@@ -159,20 +154,18 @@ class Interpreter implements \Hoa\Visitor\Visit {
             case '#and':
             case '#or':
             case '#xor':
-                $previous = $this->_current;
-
-                $name     = '_' . substr($id, 1);
+                $name     = substr($id, 1);
                 $children = $element->getChildren();
                 $left     = $children[0]->accept($this, $handle, $eldnah);
                 $right    = $children[1]->accept($this, $handle, $eldnah);
 
-                return $this->_current = $previous->operation(
+                return $this->_root->operation(
                     $name,
                     array($left, $right)
                 );
 
             case '#not':
-                return $this->_current = $this->_current->operation(
+                return $this->_current->operation(
                     '_not',
                     array($element->getChild(0)->accept($this, $handle, $eldnah))
                 );
