@@ -144,10 +144,8 @@ class Compiler implements \Hoa\Visitor\Visit {
             $out = $_ . 'array(' . "\n" . implode(',' . "\n", $_handle) . "\n" .
                    $_ . ')';
         }
-        elseif($element instanceof \Hoa\Ruler\Model\Bag\Context) {
-
+        elseif($element instanceof \Hoa\Ruler\Model\Bag\Context)
             $out = $_ . '$model->variable(\'' . $element->getId() . '\')';
-        }
 
         return $out;
     }
