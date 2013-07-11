@@ -14,7 +14,7 @@ manipulate promotion or special offer rules written by a user.
 
 ## Quick usage
 
-As a quick overview, we propose to see a very simple example that manipulate a
+As a quick overview, we propose to see a very simple example that manipulates a
 simple rule with a simple context. After, we will add a new operator in the
 rule. And finally, we will see how to save a rule in a database.
 
@@ -106,8 +106,8 @@ given in the following example. Thus:
 
 Now, we have two options to save the rule, for example, in a database. Either we
 save the rule as a string directly, or we will save the serialization of the
-rule which will avoid further compilations. In the next example, we see how to
-serialize and unserialize a rule by using the `Hoa\Ruler::interprete` static
+rule which will avoid further interpretations. In the next example, we see how
+to serialize and unserialize a rule by using the `Hoa\Ruler::interprete` static
 method:
 
     $database->save(
