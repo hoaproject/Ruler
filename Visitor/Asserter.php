@@ -93,20 +93,27 @@ class Asserter implements \Hoa\Visitor\Visit {
         if(null !== $context)
             $this->setContext($context);
 
-        $namespace = 'Hoa\Ruler\Operator\\';
-        $this->setOperator('and',  $namespace . '_And');
-        $this->setOperator('or',   $namespace . '_Or');
-        $this->setOperator('xor',  $namespace . '_Xor');
-        $this->setOperator('not',  $namespace . '_Not');
-        $this->setOperator('=',    $namespace . 'Equal');
-        $this->setOperator('is',   $namespace . 'Equal');
-        $this->setOperator('!=',   $namespace . 'NotEqual');
-        $this->setOperator('>',    $namespace . 'GreaterThan');
-        $this->setOperator('>=',   $namespace . 'GreaterThanOrEqual');
-        $this->setOperator('<',    $namespace . 'LessThan');
-        $this->setOperator('<=',   $namespace . 'LessThanOrEqual');
-        $this->setOperator('in',   $namespace . 'In');
-        $this->setOperator('sum',  $namespace . 'Sum');
+        $this->setOperator('and', function ( $a, $b ) { return $a && $b; });
+        $this->setOperator('or',  function ( $a, $b ) { return $a || $b; });
+        $this->setOperator('xor', function ( $a, $b ) { return (bool) ($a ^ $b); });
+        $this->setOperator('not', function ( $a )     { return !$a; });
+        $this->setOperator('=',   function ( $a, $b ) { return $a == $b; });
+        $this->setOperator('is',  $this->getOperator('='));
+        $this->setOperator('!=',  function ( $a, $b ) { return $a != $b; });
+        $this->setOperator('>',   function ( $a, $b ) { return $a >  $b; });
+        $this->setOperator('>=',  function ( $a, $b ) { return $a >= $b; });
+        $this->setOperator('<',   function ( $a, $b ) { return $a <  $b; });
+        $this->setOperator('<=',  function ( $a, $b ) { return $a <= $b; });
+        $this->setOperator('in',  function ( $a, Array $b ) { return in_array($a, $b); });
+        $this->setOperator('sum', function ( ) {
+
+            $out = 0;
+
+            foreach(func_get_args() as $i)
+                $out += $i;
+
+            return $out;
+        });
 
         return;
     }
@@ -221,9 +228,7 @@ class Asserter implements \Hoa\Visitor\Visit {
 
         $handle = &$this->_operators[$operator];
 
-        if(is_string($handle))
-            $handle = xcallable(dnew($handle));
-        elseif(!($handle instanceof \Hoa\Core\Consistency\Xcallable))
+        if(!($handle instanceof \Hoa\Core\Consistency\Xcallable))
             $handle = xcallable($handle);
 
         return $this->_operators[$operator];
