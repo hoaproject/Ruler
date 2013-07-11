@@ -166,7 +166,7 @@ class Interpreter implements \Hoa\Visitor\Visit {
 
             case '#not':
                 return $this->_current->operation(
-                    '_not',
+                    'not',
                     array($element->getChild(0)->accept($this, $handle, $eldnah))
                 );
 
