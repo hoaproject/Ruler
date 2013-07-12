@@ -133,15 +133,15 @@ class Compiler implements \Hoa\Visitor\Visit {
         }
         elseif($element instanceof \Hoa\Ruler\Model\Bag\_Array) {
 
-            $_handle = array();
+            $values = array();
             ++$this->_indentation;
 
             foreach($element->getArray() as $value)
-                $_handle[] = $value->accept($this, $handle, $eldnah);
+                $values[] = $value->accept($this, $handle, $eldnah);
 
             --$this->_indentation;
 
-            $out = $_ . 'array(' . "\n" . implode(',' . "\n", $_handle) . "\n" .
+            $out = $_ . 'array(' . "\n" . implode(',' . "\n", $values) . "\n" .
                    $_ . ')';
         }
         elseif($element instanceof \Hoa\Ruler\Model\Bag\Context)
