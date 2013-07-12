@@ -88,7 +88,7 @@ class Compiler implements \Hoa\Visitor\Visit {
             $this->_indentation = 1;
 
             $out = '$model = new \Hoa\Ruler\Model();' . "\n" .
-                   '$model->expression = ' . "\n" .
+                   '$model->expression =' . "\n" .
                    $element->getExpression()->accept($this, $handle, $eldnah) .
                    ';';
         }
