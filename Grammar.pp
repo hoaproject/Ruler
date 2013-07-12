@@ -46,15 +46,15 @@
 
 // Scalars.
 
-%token  true          true
-%token  false         false
-%token  null          null
+%token  true          (?i)true
+%token  false         (?i)false
+%token  null          (?i)null
 
 // Logical operators
-%token  not           not
-%token  and           and
-%token  or            or
-%token  xor           xor
+%token  not           (?i)not
+%token  and           (?i)and
+%token  or            (?i)or
+%token  xor           (?i)xor
 
 // Value
 %token  string        ("|')(.*?)(?<!\\)\1
