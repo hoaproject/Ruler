@@ -121,6 +121,22 @@ class Model implements \Hoa\Visitor\Element {
     }
 
     /**
+     * Declare a function.
+     *
+     * @access  public
+     * @param   string  $name         Name.
+     * @param   mixed   …
+     * @return  \Hoa\Ruler\Model\Operator
+     */
+    public function func ( ) {
+
+        $arguments = func_get_args();
+        $name      = array_shift($arguments);
+
+        return $this->_operator($name, $arguments, true);
+    }
+
+    /**
      * Declare an operation.
      *
      * @access  public
@@ -130,7 +146,21 @@ class Model implements \Hoa\Visitor\Element {
      */
     public function operation ( $name, Array $arguments ) {
 
-        return new Operator(mb_strtolower($name), $arguments);
+        return $this->_operator($name, $arguments, false);
+    }
+
+    /**
+     * Create an operator object.
+     *
+     * @access  public
+     * @param   string  $name          Name.
+     * @param   array   $arguments     Arguments.
+     * @param   bool    $isFunction    Whether it is a function or not.
+     * @return  \Hoa\Ruler\Model\Operator
+     */
+    public function _operator ( $name, Array $arguments, $isFunction ) {
+
+        return new Operator(mb_strtolower($name), $arguments, $isFunction);
     }
 
     /**

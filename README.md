@@ -138,7 +138,8 @@ can print the model itself (as an example). Thus:
      *     $model = new \Hoa\Ruler\Model();
      *     $model->expression =
      *         $model->and(
-     *             $model->logged(
+     *             $model->func(
+     *                 'logged',
      *                 $model->variable('user')
      *             ),
      *             $model->and(

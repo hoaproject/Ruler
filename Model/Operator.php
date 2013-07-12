@@ -84,20 +84,30 @@ class Operator implements \Hoa\Visitor\Element {
      */
     protected $_arguments = null;
 
+    /**
+     * Whether the operator is a function.
+     *
+     * @var \Hoa\Ruler\Model\Operator bool
+     */
+    protected $_function  = true;
+
 
 
     /**
      * Constructor.
      *
      * @access  public
-     * @param   string  $name         Name.
-     * @param   array   $arguments    Arguments.
+     * @param   string  $name          Name.
+     * @param   array   $arguments     Arguments.
+     * @param   bool    $isFunction    Whether it is a function.
      * @return  void
      */
-    public function __construct ( $name, Array $arguments = array() ) {
+    public function __construct ( $name, Array $arguments = array(),
+                                  $isFunction = true ) {
 
         $this->setName($name);
         $this->setArguments($arguments);
+        $this->setFunction($isFunction);
 
         return;
     }
@@ -158,6 +168,46 @@ class Operator implements \Hoa\Visitor\Element {
     public function getArguments ( ) {
 
         return $this->_arguments;
+    }
+
+    /**
+     * Set whether the operator is a function or not.
+     *
+     * @access  public
+     * @param   bool  $isFunction    Is a function or not.
+     * @return  bool
+     */
+    protected function setFunction ( $isFunction ) {
+
+        $old             = $this->_function;
+        $this->_function = $isFunction;
+
+        return $old;
+    }
+
+    /**
+     * Check if the operator is a function or not.
+     *
+     * @access  public
+     * @return  bool
+     */
+    public function isFunction ( ) {
+
+        return $this->_function;
+    }
+
+    /**
+     * Check if the operator is a token of the grammar or not.
+     *
+     * @access  public
+     * @param   string  $operator    Operator.
+     * @return  bool
+     */
+    public static function isToken ( $operator ) {
+
+        static $_tokens = array('not', 'and', 'or', 'xor');
+
+        return true === in_array($operator, $_tokens);
     }
 
     /**

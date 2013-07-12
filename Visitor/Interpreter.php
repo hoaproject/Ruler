@@ -120,9 +120,10 @@ class Interpreter implements \Hoa\Visitor\Visit {
                 $right    = $children[2]->accept($this, $handle, $eldnah);
                 $name     = $children[1]->accept($this, $handle, false);
 
-                return $this->_root->operation(
+                return $this->_root->_operator(
                     $name,
-                    array($left, $right)
+                    array($left, $right),
+                    false
                 );
               break;
 
@@ -145,9 +146,10 @@ class Interpreter implements \Hoa\Visitor\Visit {
                 foreach($children as $child)
                     $arguments[] = $child->accept($this, $handle, $eldnah);
 
-                return $this->_root->operation(
+                return $this->_root->_operator(
                     $name,
-                    $arguments
+                    $arguments,
+                    true
                 );
               break;
 
