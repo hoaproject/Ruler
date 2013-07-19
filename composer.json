@@ -16,8 +16,7 @@
         }
     ],
     "support": {
-        "email" : "ivan.enderlin@hoa-project.net",
-        "forum" : "http://forum.hoa-project.net",
+        "email" : "support@lists.hoa-project.net",
         "irc"   : "irc://irc.freenode.org/hoaproject",
         "source": "http://git.hoa-project.net/"
     },
