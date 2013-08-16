@@ -105,15 +105,7 @@ class Asserter implements \Hoa\Visitor\Visit {
         $this->setOperator('<',   function ( $a, $b ) { return $a <  $b; });
         $this->setOperator('<=',  function ( $a, $b ) { return $a <= $b; });
         $this->setOperator('in',  function ( $a, Array $b ) { return in_array($a, $b); });
-        $this->setOperator('sum', function ( ) {
-
-            $out = 0;
-
-            foreach(func_get_args() as $i)
-                $out += $i;
-
-            return $out;
-        });
+        $this->setOperator('sum', function ( ) { return array_sum(func_get_args()); });
 
         return;
     }
