@@ -219,3 +219,12 @@ class Model implements \Hoa\Visitor\Element {
 }
 
 }
+
+namespace {
+
+/**
+ * Flex entity.
+ */
+Hoa\Core\Consistency::flexEntity('Hoa\Ruler\Model\Model');
+
+}

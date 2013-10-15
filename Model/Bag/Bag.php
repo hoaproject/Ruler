@@ -94,3 +94,12 @@ abstract class Bag implements \Hoa\Visitor\Element {
 }
 
 }
+
+namespace {
+
+/**
+ * Flex entity.
+ */
+Hoa\Core\Consistency::flexEntity('Hoa\Ruler\Model\Bag\Bag');
+
+}

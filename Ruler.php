@@ -56,7 +56,7 @@ from('Hoa')
 /**
  * \Hoa\Compiler\Llk
  */
--> import('Compiler.Llk')
+-> import('Compiler.Llk.~')
 
 /**
  * \Hoa\File\Read
@@ -225,5 +225,14 @@ class Ruler {
         return static::$_compiler;
     }
 }
+
+}
+
+namespace {
+
+/**
+ * Flex entity.
+ */
+Hoa\Core\Consistency::flexEntity('Hoa\Ruler\Ruler');
 
 }
