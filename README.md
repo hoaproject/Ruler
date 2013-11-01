@@ -22,7 +22,7 @@ So first, we create a context with two variables: `group` and `points`, and we
 then assert a rule. A context holds values to concretize a rule. A value can
 also be the result of a callable. Thus:
 
-    $ruler = new Hoa\Ruler();
+    $ruler = new Hoa\Ruler\Ruler();
 
     // 1. Write a rule.
     $rule  = 'group in ("customer", "guest") and points > 30';
@@ -72,7 +72,7 @@ given in the following example. Thus:
         }
     }
 
-    $ruler = new Hoa\Ruler();
+    $ruler = new Hoa\Ruler\Ruler();
 
     // New rule.
     $rule  = 'logged(user) and group in ("customer", "guest") and points > 30';
@@ -107,12 +107,12 @@ given in the following example. Thus:
 Now, we have two options to save the rule, for example, in a database. Either we
 save the rule as a string directly, or we will save the serialization of the
 rule which will avoid further interpretations. In the next example, we see how
-to serialize and unserialize a rule by using the `Hoa\Ruler::interprete` static
-method:
+to serialize and unserialize a rule by using the `Hoa\Ruler\Ruler::interprete`
+static method:
 
     $database->save(
         serialize(
-            Hoa\Ruler::interprete(
+            Hoa\Ruler\Ruler::interprete(
                 'logged(user) and group in ("customer", "guest") and points > 30'
             )
         )
@@ -129,7 +129,7 @@ When a rule is interpreted, its object model is created. We serialize and
 unserialize this model. To see the PHP code needed to create such a model, we
 can print the model itself (as an example). Thus:
 
-    echo Hoa\Ruler::interprete(
+    echo Hoa\Ruler\Ruler::interprete(
         'logged(user) and group in ("customer", "guest") and points > 30'
     );
 
