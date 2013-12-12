@@ -44,9 +44,9 @@ from('Hoa')
 -> import('Ruler.Model.Bag.Scalar')
 
 /**
- * \Hoa\Ruler\Model\Bag\_Array
+ * \Hoa\Ruler\Model\Bag\RulerArray
  */
--> import('Ruler.Model.Bag._Array')
+-> import('Ruler.Model.Bag.RulerArray')
 
 /**
  * \Hoa\Visitor\Element
@@ -151,7 +151,7 @@ class Operator implements \Hoa\Visitor\Element {
             if(is_scalar($argument) || null === $argument)
                 $argument = new Bag\Scalar($argument);
             elseif(is_array($argument))
-                $argument = new Bag\_Array($argument);
+                $argument = new Bag\RulerArray($argument);
 
         $old              = $this->_arguments;
         $this->_arguments = $arguments;

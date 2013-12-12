@@ -115,7 +115,7 @@ class Disassembly implements \Hoa\Visitor\Visit {
                        str_replace('\\', '\\\'', $value) .
                        '\'';
         }
-        elseif($element instanceof \Hoa\Ruler\Model\Bag\_Array) {
+        elseif($element instanceof \Hoa\Ruler\Model\Bag\RulerArray) {
 
             $values = array();
 

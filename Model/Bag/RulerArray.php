@@ -53,7 +53,7 @@ from('Hoa')
 namespace Hoa\Ruler\Model\Bag {
 
 /**
- * Class \Hoa\Ruler\Model\Bag\_Array.
+ * Class \Hoa\Ruler\Model\Bag\RulerArray.
  *
  * Bag for an array.
  *
@@ -63,19 +63,19 @@ namespace Hoa\Ruler\Model\Bag {
  * @license    New BSD License
  */
 
-class _Array extends Bag {
+class RulerArray extends Bag {
 
     /**
      * Array.
      *
-     * @var \Hoa\Ruler\Model\Bag\_Array array
+     * @var \Hoa\Ruler\Model\Bag\RulerArray array
      */
     protected $_array = null;
 
     /**
      * Value.
      *
-     * @var \Hoa\Ruler\Model\Bag\_Array array
+     * @var \Hoa\Ruler\Model\Bag\RulerArray array
      */
     protected $_value = null;
 
