@@ -225,6 +225,21 @@ class Asserter implements \Hoa\Visitor\Visit {
 
         return $this->_operators[$operator];
     }
+
+    /**
+     * Get all operators.
+     *
+     * @access  public
+     * @return  array
+     */
+    public function getOperators ( ) {
+
+        foreach($this->_operators as &$operator)
+            if(!($operator instanceof \Hoa\Core\Consistency\Xcallable))
+                $operator = xcallable($operator);
+
+        return $this->_operators;
+    }
 }
 
 }
