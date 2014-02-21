@@ -11,7 +11,7 @@ and saved in a database.
 
 Such rules are useful, for example, for commercial solutions that need to
 manipulate promotion or special offer rules written by a user. To quote
-[Wikipedia](http://en.wikipedia.org/wiki/Business_rules_engine)
+[Wikipedia](http://en.wikipedia.org/wiki/Business_rules_engine):
 
 > A business rules engine is a software system that executes one or more
 > business rules in a runtime production environment. The rules might come from
