@@ -10,7 +10,17 @@ dedicated language, very close to SQL. Therefore, they can be written by a user
 and saved in a database.
 
 Such rules are useful, for example, for commercial solutions that need to
-manipulate promotion or special offer rules written by a user.
+manipulate promotion or special offer rules written by a user. To quote
+[Wikipedia](http://en.wikipedia.org/wiki/Business_rules_engine)
+
+> A business rules engine is a software system that executes one or more
+> business rules in a runtime production environment. The rules might come from
+> legal regulation (“An employee can be fired for any reason or no reason but
+> not for an illegal reason”), company policy (“All customers that spend more
+> than $100 at one time will receive a 10% discount”), or other sources. A
+> business rule system enables these company policies and other operational
+> decisions to be defined, tested, executed and maintained separately from
+> application code.
 
 ## Quick usage
 
