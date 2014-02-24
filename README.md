@@ -42,6 +42,7 @@ $rule  = 'group in ("customer", "guest") and points > 30';
 $context           = new Hoa\Ruler\Context();
 $context['group']  = 'customer';
 $context['points'] = function ( ) {
+
     return 42;
 };
 
@@ -54,7 +55,7 @@ var_dump(
  * Will output:
  *     bool(true)
  */
- ```
+```
 
 In the next example, we have a `User` object and a context that is populated
 dynamically (when the `user` variable is concretized, two new variables, `group`
@@ -115,7 +116,7 @@ var_dump(
  * Will output:
  *     bool(true)
  */
- ```
+```
 
 Now, we have two options to save the rule, for example, in a database. Either we
 save the rule as a string directly, or we will save the serialization of the
@@ -146,7 +147,7 @@ When a rule is interpreted, its object model is created. We serialize and
 unserialize this model. To see the PHP code needed to create such a model, we
 can print the model itself (as an example). Thus:
 
-```
+```php
 echo Hoa\Ruler\Ruler::interprete(
     'logged(user) and group in ("customer", "guest") and points > 30'
 );
