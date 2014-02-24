@@ -32,28 +32,29 @@ So first, we create a context with two variables: `group` and `points`, and we
 then assert a rule. A context holds values to concretize a rule. A value can
 also be the result of a callable. Thus:
 
-    $ruler = new Hoa\Ruler\Ruler();
+```php
+$ruler = new Hoa\Ruler\Ruler();
 
-    // 1. Write a rule.
-    $rule  = 'group in ("customer", "guest") and points > 30';
+// 1. Write a rule.
+$rule  = 'group in ("customer", "guest") and points > 30';
 
-    // 2. Create a context.
-    $context           = new Hoa\Ruler\Context();
-    $context['group']  = 'customer';
-    $context['points'] = function ( ) {
+// 2. Create a context.
+$context           = new Hoa\Ruler\Context();
+$context['group']  = 'customer';
+$context['points'] = function ( ) {
+    return 42;
+};
 
-        return 42;
-    };
+// 3. Assert!
+var_dump(
+    $ruler->assert($rule, $context)
+);
 
-    // 3. Assert!
-    var_dump(
-        $ruler->assert($rule, $context)
-    );
-
-    /**
-     * Will output:
-     *     bool(true)
-     */
+/**
+ * Will output:
+ *     bool(true)
+ */
+ ```
 
 In the next example, we have a `User` object and a context that is populated
 dynamically (when the `user` variable is concretized, two new variables, `group`
@@ -66,53 +67,55 @@ For now, we have the following operators/functions by default: `and`, `or`,
 `sum`. We can add our own by different way. The simplest and volatile one is
 given in the following example. Thus:
 
-    // The User object.
-    class User {
+```php
+// The User object.
+class User {
 
-        const DISCONNECTED = 0;
-        const CONNECTED    = 1;
+    const DISCONNECTED = 0;
+    const CONNECTED    = 1;
 
-        public $group      = 'customer';
-        public $points     = 42;
-        protected $_status = 1;
+    public $group      = 'customer';
+    public $points     = 42;
+    protected $_status = 1;
 
-        public function getStatus ( ) {
+    public function getStatus ( ) {
 
-            return $this->_status;
-        }
+        return $this->_status;
     }
+}
 
-    $ruler = new Hoa\Ruler\Ruler();
+$ruler = new Hoa\Ruler\Ruler();
 
-    // New rule.
-    $rule  = 'logged(user) and group in ("customer", "guest") and points > 30';
+// New rule.
+$rule  = 'logged(user) and group in ("customer", "guest") and points > 30';
 
-    // New context.
-    $context         = new Hoa\Ruler\Context();
-    $context['user'] = function ( ) use ( $context ) {
+// New context.
+$context         = new Hoa\Ruler\Context();
+$context['user'] = function ( ) use ( $context ) {
 
-        $user              = new User();
-        $context['group']  = $user->group;
-        $context['points'] = $user->points;
+    $user              = new User();
+    $context['group']  = $user->group;
+    $context['points'] = $user->points;
 
-        return $user;
-    };
+    return $user;
+};
 
-    // We add the logged() operator.
-    $ruler->getDefaultAsserter()->setOperator('logged', function ( User $user ) {
+// We add the logged() operator.
+$ruler->getDefaultAsserter()->setOperator('logged', function ( User $user ) {
 
-        return $user::CONNECTED === $user->getStatus();
-    });
+    return $user::CONNECTED === $user->getStatus();
+});
 
-    // Finally, we assert the rule.
-    var_dump(
-        $ruler->assert($rule, $context)
-    );
+// Finally, we assert the rule.
+var_dump(
+    $ruler->assert($rule, $context)
+);
 
-    /**
-     * Will output:
-     *     bool(true)
-     */
+/**
+ * Will output:
+ *     bool(true)
+ */
+ ```
 
 Now, we have two options to save the rule, for example, in a database. Either we
 save the rule as a string directly, or we will save the serialization of the
@@ -120,53 +123,59 @@ rule which will avoid further interpretations. In the next example, we see how
 to serialize and unserialize a rule by using the `Hoa\Ruler\Ruler::interprete`
 static method:
 
-    $database->save(
-        serialize(
-            Hoa\Ruler\Ruler::interprete(
-                'logged(user) and group in ("customer", "guest") and points > 30'
-            )
+```php
+$database->save(
+    serialize(
+        Hoa\Ruler\Ruler::interprete(
+            'logged(user) and group in ("customer", "guest") and points > 30'
         )
-    );
+    )
+);
+```
 
 And for next executions:
 
-    $rule = unserialize($database->read());
-    var_dump(
-        $ruler->assert($rule, $context)
-    );
+```php
+$rule = unserialize($database->read());
+var_dump(
+    $ruler->assert($rule, $context)
+);
+```
 
 When a rule is interpreted, its object model is created. We serialize and
 unserialize this model. To see the PHP code needed to create such a model, we
 can print the model itself (as an example). Thus:
 
-    echo Hoa\Ruler\Ruler::interprete(
-        'logged(user) and group in ("customer", "guest") and points > 30'
-    );
+```
+echo Hoa\Ruler\Ruler::interprete(
+    'logged(user) and group in ("customer", "guest") and points > 30'
+);
 
-    /**
-     * Will output:
-     *     $model = new \Hoa\Ruler\Model();
-     *     $model->expression =
-     *         $model->and(
-     *             $model->func(
-     *                 'logged',
-     *                 $model->variable('user')
-     *             ),
-     *             $model->and(
-     *                 $model->in(
-     *                     $model->variable('group'),
-     *                     array(
-     *                         'customer',
-     *                         'guest'
-     *                     )
-     *                 ),
-     *                 $model->{'>'}(
-     *                     $model->variable('points'),
-     *                     30
-     *                 )
-     *             )
-     *         );
-     */
+/**
+ * Will output:
+ *     $model = new \Hoa\Ruler\Model();
+ *     $model->expression =
+ *         $model->and(
+ *             $model->func(
+ *                 'logged',
+ *                 $model->variable('user')
+ *             ),
+ *             $model->and(
+ *                 $model->in(
+ *                     $model->variable('group'),
+ *                     array(
+ *                         'customer',
+ *                         'guest'
+ *                     )
+ *                 ),
+ *                 $model->{'>'}(
+ *                     $model->variable('points'),
+ *                     30
+ *                 )
+ *             )
+ *         );
+ */
+```
 
 Have fun!
 
