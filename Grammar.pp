@@ -83,7 +83,7 @@ operand:
 value:
     ::not:: logical_operation() #not
   | ( <true> | <false> | <null> | <float> | <integer> | <string> | <identifier>
-    | array() | function() )
+  | array() | function() )
 
 #array:
     ::parenthesis_:: value() ( ::comma:: value() )* ::_parenthesis::
