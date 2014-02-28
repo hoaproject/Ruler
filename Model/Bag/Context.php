@@ -89,13 +89,6 @@ class Context extends Bag {
      */
     protected $_indexes = array();
 
-    /**
-     * Value.
-     *
-     * @var \Hoa\Ruler\Bag\Context string
-     */
-    protected $_value   = null;
-
 
 
     /**
@@ -144,54 +137,6 @@ class Context extends Bag {
     public function getIndexes ( ) {
 
         return $this->_indexes;
-    }
-
-    /**
-     * Transform a context to fit in the bag.
-     *
-     * @access  public
-     * @param   \Hoa\Ruler\Context  $context    Context.
-     * @param   \Hoa\Visitor\Visit  $visitor    Visitor.
-     * @return  mixed
-     * @throw   \Hoa\Ruler\Exception\UnknownContext
-     */
-    public function transform ( \Hoa\Ruler\Context $context,
-                                \Hoa\Visitor\Visit $visitor ) {
-
-        $id = $this->getId();
-
-        if(!isset($context[$id]))
-            throw new \Hoa\Ruler\Exception\Asserter(
-                'Context reference %s does not exists.', 0, $id);
-
-        $value = $context[$id];
-
-        foreach($this->getIndexes() as $index) {
-
-            if($index instanceof Bag)
-                $key = $index->transform($context, $visitor);
-            else
-                $key = $index->accept($visitor);
-
-            if(!is_array($value) || !isset($value[$key]))
-                throw new \Hoa\Ruler\Exception\Asserter(
-                    'Try to access to an undefined index: %s.', 1, $key);
-
-            $value = $value[$key];
-        }
-
-        return $this->_value = $value;
-    }
-
-    /**
-     * Get content of the bag.
-     *
-     * @access  public
-     * @return  mixed
-     */
-    public function getValue ( ) {
-
-        return $this->_value;
     }
 }
 
