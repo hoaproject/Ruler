@@ -62,9 +62,11 @@
 %token  integer       \d+
 %token  parenthesis_  \(
 %token _parenthesis   \)
+%token  bracket_      \[
+%token _bracket       \]
 %token  comma          ,
 
-%token  identifier    [^\s\(\),]+
+%token  identifier    [^\s\(\)\[\],]+
 
 #expression:
     logical_operation()
@@ -82,13 +84,21 @@ operand:
 
 value:
     ::not:: logical_operation() #not
-  | ( <true> | <false> | <null> | <float> | <integer> | <string> | <identifier>
-  | array() | function() )
+  | <true> | <false> | <null> | <float> | <integer> | <string>
+  | variable()
+  | array_declaration()
+  | function_call()
 
-#array:
+variable:
+    <identifier>
+    (
+        ( ::bracket_:: value() ::_bracket:: #array_access )+
+    )?
+
+#array_declaration:
     ::parenthesis_:: value() ( ::comma:: value() )* ::_parenthesis::
 
-#function:
+#function_call:
     <identifier> ::parenthesis_::
     ( logical_operation() ( ::comma:: logical_operation() )* )?
     ::_parenthesis::

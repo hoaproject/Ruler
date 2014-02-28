@@ -127,7 +127,18 @@ class Interpreter implements \Hoa\Visitor\Visit {
                 );
               break;
 
-            case '#array':
+            case '#array_access':
+                $children = $element->getChildren();
+                $name     = $children[0]->accept($this, $handle, $eldnah);
+                array_shift($children);
+
+                foreach($children as $child)
+                    $name->index($child->accept($this, $handle, $eldnah));
+
+                return $name;
+              break;
+
+            case '#array_declaration':
                 $out = array();
 
                 foreach($element->getChildren() as $child)
@@ -136,7 +147,7 @@ class Interpreter implements \Hoa\Visitor\Visit {
                 return $out;
               break;
 
-            case '#function':
+            case '#function_call':
                 $children = $element->getChildren();
                 $name     = $children[0]->accept($this, $handle, false);
                 array_shift($children);

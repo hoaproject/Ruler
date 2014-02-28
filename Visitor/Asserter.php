@@ -138,16 +138,45 @@ class Asserter implements \Hoa\Visitor\Visit {
             $arguments = array();
 
             foreach($element->getArguments() as $argument)
-                if($argument instanceof \Hoa\Ruler\Model\Bag)
-                    $arguments[] = $argument->transform($this->getContext());
-                else
-                    $arguments[] = $argument->accept($this, $handle, $eldnah);
+                $arguments[] = $argument->accept($this, $handle, $eldnah);
 
             if(false === $this->operatorExists($name))
                 throw new \Hoa\Ruler\Exception\Asserter(
                     'Operator %s does not exist.', 1, $name);
 
             $out = $this->getOperator($name)->distributeArguments($arguments);
+        }
+        elseif($element instanceof \Hoa\Ruler\Model\Bag\Scalar)
+            $out = $element->getValue();
+        elseif($element instanceof \Hoa\Ruler\Model\Bag\RulerArray) {
+
+            $out = array();
+
+            foreach($element->getArray() as $key => $data)
+                $out[$key] = $data->accept($this, $handle, $eldnah);
+        }
+        elseif($element instanceof \Hoa\Ruler\Model\Bag\Context) {
+
+            $id = $element->getId();
+
+            if(!isset($context[$id]))
+                throw new \Hoa\Ruler\Exception\Asserter(
+                    'Context reference %s does not exists.', 0, $id);
+
+            $value = $context[$id];
+
+            foreach($element->getIndexes() as $index) {
+
+                $key = $index->accept($this, $handle, $eldnah);
+
+                if(!is_array($value) || !isset($value[$key]))
+                    throw new \Hoa\Ruler\Exception\Asserter(
+                        'Try to access to an undefined index: %s.', 1, $key);
+
+                $value = $value[$key];
+            }
+
+            $out = $value;
         }
 
         return $out;

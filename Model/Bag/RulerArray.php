@@ -72,13 +72,6 @@ class RulerArray extends Bag {
      */
     protected $_array = null;
 
-    /**
-     * Value.
-     *
-     * @var \Hoa\Ruler\Model\Bag\RulerArray array
-     */
-    protected $_value = null;
-
 
 
     /**
@@ -115,32 +108,6 @@ class RulerArray extends Bag {
     public function getArray ( ) {
 
         return $this->_array;
-    }
-
-    /**
-     * Transform a context to fit in the bag.
-     *
-     * @access  public
-     * @param   \Hoa\Ruler\Context  $context    Context.
-     * @return  array
-     */
-    public function transform ( \Hoa\Ruler\Context $context ) {
-
-        foreach($this->_array as $key => $data)
-            $this->_value[$key] = $data->transform($context);
-
-        return $this->_value;
-    }
-
-    /**
-     * Get content of the bag.
-     *
-     * @access  public
-     * @return  mixed
-     */
-    public function getValue ( ) {
-
-        return $this->_value;
     }
 }
 

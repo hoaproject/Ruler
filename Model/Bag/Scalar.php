@@ -84,18 +84,6 @@ class Scalar extends Bag {
     }
 
     /**
-     * Transform a context to fit in the bag.
-     *
-     * @access  public
-     * @param   \Hoa\Ruler\Context  $context    Context.
-     * @return  mixed
-     */
-    public function transform ( \Hoa\Ruler\Context $context ) {
-
-        return $this->_value;
-    }
-
-    /**
      * Get content of the bag.
      *
      * @access  public

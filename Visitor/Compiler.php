@@ -151,8 +151,18 @@ class Compiler implements \Hoa\Visitor\Visit {
             $out = $_ . 'array(' . "\n" . implode(',' . "\n", $values) . "\n" .
                    $_ . ')';
         }
-        elseif($element instanceof \Hoa\Ruler\Model\Bag\Context)
+        elseif($element instanceof \Hoa\Ruler\Model\Bag\Context) {
+
             $out = $_ . '$model->variable(\'' . $element->getId() . '\')';
+            $this->_indentation += 2;
+
+            foreach($element->getIndexes() as $index)
+                $out .= "\n" . $_ . '    ->index(' . "\n" .
+                            $index->accept($this, $handle, $eldnah) . "\n" .
+                        $_ . '    )';
+
+            $this->_indentation -= 2;
+        }
 
         return $out;
     }

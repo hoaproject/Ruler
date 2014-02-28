@@ -130,6 +130,9 @@ class Disassembly implements \Hoa\Visitor\Visit {
         elseif($element instanceof \Hoa\Ruler\Model\Bag\Context) {
 
             $out .= $element->getId();
+
+            foreach($element->getIndexes() as $index)
+                $out .= '[' . $index->accept($this, $handle, $eldnah) . ']';
         }
 
         return $out;

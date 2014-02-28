@@ -61,23 +61,6 @@ namespace Hoa\Ruler\Model\Bag {
 abstract class Bag implements \Hoa\Visitor\Element {
 
     /**
-     * Transform a context to fit in the bag.
-     *
-     * @access  public
-     * @param   \Hoa\Ruler\Context  $context    Context.
-     * @return  mixed
-     */
-    abstract public function transform ( \Hoa\Ruler\Context $context );
-
-    /**
-     * Get content of the bag.
-     *
-     * @access  public
-     * @return  mixed
-     */
-    abstract public function getValue ( );
-
-    /**
      * Accept a visitor.
      *
      * @access  public

@@ -46,7 +46,17 @@ from('Hoa')
 /**
  * \Hoa\Ruler\Model\Bag
  */
--> import('Ruler.Model.Bag.~');
+-> import('Ruler.Model.Bag.~')
+
+/**
+ * \Hoa\Ruler\Model\Bag\Scalar
+ */
+-> import('Ruler.Model.Bag.Scalar')
+
+/**
+ * \Hoa\Ruler\Model\Bag\RulerArray
+ */
+-> import('Ruler.Model.Bag.RulerArray');
 
 }
 
@@ -70,14 +80,14 @@ class Context extends Bag {
      *
      * @var \Hoa\Ruler\Bag\Context string
      */
-    protected $_id    = null;
+    protected $_id      = null;
 
     /**
-     * Value.
+     * Indexes access.
      *
-     * @var \Hoa\Ruler\Bag\Context string
+     * @var \Hoa\Ruler\Bag\Context array
      */
-    protected $_value = null;
+    protected $_indexes = array();
 
 
 
@@ -96,6 +106,36 @@ class Context extends Bag {
     }
 
     /**
+     * Add an index.
+     *
+     * @access  public
+     * @param   mixed  $index    Index (a bag or an operator).
+     * @return  \Hoa\Ruler\Model\Bag\Context
+     */
+    public function index ( $index ) {
+
+        if(is_scalar($index) || null === $index)
+            $index = new Scalar($index);
+        elseif(is_array($index))
+            $index = new RulerArray($index);
+
+        $this->_indexes[] = $index;
+
+        return $this;
+    }
+
+    /**
+     * Get all indexes.
+     *
+     * @access  public
+     * @return  array
+     */
+    public function getIndexes ( ) {
+
+        return $this->_indexes;
+    }
+
+    /**
      * Get ID.
      *
      * @access  public
@@ -104,36 +144,6 @@ class Context extends Bag {
     public function getId ( ) {
 
         return $this->_id;
-    }
-
-    /**
-     * Transform a context to fit in the bag.
-     *
-     * @access  public
-     * @param   \Hoa\Ruler\Context  $context    Context.
-     * @return  string
-     * @throw   \Hoa\Ruler\Exception\UnknownContext
-     */
-    public function transform ( \Hoa\Ruler\Context $context ) {
-
-        $id = $this->getId();
-
-        if(!isset($context[$id]))
-            throw new \Hoa\Ruler\Exception\Asserter(
-                'Context reference %s does not exists.', 0, $id);
-
-        return $this->_value = $context[$id];
-    }
-
-    /**
-     * Get content of the bag.
-     *
-     * @access  public
-     * @return  mixed
-     */
-    public function getValue ( ) {
-
-        return $this->_value;
     }
 }
 
