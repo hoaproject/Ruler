@@ -65,7 +65,7 @@ and `points` are created). Moreover, we will create a new operator/function
 called `logged`. There is no difference between an operator and a function
 except that an operator has two operands (so arguments).
 
-### Adding operatiors and functions
+### Adding operators and functions
 
 For now, we have the following operators/functions by default: `and`, `or`,
 `xor`, `not`, `=` (`is` as an alias), `!=`, `>`, `>=`, `<`, `<=`, `in` and
