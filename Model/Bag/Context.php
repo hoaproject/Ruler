@@ -106,7 +106,11 @@ class Context extends Bag {
     }
 
     /**
+     * Add an index.
      *
+     * @access  public
+     * @param   mixed  $index    Index (a bag or an operator).
+     * @return  \Hoa\Ruler\Model\Bag\Context
      */
     public function index ( $index ) {
 
@@ -121,6 +125,17 @@ class Context extends Bag {
     }
 
     /**
+     * Get all indexes.
+     *
+     * @access  public
+     * @return  array
+     */
+    public function getIndexes ( ) {
+
+        return $this->_indexes;
+    }
+
+    /**
      * Get ID.
      *
      * @access  public
@@ -129,14 +144,6 @@ class Context extends Bag {
     public function getId ( ) {
 
         return $this->_id;
-    }
-
-    /**
-     *
-     */
-    public function getIndexes ( ) {
-
-        return $this->_indexes;
     }
 }
 
