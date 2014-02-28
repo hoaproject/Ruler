@@ -28,6 +28,8 @@ As a quick overview, we propose to see a very simple example that manipulates a
 simple rule with a simple context. After, we will add a new operator in the
 rule. And finally, we will see how to save a rule in a database.
 
+### Three steps
+
 So first, we create a context with two variables: `group` and `points`, and we
 then assert a rule. A context holds values to concretize a rule. A value can
 also be the result of a callable. Thus:
@@ -62,6 +64,8 @@ dynamically (when the `user` variable is concretized, two new variables, `group`
 and `points` are created). Moreover, we will create a new operator/function
 called `logged`. There is no difference between an operator and a function
 except that an operator has two operands (so arguments).
+
+### Adding operatiors and functions
 
 For now, we have the following operators/functions by default: `and`, `or`,
 `xor`, `not`, `=` (`is` as an alias), `!=`, `>`, `>=`, `<`, `<=`, `in` and
@@ -117,6 +121,15 @@ var_dump(
  *     bool(true)
  */
 ```
+
+Also, if a variable in the context is an array, we can access to its values from
+a rule with the same syntax as PHP. For example, if the `a` variable is an
+array, we can write `a[0]` to access to the value associated to the `0` key. It
+works as an hashmap (PHP array implementation), so we can have strings & co. as
+keys. Please, take a look at the grammar (`hoa://Library/Ruler/Grammar.pp`) to
+see all the possible constructions.
+
+### Saving a rule
 
 Now, we have two options to save the rule, for example, in a database. Either we
 save the rule as a string directly, or we will save the serialization of the
