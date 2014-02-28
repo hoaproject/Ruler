@@ -65,9 +65,11 @@ abstract class Bag implements \Hoa\Visitor\Element {
      *
      * @access  public
      * @param   \Hoa\Ruler\Context  $context    Context.
+     * @param   \Hoa\Visitor\Visit  $visitor    Visitor.
      * @return  mixed
      */
-    abstract public function transform ( \Hoa\Ruler\Context $context );
+    abstract public function transform ( \Hoa\Ruler\Context $context,
+                                         \Hoa\Visitor\Visit $visitor );
 
     /**
      * Get content of the bag.

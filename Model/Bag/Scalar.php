@@ -88,9 +88,12 @@ class Scalar extends Bag {
      *
      * @access  public
      * @param   \Hoa\Ruler\Context  $context    Context.
+     * @param   \Hoa\Visitor\Visit  $visitor    Visitor.
      * @return  mixed
+     * @throw   \Hoa\Ruler\Exception\UnknownContext
      */
-    public function transform ( \Hoa\Ruler\Context $context ) {
+    public function transform ( \Hoa\Ruler\Context $context,
+                                \Hoa\Visitor\Visit $visitor ) {
 
         return $this->_value;
     }

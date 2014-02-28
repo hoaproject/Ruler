@@ -151,10 +151,12 @@ class Context extends Bag {
      *
      * @access  public
      * @param   \Hoa\Ruler\Context  $context    Context.
-     * @return  string
+     * @param   \Hoa\Visitor\Visit  $visitor    Visitor.
+     * @return  mixed
      * @throw   \Hoa\Ruler\Exception\UnknownContext
      */
-    public function transform ( \Hoa\Ruler\Context $context ) {
+    public function transform ( \Hoa\Ruler\Context $context,
+                                \Hoa\Visitor\Visit $visitor ) {
 
         $id = $this->getId();
 
@@ -166,7 +168,10 @@ class Context extends Bag {
 
         foreach($this->getIndexes() as $index) {
 
-            $key = $index->transform($context);
+            if($index instanceof Bag)
+                $key = $index->transform($context, $visitor);
+            else
+                $key = $index->accept($visitor);
 
             if(!is_array($value) || !isset($value[$key]))
                 throw new \Hoa\Ruler\Exception\Asserter(

@@ -139,7 +139,7 @@ class Asserter implements \Hoa\Visitor\Visit {
 
             foreach($element->getArguments() as $argument)
                 if($argument instanceof \Hoa\Ruler\Model\Bag)
-                    $arguments[] = $argument->transform($this->getContext());
+                    $arguments[] = $argument->transform($this->getContext(), $this);
                 else
                     $arguments[] = $argument->accept($this, $handle, $eldnah);
 

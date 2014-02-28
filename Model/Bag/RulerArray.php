@@ -122,12 +122,22 @@ class RulerArray extends Bag {
      *
      * @access  public
      * @param   \Hoa\Ruler\Context  $context    Context.
+     * @param   \Hoa\Visitor\Visit  $visitor    Visitor.
      * @return  array
+     * @throw   \Hoa\Ruler\Exception\UnknownContext
      */
-    public function transform ( \Hoa\Ruler\Context $context ) {
+    public function transform ( \Hoa\Ruler\Context $context,
+                                \Hoa\Visitor\Visit $visitor ) {
 
-        foreach($this->_array as $key => $data)
-            $this->_value[$key] = $data->transform($context);
+        foreach($this->_array as $key => $data) {
+
+            if($data instanceof Bag)
+                $value = $data->transform($context, $visitor);
+            else
+                $value = $data->accept($visitor);
+
+            $this->_value[$key] = $value;
+        }
 
         return $this->_value;
     }
