@@ -39,6 +39,11 @@ namespace {
 from('Hoa')
 
 /**
+ * \Hoa\Ruler\Model\Bag\Context
+ */
+-> import('Ruler.Model.Bag.Context')
+
+/**
  * \Hoa\Visitor\Visit
  */
 -> import('Visitor.Visit');
@@ -73,10 +78,8 @@ class Disassembly implements \Hoa\Visitor\Visit {
 
         $out = null;
 
-        if($element instanceof \Hoa\Ruler\Model) {
-
+        if($element instanceof \Hoa\Ruler\Model)
             $out .= $element->getExpression()->accept($this, $handle, $eldnah);
-        }
         elseif($element instanceof \Hoa\Ruler\Model\Operator) {
 
             $name      = $element->getName();
@@ -131,8 +134,27 @@ class Disassembly implements \Hoa\Visitor\Visit {
 
             $out .= $element->getId();
 
-            foreach($element->getIndexes() as $index)
-                $out .= '[' . $index->accept($this, $handle, $eldnah) . ']';
+            foreach($element->getDimensions() as $dimension) {
+
+                $value = $dimension[\Hoa\Ruler\Model\Bag\Context::ACCESS_VALUE];
+
+                switch($dimension[\Hoa\Ruler\Model\Bag\Context::ACCESS_TYPE]) {
+
+                    case \Hoa\Ruler\Model\Bag\Context::ARRAY_ACCESS:
+                        $out .= '[' .
+                                $value->accept($this, $handle, $eldnah) .
+                                ']';
+                      break;
+
+                    case \Hoa\Ruler\Model\Bag\Context::ATTRIBUTE_ACCESS:
+                        $out .= '.' . $value;
+                      break;
+
+                    case \Hoa\Ruler\Model\Bag\Context::METHOD_ACCESS:
+                        $out .= '.' . $value->accept($this, $handle, $eldnah);
+                      break;
+                }
+            }
         }
 
         return $out;
