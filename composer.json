@@ -21,6 +21,7 @@
         "source": "http://git.hoa-project.net/"
     },
     "require": {
+        "hoa/core"    : "dev-master",
         "hoa/compiler": "dev-master",
         "hoa/file"    : "dev-master",
         "hoa/visitor" : "dev-master"
