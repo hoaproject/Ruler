@@ -129,7 +129,8 @@ works as an hashmap (PHP array implementation), so we can have strings & co. as
 keys. In the same way, if a variable is an object, we can call a method on it.
 For example, if the `a` variable is an array where the value associated to the
 first key is an object with a `foo` method, we can write: `a[0].foo(b)` where
-`b` is another variable in the context. We can mixe array and object accesses.
+`b` is another variable in the context. Also, we can access to the public
+attributes of an object. Obviously, we can mixe array and object accesses.
 Please, take a look at the grammar (`hoa://Library/Ruler/Grammar.pp`) to see all
 the possible constructions.
 
