@@ -102,6 +102,12 @@ class Asserter implements \Hoa\Visitor\Visit {
         $this->setOperator('or',  function ( $a, $b ) { return $a || $b; });
         $this->setOperator('xor', function ( $a, $b ) { return (bool) ($a ^ $b); });
         $this->setOperator('not', function ( $a )     { return !$a; });
+        $this->setOperator('+',   function ( $a, $b, $f = 1 ) { return $a + $b * $f; });
+        $this->setOperator('-',   function ( $a, $b = null, $f = 1 ) { if(null === $b) return -$a; return $a - $b * $f; });
+        $this->setOperator('*',   function ( $a, $b ) { return $a * $b; });
+        $this->setOperator('/',   function ( $a, $b ) { return $a / $b; });
+        $this->setOperator('**',  function ( $a, $b ) { return pow($a, $b); });
+        $this->setOperator('%',   function ( $a, $b ) { return $a % $b; });
         $this->setOperator('=',   function ( $a, $b ) { return $a == $b; });
         $this->setOperator('is',  $this->getOperator('='));
         $this->setOperator('!=',  function ( $a, $b ) { return $a != $b; });

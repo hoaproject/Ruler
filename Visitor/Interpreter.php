@@ -127,6 +127,96 @@ class Interpreter implements \Hoa\Visitor\Visit {
                 );
               break;
 
+            case '#negative':
+                return $this->_root->_operator(
+                    '-',
+                    array($element->getChild(0)->accept($this, $handle, $eldnah)),
+                    true
+                );
+              break;
+
+            case '#addition':
+                $parent   = $element->getParent();
+                $children = $element->getChildren();
+                $left     = $children[0]->accept($this, $handle, $eldnah);
+                $right    = $children[1]->accept($this, $handle, $eldnah);
+                $factor   = 1;
+
+                if(null !== $parent && '#substraction' === $parent->getId())
+                    $factor = -1;
+
+                return $this->_root->_operator(
+                    '+',
+                    array($left, $right, $factor),
+                    false
+                );
+              break;
+
+            case '#substraction':
+                $parent   = $element->getParent();
+                $children = $element->getChildren();
+                $left     = $children[0]->accept($this, $handle, $eldnah);
+                $right    = $children[1]->accept($this, $handle, $eldnah);
+                $factor   = 1;
+
+                if(   null            !== $parent
+                   && '#substraction' === $parent->getId()
+                   && $element        === $parent->getChild(1))
+                    $factor = -1;
+
+                return $this->_root->_operator(
+                    '-',
+                    array($left, $right, $factor),
+                    false
+                );
+              break;
+
+            case '#multiplication':
+                return $this->_root->_operator(
+                    '*',
+                    array(
+                        $element->getChild(0)->accept($this, $handle, $eldnah),
+                        $element->getChild(1)->accept($this, $handle, $eldnah)
+                    ),
+                    false
+                );
+              break;
+
+            case '#division':
+                $children = $element->getChildren();
+                $left     = $children[0]->accept($this, $handle, $eldnah);
+                $right    = $children[1]->accept($this, $handle, $eldnah);
+
+                if(0 === $right)
+                    throw new \Hoa\Ruler\Exception\Interpreter(
+                        'Tried to divide %f by zero, impossible.',
+                        0, $left);
+
+                return $this->_root->_operator('/', array($left, $right), false);
+              break;
+
+            case '#power':
+                return $this->_root->_operator(
+                    '**',
+                    array(
+                        $element->getChild(0)->accept($this, $handle, $eldnah),
+                        $element->getChild(1)->accept($this, $handle, $eldnah)
+                    ),
+                    false
+                );
+              break;
+
+            case '#modulo':
+                return $this->_root->_operator(
+                    '%',
+                    array(
+                        $element->getChild(0)->accept($this, $handle, $eldnah),
+                        $element->getChild(1)->accept($this, $handle, $eldnah)
+                    ),
+                    false
+                );
+              break;
+
             case '#variable_access':
                 $children = $element->getChildren();
                 $name     = $children[0]->accept($this, $handle, $eldnah);
@@ -232,11 +322,8 @@ class Interpreter implements \Hoa\Visitor\Visit {
                     case 'null':
                         return null;
 
-                    case 'float':
+                    case 'number':
                         return floatval($value);
-
-                    case 'integer':
-                        return intval($value);
 
                     case 'string':
                         return str_replace(
@@ -247,13 +334,13 @@ class Interpreter implements \Hoa\Visitor\Visit {
 
                     default:
                         throw new \Hoa\Ruler\Exception\Interpreter(
-                            'Token %s is unknown.', 0, $token);
+                            'Token %s is unknown.', 1, $token);
                 }
               break;
 
             default:
                 throw new \Hoa\Ruler\Exception\Interpreter(
-                    'Element %s is unknown.', 1, $id);
+                    'Element %s is unknown.', 2, $id);
         }
 
         return;
