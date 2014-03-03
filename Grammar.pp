@@ -65,8 +65,9 @@
 %token  bracket_      \[
 %token _bracket       \]
 %token  comma          ,
+%token  dot           \.
 
-%token  identifier    [^\s\(\)\[\],]+
+%token  identifier    [^\s\(\)\[\],\.]+
 
 #expression:
     logical_operation()
@@ -90,10 +91,13 @@ value:
   | function_call()
 
 variable:
-    <identifier>
-    (
-        ( ::bracket_:: value() ::_bracket:: #array_access )+
-    )?
+    <identifier> ( ( array_access() | object_access() ) #variable_access )*
+
+#array_access:
+    ::bracket_:: value() ::_bracket::
+
+object_access:
+    ::dot:: ( <identifier> #attribute_access | function_call() #method_access )
 
 #array_declaration:
     ::parenthesis_:: value() ( ::comma:: value() )* ::_parenthesis::

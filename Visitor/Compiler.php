@@ -39,6 +39,11 @@ namespace {
 from('Hoa')
 
 /**
+ * \Hoa\Ruler\Model\Bag\Context
+ */
+-> import('Ruler.Model.Bag.Context')
+
+/**
  * \Hoa\Visitor\Visit
  */
 -> import('Visitor.Visit');
@@ -156,10 +161,30 @@ class Compiler implements \Hoa\Visitor\Visit {
             $out = $_ . '$model->variable(\'' . $element->getId() . '\')';
             $this->_indentation += 2;
 
-            foreach($element->getIndexes() as $index)
-                $out .= "\n" . $_ . '    ->index(' . "\n" .
-                            $index->accept($this, $handle, $eldnah) . "\n" .
-                        $_ . '    )';
+            foreach($element->getDimensions() as $dimension) {
+
+                $value  = $dimension[\Hoa\Ruler\Model\Bag\Context::ACCESS_VALUE];
+                $out   .= "\n" . $_ . '    ->';
+
+                switch($dimension[\Hoa\Ruler\Model\Bag\Context::ACCESS_TYPE]) {
+
+                    case \Hoa\Ruler\Model\Bag\Context::ARRAY_ACCESS:
+                        $out .= 'index(' . "\n" .
+                                $value->accept($this, $handle, $eldnah) . "\n" .
+                                $_ . '    )';
+                      break;
+
+                    case \Hoa\Ruler\Model\Bag\Context::ATTRIBUTE_ACCESS:
+                        $out .= 'attribute(\'' . $value . '\')';
+                      break;
+
+                    case \Hoa\Ruler\Model\Bag\Context::METHOD_ACCESS:
+                        $out .= 'call(' . "\n" .
+                                $value->accept($this, $handle, $eldnah) . "\n" .
+                                $_ . '    )';
+                      break;
+                }
+            }
 
             $this->_indentation -= 2;
         }

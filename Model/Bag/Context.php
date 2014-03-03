@@ -65,7 +65,7 @@ namespace Hoa\Ruler\Model\Bag {
 /**
  * Class \Hoa\Ruler\Model\Bag\Context.
  *
- * Bag for context object.
+ * Bag for context, i.e. a variable.
  *
  * @author     Stéphane Py <stephane.py@hoa-project.net>
  * @author     Ivan Enderlin <ivan.enderlin@hoa-project.net>
@@ -76,18 +76,53 @@ namespace Hoa\Ruler\Model\Bag {
 class Context extends Bag {
 
     /**
+     * Access type.
+     *
+     * @const int
+     */
+    const ACCESS_TYPE      = 0;
+
+    /**
+     * Access value.
+     *
+     * @const int
+     */
+    const ACCESS_VALUE     = 1;
+
+    /**
+     * Type: array access.
+     *
+     * @const int
+     */
+    const ARRAY_ACCESS     = 0;
+
+    /**
+     * Type: attribute access.
+     *
+     * @const int
+     */
+    const ATTRIBUTE_ACCESS = 1;
+
+    /**
+     * Type: method access.
+     *
+     * @const int
+     */
+    const METHOD_ACCESS    = 2;
+
+    /**
      * ID.
      *
      * @var \Hoa\Ruler\Bag\Context string
      */
-    protected $_id      = null;
+    protected $_id         = null;
 
     /**
-     * Indexes access.
+     * Index and object accesses.
      *
      * @var \Hoa\Ruler\Bag\Context array
      */
-    protected $_indexes = array();
+    protected $_dimensions = array();
 
 
 
@@ -106,7 +141,7 @@ class Context extends Bag {
     }
 
     /**
-     * Add an index.
+     * Call an index (variable[indexA][indexB][indexC]).
      *
      * @access  public
      * @param   mixed  $index    Index (a bag or an operator).
@@ -119,20 +154,57 @@ class Context extends Bag {
         elseif(is_array($index))
             $index = new RulerArray($index);
 
-        $this->_indexes[] = $index;
+        $this->_dimensions[] = array(
+            static::ACCESS_TYPE  => static::ARRAY_ACCESS,
+            static::ACCESS_VALUE => $index
+        );
 
         return $this;
     }
 
     /**
-     * Get all indexes.
+     * Call an attribute (variable.attrA.attrB).
+     *
+     * @access  public
+     * @param   string  $attribute    Attribute name.
+     * @return  \Hoa\Ruler\Model\Bag\Context
+     */
+    public function attribute ( $attribute ) {
+
+        $this->_dimensions[] = array(
+            static::ACCESS_TYPE  => static::ATTRIBUTE_ACCESS,
+            static::ACCESS_VALUE => $attribute
+        );
+
+        return $this;
+    }
+
+    /**
+     * Call a method (variable.foo().bar().baz()).
+     *
+     * @access  public
+     * @param   \Hoa\Ruler\Model\Operator  $method    Method to call.
+     * @return  \Hoa\Ruler\Model\Bag\Context
+     */
+    public function call ( \Hoa\Ruler\Model\Operator $method ) {
+
+        $this->_dimensions[] = array(
+            static::ACCESS_TYPE  => static::METHOD_ACCESS,
+            static::ACCESS_VALUE => $method
+        );
+
+        return $this;
+    }
+
+    /**
+     * Get all dimensions.
      *
      * @access  public
      * @return  array
      */
-    public function getIndexes ( ) {
+    public function getDimensions ( ) {
 
-        return $this->_indexes;
+        return $this->_dimensions;
     }
 
     /**
