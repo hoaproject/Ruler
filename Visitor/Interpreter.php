@@ -127,15 +127,44 @@ class Interpreter implements \Hoa\Visitor\Visit {
                 );
               break;
 
-            case '#array_access':
+            case '#variable_access':
                 $children = $element->getChildren();
                 $name     = $children[0]->accept($this, $handle, $eldnah);
                 array_shift($children);
 
-                foreach($children as $child)
-                    $name->index($child->accept($this, $handle, $eldnah));
+                foreach($children as $child) {
+
+                    $_child = $child->accept($this, $handle, $eldnah);
+
+                    switch($child->getId()) {
+
+                        case '#array_access':
+                            $name->index($_child);
+                          break;
+
+                        case '#attribute_access':
+                            $name->attribute($_child);
+                          break;
+
+                        case '#method_access':
+                            $name->call($_child);
+                          break;
+                    }
+                }
 
                 return $name;
+              break;
+
+            case '#array_access':
+                return $element->getChild(0)->accept($this, $handle, $eldnah);
+              break;
+
+            case '#attribute_access':
+                return $element->getChild(0)->accept($this, $handle, false);
+              break;
+
+            case '#method_access':
+                return $element->getChild(0)->accept($this, $handle, $eldnah);
               break;
 
             case '#array_declaration':

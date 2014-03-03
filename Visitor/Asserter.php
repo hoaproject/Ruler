@@ -44,6 +44,11 @@ from('Hoa')
 -> import('Ruler.Exception.Asserter')
 
 /**
+ * \Hoa\Ruler\Model\Bag\Context
+ */
+-> import('Ruler.Model.Bag.Context')
+
+/**
  * \Hoa\Visitor\Visit
  */
 -> import('Visitor.Visit');
@@ -163,20 +168,83 @@ class Asserter implements \Hoa\Visitor\Visit {
                 throw new \Hoa\Ruler\Exception\Asserter(
                     'Context reference %s does not exists.', 0, $id);
 
-            $value = $context[$id];
+            $_out = $context[$id];
 
-            foreach($element->getIndexes() as $index) {
+            foreach($element->getDimensions() as $i => $dimension) {
 
-                $key = $index->accept($this, $handle, $eldnah);
+                $value = $dimension[\Hoa\Ruler\Model\Bag\Context::ACCESS_VALUE];
 
-                if(!is_array($value) || !isset($value[$key]))
-                    throw new \Hoa\Ruler\Exception\Asserter(
-                        'Try to access to an undefined index: %s.', 1, $key);
+                switch($dimension[\Hoa\Ruler\Model\Bag\Context::ACCESS_TYPE]) {
 
-                $value = $value[$key];
+                    case \Hoa\Ruler\Model\Bag\Context::ARRAY_ACCESS:
+                        $key = $value->accept($this, $handle, $eldnah);
+
+                        if(!is_array($_out))
+                            throw new \Hoa\Ruler\Exception\Asserter(
+                                'Try to access to an undefined index: %s ' .
+                                '(dimension number %d of %s), because it is ' .
+                                'not an array.',
+                                1, array($key, $i +1, $id));
+
+                        if(!isset($_out[$key]))
+                            throw new \Hoa\Ruler\Exception\Asserter(
+                                'Try to access to an undefined index: %s ' .
+                                '(dimension number %d of %s).',
+                                1, array($key, $i + 1, $id));
+
+                        $_out = $_out[$key];
+                      break;
+
+                    case \Hoa\Ruler\Model\Bag\Context::ATTRIBUTE_ACCESS:
+                        $attribute = $value;
+
+                        if(!is_object($_out))
+                            throw new \Hoa\Ruler\Exception\Asserter(
+                                'Try to read an undefined attribute: %s ' .
+                                '(dimension number %d of %s), because it is ' .
+                                'not an object.',
+                                2, array($attribute, $i + 1, $id));
+
+                        if(!property_exists($_out, $attribute))
+                            throw new \Hoa\Ruler\Exception\Asserter(
+                                'Try to read an undefined attribute: %s ' .
+                                '(dimension number %d of %s).',
+                                3, array($attribute, $i + 1, $id));
+
+                        $_out = $_out->$attribute;
+                      break;
+
+                    case \Hoa\Ruler\Model\Bag\Context::METHOD_ACCESS:
+                        $method = $value->getName();
+
+                        if(!is_object($_out))
+                            throw new \Hoa\Ruler\Exception\Asserter(
+                                'Try to call an undefined method: %s ' .
+                                '(dimension number %d of %s), because it is ' .
+                                'not an object.',
+                                4, array($method, $i + 1, $id));
+
+                        if(!method_exists($_out, $method))
+                            throw new \Hoa\Ruler\Exception\Asserter(
+                                'Try to call an undefined method: %s ' .
+                                '(dimension number %d of %s).',
+                                5, array($method, $i + 1, $id));
+
+                        $arguments = array();
+
+                        foreach($value->getArguments() as $argument)
+                            $arguments[] = $argument->accept($this, $handle, $eldnah);
+
+                        $_out = call_user_func_array(
+                            array($_out, $method),
+                            $arguments
+                        );
+                      break;
+                }
+
             }
 
-            $out = $value;
+            $out = $_out;
         }
 
         return $out;

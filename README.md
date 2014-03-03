@@ -126,8 +126,12 @@ Also, if a variable in the context is an array, we can access to its values from
 a rule with the same syntax as PHP. For example, if the `a` variable is an
 array, we can write `a[0]` to access to the value associated to the `0` key. It
 works as an hashmap (PHP array implementation), so we can have strings & co. as
-keys. Please, take a look at the grammar (`hoa://Library/Ruler/Grammar.pp`) to
-see all the possible constructions.
+keys. In the same way, if a variable is an object, we can call a method on it.
+For example, if the `a` variable is an array where the value associated to the
+first key is an object with a `foo` method, we can write: `a[0].foo(b)` where
+`b` is another variable in the context. We can mixe array and object accesses.
+Please, take a look at the grammar (`hoa://Library/Ruler/Grammar.pp`) to see all
+the possible constructions.
 
 ### Saving a rule
 
