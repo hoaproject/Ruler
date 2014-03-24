@@ -288,6 +288,16 @@ class Interpreter implements \Hoa\Visitor\Visit {
 
         return $this->_contextKeys;
     }
+    
+    /**
+     * Clear context keys.
+     *
+     * @access  public
+     */
+    public function clearContextKeys ( ) {
+        
+        $this->_contextKeys = array();
+    }
 }
 
 }
