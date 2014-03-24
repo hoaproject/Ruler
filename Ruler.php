@@ -225,6 +225,17 @@ class Ruler {
 
         return static::$_compiler;
     }
+    
+    /**
+     * Get context keys.
+     *
+     * @access  public
+     * @return  array
+     */
+    public function getContextKeys ( $rule ) {
+
+        return static::getInterpreter()->getContextKeys();
+    }
 }
 
 }
