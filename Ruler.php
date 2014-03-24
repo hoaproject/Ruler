@@ -141,7 +141,7 @@ class Ruler {
     public static function interprete ( $rule ) {
         
         $interpreter = static::getInterpreter();
-        //clear content keys
+        //clear context keys
         $interpreter->clearContextKeys();
         
         return $interpreter->visit(
