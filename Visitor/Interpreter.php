@@ -84,7 +84,13 @@ class Interpreter implements \Hoa\Visitor\Visit {
      */
     protected $_current = null;
 
-
+    /**
+     * Current node.
+     *
+     * @var \Hoa\Ruler\Visitor\Interpreter object
+     */
+    protected $_contextKeys = array();
+    
 
     /**
      * Visit an element.
@@ -219,9 +225,11 @@ class Interpreter implements \Hoa\Visitor\Visit {
                 switch($token) {
 
                     case 'identifier':
-                        return true === $variable
-                                   ? $this->_root->variable($value)
-                                   : $value;
+                        if (true === $variable) {
+                            array_push($this->_contextKeys, $value);
+                            return $this->_root->variable($value);
+                        }
+                        return $value;
 
                     case 'true':
                         return true;
@@ -268,6 +276,17 @@ class Interpreter implements \Hoa\Visitor\Visit {
     public function getRoot ( ) {
 
         return $this->_root;
+    }
+    
+    /**
+     * Get context keys.
+     *
+     * @access  public
+     * @return  \Hoa\Ruler\Model
+     */
+    public function getContextKeys ( ) {
+
+        return $this->_contextKeys;
     }
 }
 
