@@ -139,8 +139,12 @@ class Ruler {
      * @throw   \Hoa\Ruler\Exception
      */
     public static function interprete ( $rule ) {
-
-        return static::getInterpreter()->visit(
+        
+        $interpreter = static::getInterpreter();
+        //clear content keys
+        $interpreter->clearContentKeys();
+        
+        return $interpreter->visit(
             static::getCompiler()->parse($rule)
         );
     }
