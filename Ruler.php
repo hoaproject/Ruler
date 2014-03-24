@@ -142,7 +142,7 @@ class Ruler {
         
         $interpreter = static::getInterpreter();
         //clear content keys
-        $interpreter->clearContentKeys();
+        $interpreter->clearContextKeys();
         
         return $interpreter->visit(
             static::getCompiler()->parse($rule)
