@@ -85,9 +85,9 @@ class Interpreter implements \Hoa\Visitor\Visit {
     protected $_current = null;
 
     /**
-     * Current node.
+     * Context keys.
      *
-     * @var \Hoa\Ruler\Visitor\Interpreter object
+     * @var array
      */
     protected $_contextKeys = array();
     
@@ -282,7 +282,7 @@ class Interpreter implements \Hoa\Visitor\Visit {
      * Get context keys.
      *
      * @access  public
-     * @return  \Hoa\Ruler\Model
+     * @return  array
      */
     public function getContextKeys ( ) {
 
