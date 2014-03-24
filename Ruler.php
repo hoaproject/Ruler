@@ -232,7 +232,7 @@ class Ruler {
      * @access  public
      * @return  array
      */
-    public function getContextKeys ( $rule ) {
+    public function getContextKeys ( ) {
 
         return static::getInterpreter()->getContextKeys();
     }
