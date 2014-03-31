@@ -116,121 +116,152 @@ class Asserter implements Visitor\Visit {
             throw new Ruler\Exeption\Asserter(
                 'Assert needs a context to work properly.', 0);
 
-        $out = null;
-
         if($element instanceof Ruler\Model)
-            $out = (bool) $element->getExpression()->accept($this, $handle, $eldnah);
-        elseif($element instanceof Ruler\Model\Operator) {
-
-            $name      = $element->getName();
-            $arguments = array();
-
-            foreach($element->getArguments() as $argument)
-                $arguments[] = $argument->accept($this, $handle, $eldnah);
-
-            if(false === $this->operatorExists($name))
-                throw new Ruler\Exception\Asserter(
-                    'Operator %s does not exist.', 1, $name);
-
-            $out = $this->getOperator($name)->distributeArguments($arguments);
-        }
+            return $this->visitModel($element, $handle, $eldnah);
+        elseif($element instanceof Ruler\Model\Operator)
+            return $this->visitOperator($element, $handle, $eldnah);
         elseif($element instanceof Ruler\Model\Bag\Scalar)
-            $out = $element->getValue();
-        elseif($element instanceof Ruler\Model\Bag\RulerArray) {
+            return $this->visitScalar($element);
+        elseif($element instanceof Ruler\Model\Bag\RulerArray)
+            return $this->visitArray($element, $handle, $eldnah);
+        elseif($element instanceof Ruler\Model\Bag\Context)
+            return $this->visitContext($element, $context, $handle, $eldnah);
+    }
 
-            $out = [];
+    protected function visitModel ( Visitor\Element $element, $handle, $eldnah ) {
 
-            foreach($element->getArray() as $key => $data)
-                $out[$key] = $data->accept($this, $handle, $eldnah);
-        }
-        elseif($element instanceof Ruler\Model\Bag\Context) {
+        return (bool) $element->getExpression()->accept($this, $handle, $eldnah);
+    }
 
-            $id = $element->getId();
+    protected function visitOperator ( Visitor\Element $element, $handle, $eldnah ) {
 
-            if(!isset($context[$id]))
-                throw new Ruler\Exception\Asserter(
-                    'Context reference %s does not exists.', 0, $id);
+        $name      = $element->getName();
+        $arguments = [];
 
-            $_out = $context[$id];
+        foreach($element->getArguments() as $argument)
+            $arguments[] = $argument->accept($this, $handle, $eldnah);
 
-            foreach($element->getDimensions() as $i => $dimension) {
+        if(false === $this->operatorExists($name))
+            throw new Ruler\Exception\Asserter(
+                'Operator %s does not exist.', 1, $name);
 
-                $value = $dimension[Ruler\Model\Bag\Context::ACCESS_VALUE];
+        return $this->getOperator($name)->distributeArguments($arguments);
+    }
 
-                switch($dimension[Ruler\Model\Bag\Context::ACCESS_TYPE]) {
+    protected function visitScalar ( Visitor\Element $element ) {
 
-                    case Ruler\Model\Bag\Context::ARRAY_ACCESS:
-                        $key = $value->accept($this, $handle, $eldnah);
+        return $element->getValue();
+    }
 
-                        if(!is_array($_out))
-                            throw new Ruler\Exception\Asserter(
-                                'Try to access to an undefined index: %s ' .
-                                '(dimension number %d of %s), because it is ' .
-                                'not an array.',
-                                1, [$key, $i +1, $id]);
+    protected function visitArray ( Visitor\Element $element, $handle, $eldnah ) {
 
-                        if(!isset($_out[$key]))
-                            throw new Ruler\Exception\Asserter(
-                                'Try to access to an undefined index: %s ' .
-                                '(dimension number %d of %s).',
-                                1, [$key, $i + 1, $id]);
+        $out = [];
 
-                        $_out = $_out[$key];
-                      break;
+        foreach($element->getArray() as $key => $data)
+            $out[$key] = $data->accept($this, $handle, $eldnah);
 
-                    case Ruler\Model\Bag\Context::ATTRIBUTE_ACCESS:
-                        $attribute = $value;
+        return $out;
+    }
 
-                        if(!is_object($_out))
-                            throw new Ruler\Exception\Asserter(
-                                'Try to read an undefined attribute: %s ' .
-                                '(dimension number %d of %s), because it is ' .
-                                'not an object.',
-                                2, [$attribute, $i + 1, $id]);
+    protected function visitContext ( Visitor\Element $element, Ruler\Context $context, $handle, $eldnah ) {
 
-                        if(!property_exists($_out, $attribute))
-                            throw new Ruler\Exception\Asserter(
-                                'Try to read an undefined attribute: %s ' .
-                                '(dimension number %d of %s).',
-                                3, [$attribute, $i + 1, $id]);
+        $id = $element->getId();
 
-                        $_out = $_out->$attribute;
-                      break;
+        if(!isset($context[$id]))
+            throw new Ruler\Exception\Asserter(
+                'Context reference %s does not exists.', 0, $id);
 
-                    case Ruler\Model\Bag\Context::METHOD_ACCESS:
-                        $method = $value->getName();
+        $out = $context[$id];
 
-                        if(!is_object($_out))
-                            throw new Ruler\Exception\Asserter(
-                                'Try to call an undefined method: %s ' .
-                                '(dimension number %d of %s), because it is ' .
-                                'not an object.',
-                                4, [$method, $i + 1, $id]);
+        foreach($element->getDimensions() as $i => $dimension) {
 
-                        if(!method_exists($_out, $method))
-                            throw new Ruler\Exception\Asserter(
-                                'Try to call an undefined method: %s ' .
-                                '(dimension number %d of %s).',
-                                5, [$method, $i + 1, $id]);
+            $value = $dimension[Ruler\Model\Bag\Context::ACCESS_VALUE];
 
-                        $arguments = [];
+            switch($dimension[Ruler\Model\Bag\Context::ACCESS_TYPE]) {
 
-                        foreach($value->getArguments() as $argument)
-                            $arguments[] = $argument->accept($this, $handle, $eldnah);
+            case Ruler\Model\Bag\Context::ARRAY_ACCESS:
+                return $this->visitContextArray($value, $out, $i, $id, $handle, $eldnah);
+                break;
 
-                        $_out = call_user_func_array(
-                            [$_out, $method],
-                            $arguments
-                        );
-                      break;
-                }
+            case Ruler\Model\Bag\Context::ATTRIBUTE_ACCESS:
+                return $this->visitContextAttribute($value, $out, $i, $id);
+                break;
 
+            case Ruler\Model\Bag\Context::METHOD_ACCESS:
+                return $this->visitContextMethod($value, $out, $i, $id, $handle, $eldnah);
+                break;
             }
-
-            $out = $_out;
         }
 
         return $out;
+    }
+
+    protected function visitContextArray ( $value, $out, $i, $id, $handle, $eldnah ) {
+
+        $key = $value->accept($this, $handle, $eldnah);
+
+        if(!is_array($out))
+            throw new Ruler\Exception\Asserter(
+                'Try to access to an undefined index: %s ' .
+                '(dimension number %d of %s), because it is ' .
+                'not an array.',
+                1, [$key, $i +1, $id]);
+
+        if(!isset($out[$key]))
+            throw new Ruler\Exception\Asserter(
+                'Try to access to an undefined index: %s ' .
+                '(dimension number %d of %s).',
+                1, [$key, $i + 1, $id]);
+
+        return $out[$key];
+    }
+
+    protected function visitContextAttribute ( $value, $out, $i, $id ) {
+
+        $attribute = $value;
+
+        if(!is_object($out))
+            throw new Ruler\Exception\Asserter(
+                'Try to read an undefined attribute: %s ' .
+                '(dimension number %d of %s), because it is ' .
+                'not an object.',
+                2, [$attribute, $i + 1, $id]);
+
+        if(!property_exists($out, $attribute))
+            throw new Ruler\Exception\Asserter(
+                'Try to read an undefined attribute: %s ' .
+                '(dimension number %d of %s).',
+                3, [$attribute, $i + 1, $id]);
+
+        return $out->$attribute;
+    }
+
+    protected function visitContextMethod ( $value, $out, $i, $id, $handle, $eldnah ) {
+
+        $method = $value->getName();
+
+        if(!is_object($out))
+            throw new Ruler\Exception\Asserter(
+                'Try to call an undefined method: %s ' .
+                '(dimension number %d of %s), because it is ' .
+                'not an object.',
+                4, [$method, $i + 1, $id]);
+
+        if(!method_exists($out, $method))
+            throw new Ruler\Exception\Asserter(
+                'Try to call an undefined method: %s ' .
+                '(dimension number %d of %s).',
+                5, [$method, $i + 1, $id]);
+
+        $arguments = [];
+
+        foreach($value->getArguments() as $argument)
+            $arguments[] = $argument->accept($this, $handle, $eldnah);
+
+        return call_user_func_array(
+            [$out, $method],
+            $arguments
+        );
     }
 
     /**
@@ -265,7 +296,7 @@ class Asserter implements Visitor\Visit {
      * @access  public
      * @param   string  $operator     Operator.
      * @param   string  $classname    Classname.
-     * @return  \Hoa\Ruler\Visitor\Asserter
+     * @return  Ruler\Visitor\Asserter
      */
     public function setOperator ( $operator, $classname ) {
 
