@@ -128,12 +128,30 @@ class Asserter implements Visitor\Visit {
             return $this->visitContext($element, $context, $handle, $eldnah);
     }
 
-    protected function visitModel ( Visitor\Element $element, $handle, $eldnah ) {
+    /**
+     * Visit a model
+     *
+     * @access  public
+     * @param   \Hoa\Visitor\Element  $element    Element to visit.
+     * @param   mixed                 &$handle    Handle (reference).
+     * @param   mixed                 $eldnah     Handle (not reference).
+     * @return  mixed
+     */
+    public function visitModel ( \Hoa\Visitor\Element $element, $handle, $eldnah ) {
 
         return (bool) $element->getExpression()->accept($this, $handle, $eldnah);
     }
 
-    protected function visitOperator ( Visitor\Element $element, $handle, $eldnah ) {
+    /**
+     * Visit an operator
+     *
+     * @access  public
+     * @param   \Hoa\Visitor\Element  $element    Element to visit.
+     * @param   mixed                 &$handle    Handle (reference).
+     * @param   mixed                 $eldnah     Handle (not reference).
+     * @return  mixed
+     */
+    protected function visitOperator ( \Hoa\Visitor\Element $element, $handle, $eldnah ) {
 
         $name      = $element->getName();
         $arguments = [];
@@ -148,12 +166,28 @@ class Asserter implements Visitor\Visit {
         return $this->getOperator($name)->distributeArguments($arguments);
     }
 
-    protected function visitScalar ( Visitor\Element $element ) {
+    /**
+     * Visit a scalar
+     *
+     * @access  public
+     * @param   \Hoa\Visitor\Element  $element    Element to visit.
+     * @return  mixed
+     */
+    protected function visitScalar ( \Hoa\Visitor\Element $element ) {
 
         return $element->getValue();
     }
 
-    protected function visitArray ( Visitor\Element $element, $handle, $eldnah ) {
+    /**
+     * Visit an array
+     *
+     * @access  public
+     * @param   \Hoa\Visitor\Element  $element    Element to visit.
+     * @param   mixed                 &$handle    Handle (reference).
+     * @param   mixed                 $eldnah     Handle (not reference).
+     * @return  array<mixed>
+     */
+    protected function visitArray ( \Hoa\Visitor\Element $element, $handle, $eldnah ) {
 
         $out = [];
 
@@ -163,7 +197,17 @@ class Asserter implements Visitor\Visit {
         return $out;
     }
 
-    protected function visitContext ( Visitor\Element $element, Ruler\Context $context, $handle, $eldnah ) {
+    /**
+     * Visit a context
+     *
+     * @access  public
+     * @param   \Hoa\Visitor\Element $element    Element to visit.
+     * @param   \Hoa\Ruler\Context   $context    Ruler context.
+     * @param   mixed                &$handle    Handle (reference).
+     * @param   mixed                $eldnah     Handle (not reference).
+     * @return  mixed
+     */
+    protected function visitContext ( \Hoa\Visitor\Element $element, \Hoa\Ruler\Context $context, $handle, $eldnah ) {
 
         $id = $element->getId();
 
@@ -196,6 +240,18 @@ class Asserter implements Visitor\Visit {
         return $out;
     }
 
+    /**
+     * Visit a context array
+     *
+     * @access  public
+     * @param   mixed  $value  value
+     * @param   mixed  $out    out
+     * @param   mixed  $i      i
+     * @param   mixed  $id     id
+     * @param   mixed  $handle handle
+     * @param   mixed  $eldnah eldnah
+     * @return  mixed
+     */
     protected function visitContextArray ( $value, $out, $i, $id, $handle, $eldnah ) {
 
         $key = $value->accept($this, $handle, $eldnah);
@@ -216,6 +272,17 @@ class Asserter implements Visitor\Visit {
         return $out[$key];
     }
 
+
+    /**
+     * Visit a context attribute
+     *
+     * @access  public
+     * @param   mixed  $value  value
+     * @param   mixed  $out    out
+     * @param   mixed  $i      i
+     * @param   mixed  $id     id
+     * @return  mixed
+     */
     protected function visitContextAttribute ( $value, $out, $i, $id ) {
 
         $attribute = $value;
@@ -236,6 +303,18 @@ class Asserter implements Visitor\Visit {
         return $out->$attribute;
     }
 
+    /**
+     * Visit a context method
+     *
+     * @access  public
+     * @param   mixed  $value  value
+     * @param   mixed  $out    out
+     * @param   mixed  $i      i
+     * @param   mixed  $id     id
+     * @param   mixed  $handle handle
+     * @param   mixed  $eldnah eldnah
+     * @return  mixed
+     */
     protected function visitContextMethod ( $value, $out, $i, $id, $handle, $eldnah ) {
 
         $method = $value->getName();
