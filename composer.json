@@ -21,8 +21,8 @@
         "source": "http://git.hoa-project.net/"
     },
     "require": {
-        "hoa/core"    : "~1.0",
-        "hoa/compiler": "~1.0",
+        "hoa/core"    : "~2.0",
+        "hoa/compiler": "~2.0",
         "hoa/file"    : "~0.0",
         "hoa/visitor" : "~0.0"
     },
