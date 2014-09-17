@@ -22,6 +22,23 @@ manipulate promotion or special offer rules written by a user. To quote
 > decisions to be defined, tested, executed and maintained separately from
 > application code.
 
+## Installation
+
+With [Composer](http://getcomposer.org/), to include this library into your
+dependencies, you need to require
+[`hoa/ruler`](https://packagist.org/packages/hoa/ruler):
+
+```json
+{
+    "require": {
+        "hoa/ruler": "~0.0"
+    }
+}
+```
+
+Please, read the website to [get more informations about how to
+install](http://hoa-project.net/Source.html).
+
 ## Quick usage
 
 As a quick overview, we propose to see a very simple example that manipulates a
