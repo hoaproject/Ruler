@@ -27,5 +27,10 @@
         "hoa/visitor" : "~0.0"
     },
     "target-dir": "Hoa/Ruler",
-    "autoload"  : { "psr-0": { "Hoa\\Ruler": "." } }
+    "autoload"  : { "psr-0": { "Hoa\\Ruler": "." } },
+    "extra"     : {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
+    }
 }
