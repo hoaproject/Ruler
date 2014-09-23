@@ -36,6 +36,7 @@
 
 namespace Hoa\Ruler\Visitor;
 
+use Hoa\Core;
 use Hoa\Ruler;
 use Hoa\Visitor;
 
