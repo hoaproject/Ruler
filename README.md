@@ -76,18 +76,24 @@ var_dump(
  */
 ```
 
+### Adding operators and functions
+
 In the next example, we have a `User` object and a context that is populated
 dynamically (when the `user` variable is concretized, two new variables, `group`
 and `points` are created). Moreover, we will create a new operator/function
 called `logged`. There is no difference between an operator and a function
 except that an operator has two operands (so arguments).
 
-### Adding operators and functions
+So far, we have the following operators/functions (in precedence order):
 
-For now, we have the following operators/functions by default: `and`, `or`,
-`xor`, `not`, `=` (`is` as an alias), `!=`, `>`, `>=`, `<`, `<=`, `in` and
-`sum`. We can add our own by different way. The simplest and volatile one is
-given in the following example. Thus:
+  * logical: `not`, `and`, `or` and `xor`,
+  * user-defined, with by default `=` (`is` as an alias), `!=`, `>`, `>=`, `<`,
+    `<=`, `in` and `sum`,
+  * arithmetical: `+`, `-` (or `−`), `*` (or `×`), `/` (or `÷`), `**`
+    and `%`.
+
+We can add our own by different ways. The simplest and volatile one is given in
+the following example. Thus:
 
 ```php
 // The User object.

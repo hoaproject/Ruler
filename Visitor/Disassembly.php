@@ -97,10 +97,7 @@ class Disassembly implements \Hoa\Visitor\Visit {
                 else
                     $_out = $arguments[0] . ' ' . $name . ' ' . $arguments[1];
 
-                if(false === \Hoa\Ruler\Model\Operator::isToken($name))
-                    $_out = '(' . $_out . ')';
-
-                $out .= $_out;
+                $out .= '(' . $_out . ')';
             }
 
         }

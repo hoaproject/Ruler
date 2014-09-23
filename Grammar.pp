@@ -56,10 +56,17 @@
 %token  or            (?i)or
 %token  xor           (?i)xor
 
+// Arithmetical operators.
+%token  plus          \+
+%token  minus         \-|−
+%token  pow           \*\*
+%token  times         \*|×
+%token  div           /|÷
+%token  percent       %
+
 // Value
 %token  string        ("|')(.*?)(?<!\\)\1
-%token  float         \d+\.\d+
-%token  integer       \d+
+%token  number        (0|[1-9]\d*)(\.\d+)?([eE][\+\-]?\d+)?
 %token  parenthesis_  \(
 %token _parenthesis   \)
 %token  bracket_      \[
@@ -77,15 +84,36 @@ logical_operation:
     ( ( ::and:: #and | ::or:: #or | ::xor:: #xor ) logical_operation() )?
 
 operation:
-    operand() ( <identifier> logical_operation() #operation )?
+    arithmetical_expression() ( <identifier> logical_operation() #operation )?
 
-operand:
-    ::parenthesis_:: logical_operation() ::_parenthesis::
+arithmetical_expression:
+    arithmetical_primary_expression()
+    ( ( ::plus:: #addition | ::minus:: #substraction ) arithmetical_expression() )?
+
+arithmetical_primary_expression:
+    arithmetical_term_expression()
+    (
+        (
+            ::times::   #multiplication
+          | ::div::     #division
+          | ::pow::     #power
+          | ::percent:: #modulo
+        )
+        arithmetical_expression()
+    )?
+
+arithmetical_term_expression:
+    ( ::parenthesis_:: logical_operation() ::_parenthesis:: )
+  | ( ::minus:: #negative | ::plus:: ) arithmetical_term_expression()
   | value()
 
 value:
     ::not:: logical_operation() #not
-  | <true> | <false> | <null> | <float> | <integer> | <string>
+  | <true>
+  | <false>
+  | <null>
+  | <number>
+  | <string>
   | variable()
   | array_declaration()
   | function_call()
