@@ -199,10 +199,10 @@ echo Hoa\Ruler\Ruler::interprete(
  *             $model->and(
  *                 $model->in(
  *                     $model->variable('group'),
- *                     array(
+ *                     [
  *                         'customer',
  *                         'guest'
- *                     )
+ *                     ]
  *                 ),
  *                 $model->{'>'}(
  *                     $model->variable('points'),

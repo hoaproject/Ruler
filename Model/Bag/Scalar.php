@@ -34,18 +34,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace {
-
-from('Hoa')
-
-/**
- * \Hoa\Ruler\Model\Bag
- */
--> import('Ruler.Model.Bag.~');
-
-}
-
-namespace Hoa\Ruler\Model\Bag {
+namespace Hoa\Ruler\Model\Bag;
 
 /**
  * Class \Hoa\Ruler\Model\Bag\Scalar.
@@ -93,6 +82,4 @@ class Scalar extends Bag {
 
         return $this->_value;
     }
-}
-
 }

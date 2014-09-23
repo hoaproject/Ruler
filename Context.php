@@ -34,18 +34,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace {
-
-from('Hoa')
-
-/**
- * \Hoa\Ruler\Exception
- */
--> import('Ruler.Exception.~');
-
-}
-
-namespace Hoa\Ruler {
+namespace Hoa\Ruler;
 
 /**
  * Class \Hoa\Ruler\Context.
@@ -72,7 +61,7 @@ class Context implements \ArrayAccess {
      *
      * @var \Hoa\Ruler\Context array
      */
-    protected $_data  = array();
+    protected $_data  = [];
 
 
 
@@ -83,7 +72,7 @@ class Context implements \ArrayAccess {
      * @param   array  $data    Initial data.
      * @return  void
      */
-    public function __construct ( Array $data = array() ) {
+    public function __construct ( Array $data = [] ) {
 
         $this->_data = $data;
 
@@ -154,6 +143,4 @@ class Context implements \ArrayAccess {
 
         return;
     }
-}
-
 }

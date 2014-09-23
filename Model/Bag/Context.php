@@ -34,33 +34,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace {
+namespace Hoa\Ruler\Model\Bag;
 
-from('Hoa')
-
-/**
- * \Hoa\Ruler\Exception\Asserter
- */
--> import('Ruler.Exception.Asserter')
-
-/**
- * \Hoa\Ruler\Model\Bag
- */
--> import('Ruler.Model.Bag.~')
-
-/**
- * \Hoa\Ruler\Model\Bag\Scalar
- */
--> import('Ruler.Model.Bag.Scalar')
-
-/**
- * \Hoa\Ruler\Model\Bag\RulerArray
- */
--> import('Ruler.Model.Bag.RulerArray');
-
-}
-
-namespace Hoa\Ruler\Model\Bag {
+use Hoa\Ruler;
 
 /**
  * Class \Hoa\Ruler\Model\Bag\Context.
@@ -122,7 +98,7 @@ class Context extends Bag {
      *
      * @var \Hoa\Ruler\Bag\Context array
      */
-    protected $_dimensions = array();
+    protected $_dimensions = [];
 
 
 
@@ -154,10 +130,10 @@ class Context extends Bag {
         elseif(is_array($index))
             $index = new RulerArray($index);
 
-        $this->_dimensions[] = array(
+        $this->_dimensions[] = [
             static::ACCESS_TYPE  => static::ARRAY_ACCESS,
             static::ACCESS_VALUE => $index
-        );
+        ];
 
         return $this;
     }
@@ -171,10 +147,10 @@ class Context extends Bag {
      */
     public function attribute ( $attribute ) {
 
-        $this->_dimensions[] = array(
+        $this->_dimensions[] = [
             static::ACCESS_TYPE  => static::ATTRIBUTE_ACCESS,
             static::ACCESS_VALUE => $attribute
-        );
+        ];
 
         return $this;
     }
@@ -186,12 +162,12 @@ class Context extends Bag {
      * @param   \Hoa\Ruler\Model\Operator  $method    Method to call.
      * @return  \Hoa\Ruler\Model\Bag\Context
      */
-    public function call ( \Hoa\Ruler\Model\Operator $method ) {
+    public function call ( Ruler\Model\Operator $method ) {
 
-        $this->_dimensions[] = array(
+        $this->_dimensions[] = [
             static::ACCESS_TYPE  => static::METHOD_ACCESS,
             static::ACCESS_VALUE => $method
-        );
+        ];
 
         return $this;
     }
@@ -217,6 +193,4 @@ class Context extends Bag {
 
         return $this->_id;
     }
-}
-
 }

@@ -34,23 +34,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace {
+namespace Hoa\Ruler\Visitor;
 
-from('Hoa')
-
-/**
- * \Hoa\Ruler\Model\Bag\Context
- */
--> import('Ruler.Model.Bag.Context')
-
-/**
- * \Hoa\Visitor\Visit
- */
--> import('Visitor.Visit');
-
-}
-
-namespace Hoa\Ruler\Visitor {
+use Hoa\Core;
+use Hoa\Ruler;
+use Hoa\Visitor;
 
 /**
  * Class \Hoa\Ruler\Visitor\Compiler.
@@ -83,12 +71,12 @@ class Compiler implements \Hoa\Visitor\Visit {
      * @param   mixed                 $eldnah     Handle (not reference).
      * @return  mixed
      */
-    public function visit ( \Hoa\Visitor\Element $element, &$handle = null, $eldnah = null ) {
+    public function visit ( Visitor\Element $element, &$handle = null, $eldnah = null ) {
 
         $out = null;
         $_   = str_repeat('    ', $this->_indentation);
 
-        if($element instanceof \Hoa\Ruler\Model) {
+        if($element instanceof Ruler\Model) {
 
             $this->_indentation = 1;
 
@@ -97,14 +85,14 @@ class Compiler implements \Hoa\Visitor\Visit {
                    $element->getExpression()->accept($this, $handle, $eldnah) .
                    ';';
         }
-        elseif($element instanceof \Hoa\Ruler\Model\Operator) {
+        elseif($element instanceof Ruler\Model\Operator) {
 
             $out  = $_ . '$model->';
             $name = $element->getName();
 
             if(false === $element->isFunction()) {
 
-                if(true === \Hoa\Core\Consistency::isIdentifier($name))
+                if(true === Core\Consistency::isIdentifier($name))
                     $out .= $name;
                 else
                     $out .= '{\'' . $name . '\'}';
@@ -115,7 +103,7 @@ class Compiler implements \Hoa\Visitor\Visit {
                 $out .= 'func(' . "\n" . $_ . '    ' .
                         '\'' . $name . '\',' . "\n";
 
-            $_handle  = array();
+            $_handle = [];
             ++$this->_indentation;
 
             foreach($element->getArguments() as $argument)
@@ -125,7 +113,7 @@ class Compiler implements \Hoa\Visitor\Visit {
 
             $out .= implode(',' . "\n", $_handle) . "\n" . $_ . ')';
         }
-        elseif($element instanceof \Hoa\Ruler\Model\Bag\Scalar) {
+        elseif($element instanceof Ruler\Model\Bag\Scalar) {
 
             $value = $element->getValue();
             $out   = $_;
@@ -143,9 +131,9 @@ class Compiler implements \Hoa\Visitor\Visit {
                        str_replace('\\', '\\\'', $value) .
                        '\'';
         }
-        elseif($element instanceof \Hoa\Ruler\Model\Bag\RulerArray) {
+        elseif($element instanceof Ruler\Model\Bag\RulerArray) {
 
-            $values = array();
+            $values = [];
             ++$this->_indentation;
 
             foreach($element->getArray() as $value)
@@ -153,32 +141,33 @@ class Compiler implements \Hoa\Visitor\Visit {
 
             --$this->_indentation;
 
-            $out = $_ . 'array(' . "\n" . implode(',' . "\n", $values) . "\n" .
-                   $_ . ')';
+            $out = $_ . '[' . "\n" .
+                   implode(',' . "\n", $values) . "\n" .
+                   $_ . ']';
         }
-        elseif($element instanceof \Hoa\Ruler\Model\Bag\Context) {
+        elseif($element instanceof Ruler\Model\Bag\Context) {
 
             $out = $_ . '$model->variable(\'' . $element->getId() . '\')';
             $this->_indentation += 2;
 
             foreach($element->getDimensions() as $dimension) {
 
-                $value  = $dimension[\Hoa\Ruler\Model\Bag\Context::ACCESS_VALUE];
+                $value  = $dimension[Ruler\Model\Bag\Context::ACCESS_VALUE];
                 $out   .= "\n" . $_ . '    ->';
 
-                switch($dimension[\Hoa\Ruler\Model\Bag\Context::ACCESS_TYPE]) {
+                switch($dimension[Ruler\Model\Bag\Context::ACCESS_TYPE]) {
 
-                    case \Hoa\Ruler\Model\Bag\Context::ARRAY_ACCESS:
+                    case Ruler\Model\Bag\Context::ARRAY_ACCESS:
                         $out .= 'index(' . "\n" .
                                 $value->accept($this, $handle, $eldnah) . "\n" .
                                 $_ . '    )';
                       break;
 
-                    case \Hoa\Ruler\Model\Bag\Context::ATTRIBUTE_ACCESS:
+                    case Ruler\Model\Bag\Context::ATTRIBUTE_ACCESS:
                         $out .= 'attribute(\'' . $value . '\')';
                       break;
 
-                    case \Hoa\Ruler\Model\Bag\Context::METHOD_ACCESS:
+                    case Ruler\Model\Bag\Context::METHOD_ACCESS:
                         $out .= 'call(' . "\n" .
                                 $value->accept($this, $handle, $eldnah) . "\n" .
                                 $_ . '    )';
@@ -191,6 +180,4 @@ class Compiler implements \Hoa\Visitor\Visit {
 
         return $out;
     }
-}
-
 }

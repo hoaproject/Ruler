@@ -34,23 +34,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace {
+namespace Hoa\Ruler\Bin;
 
-from('Hoa')
-
-/**
- * \Hoa\Ruler
- */
--> import('Ruler.~')
-
-/**
- * \Hoa\Ruler\Context
- */
--> import('Ruler.Context');
-
-}
-
-namespace Hoa\Ruler\Bin {
+use Hoa\Console;
+use Hoa\Ruler;
 
 /**
  * Class \Hoa\Ruler\Bin\Assert.
@@ -62,17 +49,17 @@ namespace Hoa\Ruler\Bin {
  * @license    New BSD License
  */
 
-class Assert extends \Hoa\Console\Dispatcher\Kit {
+class Assert extends Console\Dispatcher\Kit {
 
     /**
      * Options description.
      *
      * @var \Hoa\Ruler\Bin\Shell array
      */
-    protected $options = array(
-        array('help', \Hoa\Console\GetOption::NO_ARGUMENT, 'h'),
-        array('help', \Hoa\Console\GetOption::NO_ARGUMENT, '?')
-    );
+    protected $options = [
+        ['help', Console\GetOption::NO_ARGUMENT, 'h'],
+        ['help', Console\GetOption::NO_ARGUMENT, '?']
+    ];
 
 
 
@@ -84,8 +71,8 @@ class Assert extends \Hoa\Console\Dispatcher\Kit {
      */
     public function main ( ) {
 
-        $ruler   = new \Hoa\Ruler();
-        $context = new \Hoa\Ruler\Context();
+        $ruler   = new Ruler();
+        $context = new Ruler\Context();
 
         while(false !== $c = $this->getOption($v)) switch($c) {
 
@@ -116,16 +103,14 @@ class Assert extends \Hoa\Console\Dispatcher\Kit {
 
         echo 'Usage   : ruler:assert <options> rule', "\n",
              'Options :', "\n",
-             $this->makeUsageOptionsList(array(
+             $this->makeUsageOptionsList([
                  'help' => 'This help.'
-             )), "\n",
+             ]), "\n",
              'Example : -x=2 -y=6 \'x in [1, 2, 4] and x < y\'.', "\n",
              'See $? to see the result (0 for true, > 0 for false).', "\n";
 
         return;
     }
-}
-
 }
 
 __halt_compiler();

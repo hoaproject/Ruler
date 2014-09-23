@@ -34,7 +34,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Hoa\Ruler {
+namespace Hoa\Ruler;
+
+use Hoa\Core;
 
 /**
  * Class \Hoa\Ruler\DynamicCallable.
@@ -47,6 +49,4 @@ namespace Hoa\Ruler {
  * @license    New BSD License
  */
 
-class DynamicCallable extends \Hoa\Core\Consistency\Xcallable { }
-
-}
+class DynamicCallable extends Core\Consistency\Xcallable { }

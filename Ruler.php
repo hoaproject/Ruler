@@ -34,38 +34,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace {
+namespace Hoa\Ruler;
 
-from('Hoa')
-
-/**
- * \Hoa\Ruler\Context
- */
--> import('Ruler.Context')
-
-/**
- * \Hoa\Ruler\Visitor\Interpreter
- */
--> import('Ruler.Visitor.Interpreter')
-
-/**
- * \Hoa\Ruler\Visitor\Asserter
- */
--> import('Ruler.Visitor.Asserter')
-
-/**
- * \Hoa\Compiler\Llk
- */
--> import('Compiler.Llk.~')
-
-/**
- * \Hoa\File\Read
- */
--> import('File.Read');
-
-}
-
-namespace Hoa\Ruler {
+use Hoa\Compiler;
+use Hoa\Core;
+use Hoa\File;
+use Hoa\Visitor as HVisitor;
 
 /**
  * Class \Hoa\Ruler.
@@ -166,7 +140,7 @@ class Ruler {
      * @param   \Hoa\Visitor\Visit  $visitor    Visitor.
      * @return  \Hoa\Visitor\Visit
      */
-    public function setAsserter ( \Hoa\Visitor\Visit $visitor ) {
+    public function setAsserter ( HVisitor\Visit $visitor ) {
 
         $old             = $this->_asserter;
         $this->_asserter = $visitor;
@@ -219,21 +193,15 @@ class Ruler {
     public static function getCompiler ( ) {
 
         if(null === static::$_compiler)
-            static::$_compiler = \Hoa\Compiler\Llk::load(
-                new \Hoa\File\Read('hoa://Library/Ruler/Grammar.pp')
+            static::$_compiler = Compiler\Llk::load(
+                new File\Read('hoa://Library/Ruler/Grammar.pp')
             );
 
         return static::$_compiler;
     }
 }
 
-}
-
-namespace {
-
 /**
  * Flex entity.
  */
-Hoa\Core\Consistency::flexEntity('Hoa\Ruler\Ruler');
-
-}
+Core\Consistency::flexEntity('Hoa\Ruler\Ruler');

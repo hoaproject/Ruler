@@ -34,28 +34,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace {
+namespace Hoa\Ruler\Visitor;
 
-from('Hoa')
-
-/**
- * \Hoa\Ruler\Exception\Asserter
- */
--> import('Ruler.Exception.Asserter')
-
-/**
- * \Hoa\Ruler\Model\Bag\Context
- */
--> import('Ruler.Model.Bag.Context')
-
-/**
- * \Hoa\Visitor\Visit
- */
--> import('Visitor.Visit');
-
-}
-
-namespace Hoa\Ruler\Visitor {
+use Hoa\Ruler;
+use Hoa\Visitor;
 
 /**
  * Class \Hoa\Ruler\Visitor\Asserter.
@@ -68,7 +50,7 @@ namespace Hoa\Ruler\Visitor {
  * @license    New BSD License
  */
 
-class Asserter implements \Hoa\Visitor\Visit {
+class Asserter implements Visitor\Visit {
 
     /**
      * Context.
@@ -82,7 +64,7 @@ class Asserter implements \Hoa\Visitor\Visit {
      *
      * @var \Hoa\Ruler\Visitor\Asserter array
      */
-    protected $_operators = array();
+    protected $_operators = [];
 
 
 
@@ -93,7 +75,7 @@ class Asserter implements \Hoa\Visitor\Visit {
      * @param   \Hoa\Ruler\Context  $context    Context.
      * @return  void
      */
-    public function __construct ( \Hoa\Ruler\Context $context = null ) {
+    public function __construct ( Ruler\Context $context = null ) {
 
         if(null !== $context)
             $this->setContext($context);
@@ -125,19 +107,19 @@ class Asserter implements \Hoa\Visitor\Visit {
      * @return  mixed
      * @throw   \Hoa\Ruler\Exception\Asserter
      */
-    public function visit ( \Hoa\Visitor\Element $element, &$handle = null, $eldnah = null ) {
+    public function visit ( Visitor\Element $element, &$handle = null, $eldnah = null ) {
 
         $context = $this->getContext();
 
         if(null === $context)
-            throw new \Hoa\Ruler\Exeption\Asserter(
+            throw new Ruler\Exeption\Asserter(
                 'Assert needs a context to work properly.', 0);
 
         $out = null;
 
-        if($element instanceof \Hoa\Ruler\Model)
+        if($element instanceof Ruler\Model)
             $out = (bool) $element->getExpression()->accept($this, $handle, $eldnah);
-        elseif($element instanceof \Hoa\Ruler\Model\Operator) {
+        elseif($element instanceof Ruler\Model\Operator) {
 
             $name      = $element->getName();
             $arguments = array();
@@ -146,97 +128,97 @@ class Asserter implements \Hoa\Visitor\Visit {
                 $arguments[] = $argument->accept($this, $handle, $eldnah);
 
             if(false === $this->operatorExists($name))
-                throw new \Hoa\Ruler\Exception\Asserter(
+                throw new Ruler\Exception\Asserter(
                     'Operator %s does not exist.', 1, $name);
 
             $out = $this->getOperator($name)->distributeArguments($arguments);
         }
-        elseif($element instanceof \Hoa\Ruler\Model\Bag\Scalar)
+        elseif($element instanceof Ruler\Model\Bag\Scalar)
             $out = $element->getValue();
-        elseif($element instanceof \Hoa\Ruler\Model\Bag\RulerArray) {
+        elseif($element instanceof Ruler\Model\Bag\RulerArray) {
 
-            $out = array();
+            $out = [];
 
             foreach($element->getArray() as $key => $data)
                 $out[$key] = $data->accept($this, $handle, $eldnah);
         }
-        elseif($element instanceof \Hoa\Ruler\Model\Bag\Context) {
+        elseif($element instanceof Ruler\Model\Bag\Context) {
 
             $id = $element->getId();
 
             if(!isset($context[$id]))
-                throw new \Hoa\Ruler\Exception\Asserter(
+                throw new Ruler\Exception\Asserter(
                     'Context reference %s does not exists.', 0, $id);
 
             $_out = $context[$id];
 
             foreach($element->getDimensions() as $i => $dimension) {
 
-                $value = $dimension[\Hoa\Ruler\Model\Bag\Context::ACCESS_VALUE];
+                $value = $dimension[Ruler\Model\Bag\Context::ACCESS_VALUE];
 
-                switch($dimension[\Hoa\Ruler\Model\Bag\Context::ACCESS_TYPE]) {
+                switch($dimension[Ruler\Model\Bag\Context::ACCESS_TYPE]) {
 
-                    case \Hoa\Ruler\Model\Bag\Context::ARRAY_ACCESS:
+                    case Ruler\Model\Bag\Context::ARRAY_ACCESS:
                         $key = $value->accept($this, $handle, $eldnah);
 
                         if(!is_array($_out))
-                            throw new \Hoa\Ruler\Exception\Asserter(
+                            throw new Ruler\Exception\Asserter(
                                 'Try to access to an undefined index: %s ' .
                                 '(dimension number %d of %s), because it is ' .
                                 'not an array.',
-                                1, array($key, $i +1, $id));
+                                1, [$key, $i +1, $id]);
 
                         if(!isset($_out[$key]))
-                            throw new \Hoa\Ruler\Exception\Asserter(
+                            throw new Ruler\Exception\Asserter(
                                 'Try to access to an undefined index: %s ' .
                                 '(dimension number %d of %s).',
-                                1, array($key, $i + 1, $id));
+                                1, [$key, $i + 1, $id]);
 
                         $_out = $_out[$key];
                       break;
 
-                    case \Hoa\Ruler\Model\Bag\Context::ATTRIBUTE_ACCESS:
+                    case Ruler\Model\Bag\Context::ATTRIBUTE_ACCESS:
                         $attribute = $value;
 
                         if(!is_object($_out))
-                            throw new \Hoa\Ruler\Exception\Asserter(
+                            throw new Ruler\Exception\Asserter(
                                 'Try to read an undefined attribute: %s ' .
                                 '(dimension number %d of %s), because it is ' .
                                 'not an object.',
-                                2, array($attribute, $i + 1, $id));
+                                2, [$attribute, $i + 1, $id]);
 
                         if(!property_exists($_out, $attribute))
-                            throw new \Hoa\Ruler\Exception\Asserter(
+                            throw new Ruler\Exception\Asserter(
                                 'Try to read an undefined attribute: %s ' .
                                 '(dimension number %d of %s).',
-                                3, array($attribute, $i + 1, $id));
+                                3, [$attribute, $i + 1, $id]);
 
                         $_out = $_out->$attribute;
                       break;
 
-                    case \Hoa\Ruler\Model\Bag\Context::METHOD_ACCESS:
+                    case Ruler\Model\Bag\Context::METHOD_ACCESS:
                         $method = $value->getName();
 
                         if(!is_object($_out))
-                            throw new \Hoa\Ruler\Exception\Asserter(
+                            throw new Ruler\Exception\Asserter(
                                 'Try to call an undefined method: %s ' .
                                 '(dimension number %d of %s), because it is ' .
                                 'not an object.',
-                                4, array($method, $i + 1, $id));
+                                4, [$method, $i + 1, $id]);
 
                         if(!method_exists($_out, $method))
-                            throw new \Hoa\Ruler\Exception\Asserter(
+                            throw new Ruler\Exception\Asserter(
                                 'Try to call an undefined method: %s ' .
                                 '(dimension number %d of %s).',
-                                5, array($method, $i + 1, $id));
+                                5, [$method, $i + 1, $id]);
 
-                        $arguments = array();
+                        $arguments = [];
 
                         foreach($value->getArguments() as $argument)
                             $arguments[] = $argument->accept($this, $handle, $eldnah);
 
                         $_out = call_user_func_array(
-                            array($_out, $method),
+                            [$_out, $method],
                             $arguments
                         );
                       break;
@@ -257,7 +239,7 @@ class Asserter implements \Hoa\Visitor\Visit {
      * @param   \Hoa\Ruler\Context  $context    Context.
      * @return  \Hoa\Ruler\Context
      */
-    public function setContext ( \Hoa\Ruler\Context $context ) {
+    public function setContext ( Ruler\Context $context ) {
 
         $old            = $this->_context;
         $this->_context = $context;
@@ -317,7 +299,7 @@ class Asserter implements \Hoa\Visitor\Visit {
 
         $handle = &$this->_operators[$operator];
 
-        if(!($handle instanceof \Hoa\Core\Consistency\Xcallable))
+        if(!($handle instanceof Core\Consistency\Xcallable))
             $handle = xcallable($handle);
 
         return $this->_operators[$operator];
@@ -332,11 +314,9 @@ class Asserter implements \Hoa\Visitor\Visit {
     public function getOperators ( ) {
 
         foreach($this->_operators as &$operator)
-            if(!($operator instanceof \Hoa\Core\Consistency\Xcallable))
+            if(!($operator instanceof Core\Consistency\Xcallable))
                 $operator = xcallable($operator);
 
         return $this->_operators;
     }
-}
-
 }

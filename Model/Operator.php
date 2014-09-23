@@ -34,28 +34,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace {
+namespace Hoa\Ruler\Model;
 
-from('Hoa')
-
-/**
- * \Hoa\Ruler\Model\Bag\Scalar
- */
--> import('Ruler.Model.Bag.Scalar')
-
-/**
- * \Hoa\Ruler\Model\Bag\RulerArray
- */
--> import('Ruler.Model.Bag.RulerArray')
-
-/**
- * \Hoa\Visitor\Element
- */
--> import('Visitor.Element');
-
-}
-
-namespace Hoa\Ruler\Model {
+use Hoa\Visitor;
 
 /**
  * Class \Hoa\Ruler\Model\Operator.
@@ -68,7 +49,7 @@ namespace Hoa\Ruler\Model {
  * @license    New BSD License
  */
 
-class Operator implements \Hoa\Visitor\Element {
+class Operator implements Visitor\Element {
 
     /**
      * Name.
@@ -102,7 +83,7 @@ class Operator implements \Hoa\Visitor\Element {
      * @param   bool    $isFunction    Whether it is a function.
      * @return  void
      */
-    public function __construct ( $name, Array $arguments = array(),
+    public function __construct ( $name, Array $arguments = [],
                                   $isFunction = true ) {
 
         $this->setName($name);
@@ -205,7 +186,7 @@ class Operator implements \Hoa\Visitor\Element {
      */
     public static function isToken ( $operator ) {
 
-        static $_tokens = array('not', 'and', 'or', 'xor');
+        static $_tokens = ['not', 'and', 'or', 'xor'];
 
         return true === in_array($operator, $_tokens);
     }
@@ -219,11 +200,9 @@ class Operator implements \Hoa\Visitor\Element {
      * @param   mixed               $eldnah     Handle (no reference).
      * @return  mixed
      */
-    public function accept ( \Hoa\Visitor\Visit $visitor,
+    public function accept ( Visitor\Visit $visitor,
                              &$handle = null, $eldnah = null ) {
 
         return $visitor->visit($this, $handle, $eldnah);
     }
-}
-
 }

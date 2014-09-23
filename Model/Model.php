@@ -34,33 +34,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace {
+namespace Hoa\Ruler\Model;
 
-from('Hoa')
-
-/**
- * \Hoa\Ruler\Model\Operator
- */
--> import('Ruler.Model.Operator')
-
-/**
- * \Hoa\Ruler\Model\Bag\Context
- */
--> import('Ruler.Model.Bag.Context')
-
-/**
- * \Hoa\Ruler\Visitor\Compiler
- */
--> import('Ruler.Visitor.Compiler')
-
-/**
- * \Hoa\Visitor\Element
- */
--> import('Visitor.Element');
-
-}
-
-namespace Hoa\Ruler\Model {
+use Hoa\Core;
+use Hoa\Ruler;
+use Hoa\Visitor;
 
 /**
  * Class \Hoa\Ruler\Model.
@@ -73,7 +51,7 @@ namespace Hoa\Ruler\Model {
  * @license    New BSD License
  */
 
-class Model implements \Hoa\Visitor\Element {
+class Model implements Visitor\Element {
 
     /**
      * Root.
@@ -197,7 +175,7 @@ class Model implements \Hoa\Visitor\Element {
      * @param   mixed               $eldnah     Handle (no reference).
      * @return  mixed
      */
-    public function accept ( \Hoa\Visitor\Visit $visitor,
+    public function accept ( Visitor\Visit $visitor,
                              &$handle = null, $eldnah = null ) {
 
         return $visitor->visit($this, $handle, $eldnah);
@@ -212,19 +190,13 @@ class Model implements \Hoa\Visitor\Element {
     public function __toString ( ) {
 
         if(null === static::$_compiler)
-            static::$_compiler = new \Hoa\Ruler\Visitor\Compiler();
+            static::$_compiler = new Ruler\Visitor\Compiler();
 
         return static::$_compiler->visit($this);
     }
 }
 
-}
-
-namespace {
-
 /**
  * Flex entity.
  */
-Hoa\Core\Consistency::flexEntity('Hoa\Ruler\Model\Model');
-
-}
+Core\Consistency::flexEntity('Hoa\Ruler\Model\Model');

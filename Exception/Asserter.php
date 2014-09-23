@@ -34,18 +34,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace {
-
-from('Hoa')
-
-/**
- * \Hoa\Ruler\Exception
- */
--> import('Ruler.Exception.~');
-
-}
-
-namespace Hoa\Ruler\Exception {
+namespace Hoa\Ruler\Exception;
 
 /**
  * Class \Hoa\Ruler\Asserter.
@@ -59,5 +48,3 @@ namespace Hoa\Ruler\Exception {
  */
 
 class Asserter extends Exception { }
-
-}

@@ -34,23 +34,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace {
-
-from('Hoa')
-
-/**
- * \Hoa\Ruler\Model\Bag
- */
--> import('Ruler.Model.Bag.~')
-
-/**
- * \Hoa\Ruler\Model\Bag\Scalar
- */
--> import('Ruler.Model.Bag.Scalar');
-
-}
-
-namespace Hoa\Ruler\Model\Bag {
+namespace Hoa\Ruler\Model\Bag;
 
 /**
  * Class \Hoa\Ruler\Model\Bag\RulerArray.
@@ -109,6 +93,4 @@ class RulerArray extends Bag {
 
         return $this->_array;
     }
-}
-
 }

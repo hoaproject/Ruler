@@ -34,18 +34,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace {
+namespace Hoa\Ruler\Model\Bag;
 
-from('Hoa')
-
-/**
- * \Hoa\Visitor\Element
- */
--> import('Visitor.Element');
-
-}
-
-namespace Hoa\Ruler\Model\Bag {
+use Hoa\Core;
+use Hoa\Visitor;
 
 /**
  * Class \Hoa\Ruler\Model\Bag.
@@ -58,7 +50,7 @@ namespace Hoa\Ruler\Model\Bag {
  * @license    New BSD License
  */
 
-abstract class Bag implements \Hoa\Visitor\Element {
+abstract class Bag implements Visitor\Element {
 
     /**
      * Accept a visitor.
@@ -69,20 +61,14 @@ abstract class Bag implements \Hoa\Visitor\Element {
      * @param   mixed               $eldnah     Handle (no reference).
      * @return  mixed
      */
-    public function accept ( \Hoa\Visitor\Visit $visitor,
+    public function accept ( Visitor\Visit $visitor,
                              &$handle = null, $eldnah = null ) {
 
         return $visitor->visit($this, $handle, $eldnah);
     }
 }
 
-}
-
-namespace {
-
 /**
  * Flex entity.
  */
-Hoa\Core\Consistency::flexEntity('Hoa\Ruler\Model\Bag\Bag');
-
-}
+Core\Consistency::flexEntity('Hoa\Ruler\Model\Bag\Bag');

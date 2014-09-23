@@ -34,28 +34,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace {
+namespace Hoa\Ruler\Visitor;
 
-from('Hoa')
-
-/**
- * \Hoa\Ruler\Exception\Interpreter
- */
--> import('Ruler.Exception.Interpreter')
-
-/**
- * \Hoa\Ruler\Model
- */
--> import('Ruler.Model.~')
-
-/**
- * \Hoa\Visitor\Visit
- */
--> import('Visitor.Visit');
-
-}
-
-namespace Hoa\Ruler\Visitor {
+use Hoa\Ruler;
+use Hoa\Visitor;
 
 /**
  * Class \Hoa\Ruler\Visitor\Interpreter.
@@ -68,7 +50,7 @@ namespace Hoa\Ruler\Visitor {
  * @license    New BSD License
  */
 
-class Interpreter implements \Hoa\Visitor\Visit {
+class Interpreter implements Visitor\Visit {
 
     /**
      * Root.
@@ -96,7 +78,7 @@ class Interpreter implements \Hoa\Visitor\Visit {
      * @return  mixed
      * @throw   \Hoa\Ruler\Exception\Interpreter
      */
-    public function visit ( \Hoa\Visitor\Element $element, &$handle = null, $eldnah = null ) {
+    public function visit ( Visitor\Element $element, &$handle = null, $eldnah = null ) {
 
         $id       = $element->getId();
         $variable = false !== $eldnah;
@@ -104,7 +86,7 @@ class Interpreter implements \Hoa\Visitor\Visit {
         switch($id) {
 
             case '#expression':
-                $this->_root             = new \Hoa\Ruler\Model();
+                $this->_root             = new Ruler\Model();
                 $this->_root->expression = $element->getChild(0)->accept(
                     $this,
                     $handle,
@@ -246,13 +228,13 @@ class Interpreter implements \Hoa\Visitor\Visit {
                         );
 
                     default:
-                        throw new \Hoa\Ruler\Exception\Interpreter(
+                        throw new Ruler\Exception\Interpreter(
                             'Token %s is unknown.', 0, $token);
                 }
               break;
 
             default:
-                throw new \Hoa\Ruler\Exception\Interpreter(
+                throw new Ruler\Exception\Interpreter(
                     'Element %s is unknown.', 1, $id);
         }
 
@@ -269,6 +251,4 @@ class Interpreter implements \Hoa\Visitor\Visit {
 
         return $this->_root;
     }
-}
-
 }

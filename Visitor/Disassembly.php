@@ -34,23 +34,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace {
+namespace Hoa\Ruler\Visitor;
 
-from('Hoa')
-
-/**
- * \Hoa\Ruler\Model\Bag\Context
- */
--> import('Ruler.Model.Bag.Context')
-
-/**
- * \Hoa\Visitor\Visit
- */
--> import('Visitor.Visit');
-
-}
-
-namespace Hoa\Ruler\Visitor {
+use Hoa\Ruler;
+use Hoa\Visitor;
 
 /**
  * Class \Hoa\Ruler\Visitor\Disassembly.
@@ -63,7 +50,7 @@ namespace Hoa\Ruler\Visitor {
  * @license    New BSD License
  */
 
-class Disassembly implements \Hoa\Visitor\Visit {
+class Disassembly implements Visitor\Visit {
 
     /**
      * Visit an element.
@@ -74,13 +61,13 @@ class Disassembly implements \Hoa\Visitor\Visit {
      * @param   mixed                 $eldnah     Handle (not reference).
      * @return  mixed
      */
-    public function visit ( \Hoa\Visitor\Element $element, &$handle = null, $eldnah = null ) {
+    public function visit ( Visitor\Element $element, &$handle = null, $eldnah = null ) {
 
         $out = null;
 
-        if($element instanceof \Hoa\Ruler\Model)
+        if($element instanceof Ruler\Model)
             $out .= $element->getExpression()->accept($this, $handle, $eldnah);
-        elseif($element instanceof \Hoa\Ruler\Model\Operator) {
+        elseif($element instanceof Ruler\Model\Operator) {
 
             $name      = $element->getName();
             $arguments = array();
@@ -97,14 +84,14 @@ class Disassembly implements \Hoa\Visitor\Visit {
                 else
                     $_out = $arguments[0] . ' ' . $name . ' ' . $arguments[1];
 
-                if(false === \Hoa\Ruler\Model\Operator::isToken($name))
+                if(false === Ruler\Model\Operator::isToken($name))
                     $_out = '(' . $_out . ')';
 
                 $out .= $_out;
             }
 
         }
-        elseif($element instanceof \Hoa\Ruler\Model\Bag\Scalar) {
+        elseif($element instanceof Ruler\Model\Bag\Scalar) {
 
             $value = $element->getValue();
 
@@ -121,7 +108,7 @@ class Disassembly implements \Hoa\Visitor\Visit {
                        str_replace('\\', '\\\'', $value) .
                        '\'';
         }
-        elseif($element instanceof \Hoa\Ruler\Model\Bag\RulerArray) {
+        elseif($element instanceof Ruler\Model\Bag\RulerArray) {
 
             $values = array();
 
@@ -130,27 +117,27 @@ class Disassembly implements \Hoa\Visitor\Visit {
 
             $out .= '[' . implode(', ', $values) . ']';
         }
-        elseif($element instanceof \Hoa\Ruler\Model\Bag\Context) {
+        elseif($element instanceof Ruler\Model\Bag\Context) {
 
             $out .= $element->getId();
 
             foreach($element->getDimensions() as $dimension) {
 
-                $value = $dimension[\Hoa\Ruler\Model\Bag\Context::ACCESS_VALUE];
+                $value = $dimension[Ruler\Model\Bag\Context::ACCESS_VALUE];
 
-                switch($dimension[\Hoa\Ruler\Model\Bag\Context::ACCESS_TYPE]) {
+                switch($dimension[Ruler\Model\Bag\Context::ACCESS_TYPE]) {
 
-                    case \Hoa\Ruler\Model\Bag\Context::ARRAY_ACCESS:
+                    case Ruler\Model\Bag\Context::ARRAY_ACCESS:
                         $out .= '[' .
                                 $value->accept($this, $handle, $eldnah) .
                                 ']';
                       break;
 
-                    case \Hoa\Ruler\Model\Bag\Context::ATTRIBUTE_ACCESS:
+                    case Ruler\Model\Bag\Context::ATTRIBUTE_ACCESS:
                         $out .= '.' . $value;
                       break;
 
-                    case \Hoa\Ruler\Model\Bag\Context::METHOD_ACCESS:
+                    case Ruler\Model\Bag\Context::METHOD_ACCESS:
                         $out .= '.' . $value->accept($this, $handle, $eldnah);
                       break;
                 }
@@ -159,6 +146,4 @@ class Disassembly implements \Hoa\Visitor\Visit {
 
         return $out;
     }
-}
-
 }
