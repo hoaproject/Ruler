@@ -30,7 +30,7 @@
     "autoload"  : { "psr-0": { "Hoa\\Ruler": "." } },
     "extra"     : {
         "branch-alias": {
-            "dev-master": "0.15.10-dev"
+            "dev-master": "0.14.10-dev"
         }
     }
 }
