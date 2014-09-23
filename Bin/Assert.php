@@ -119,7 +119,7 @@ class Assert extends \Hoa\Console\Dispatcher\Kit {
              $this->makeUsageOptionsList(array(
                  'help' => 'This help.'
              )), "\n",
-             'Example : -x=2 -y=6 \'x in (1, 2, 4) and x < y\'.', "\n",
+             'Example : -x=2 -y=6 \'x in [1, 2, 4] and x < y\'.', "\n",
              'See $? to see the result (0 for true, > 0 for false).', "\n";
 
         return;

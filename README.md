@@ -55,7 +55,7 @@ also be the result of a callable. Thus:
 $ruler = new Hoa\Ruler\Ruler();
 
 // 1. Write a rule.
-$rule  = 'group in ("customer", "guest") and points > 30';
+$rule  = 'group in ["customer", "guest"] and points > 30';
 
 // 2. Create a context.
 $context           = new Hoa\Ruler\Context();
@@ -109,7 +109,7 @@ class User {
 $ruler = new Hoa\Ruler\Ruler();
 
 // New rule.
-$rule  = 'logged(user) and group in ("customer", "guest") and points > 30';
+$rule  = 'logged(user) and group in ["customer", "guest"] and points > 30';
 
 // New context.
 $context         = new Hoa\Ruler\Context();
@@ -163,7 +163,7 @@ static method:
 $database->save(
     serialize(
         Hoa\Ruler\Ruler::interprete(
-            'logged(user) and group in ("customer", "guest") and points > 30'
+            'logged(user) and group in ["customer", "guest"] and points > 30'
         )
     )
 );
@@ -184,7 +184,7 @@ can print the model itself (as an example). Thus:
 
 ```php
 echo Hoa\Ruler\Ruler::interprete(
-    'logged(user) and group in ("customer", "guest") and points > 30'
+    'logged(user) and group in ["customer", "guest"] and points > 30'
 );
 
 /**
