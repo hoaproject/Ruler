@@ -53,4 +53,4 @@ class Exception extends Core\Exception { }
 /**
  * Flex entity.
  */
-Hoa\Core\Consistency::flexEntity('Hoa\Ruler\Exception\Exception');
+Core\Consistency::flexEntity('Hoa\Ruler\Exception\Exception');
