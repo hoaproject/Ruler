@@ -90,6 +90,7 @@ class Compiler implements \Hoa\Visitor\Visit {
             $out  = $_ . '$model->';
             $name = $element->getName();
 
+            $_handle = [];
             if(false === $element->isFunction()) {
 
                 if(true === Core\Consistency::isIdentifier($name))
@@ -99,11 +100,12 @@ class Compiler implements \Hoa\Visitor\Visit {
 
                 $out     .= '(' . "\n";
             }
-            else
-                $out .= 'func(' . "\n" . $_ . '    ' .
-                        '\'' . $name . '\',' . "\n";
+            else {
+                $out .= 'func(' . "\n" . $_ . '    ';
+                $_handle[] = '\'' . $name . '\'';
+            }
 
-            $_handle = [];
+
             ++$this->_indentation;
 
             foreach($element->getArguments() as $argument)
