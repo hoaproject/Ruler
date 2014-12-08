@@ -135,7 +135,7 @@ class Asserter implements Visitor\Visit {
      * @param   mixed                 $eldnah     Handle (not reference).
      * @return  mixed
      */
-    public function visitModel ( \Hoa\Visitor\Element $element, &$handle = null, $eldnah = null ) {
+    public function visitModel ( Visitor\Element $element, &$handle = null, $eldnah = null ) {
 
         return (bool) $element->getExpression()->accept($this, $handle, $eldnah);
     }
@@ -149,7 +149,7 @@ class Asserter implements Visitor\Visit {
      * @param   mixed                 $eldnah     Handle (not reference).
      * @return  mixed
      */
-    protected function visitOperator ( \Hoa\Visitor\Element $element, &$handle = null, $eldnah = null ) {
+    protected function visitOperator ( Visitor\Element $element, &$handle = null, $eldnah = null ) {
 
         $name      = $element->getName();
         $arguments = [];
@@ -173,7 +173,7 @@ class Asserter implements Visitor\Visit {
      * @param   mixed                 $eldnah     Handle (not reference).
      * @return  mixed
      */
-    protected function visitScalar ( \Hoa\Visitor\Element $element, &$handle = null, $eldnah = null ) {
+    protected function visitScalar ( Visitor\Element $element, &$handle = null, $eldnah = null ) {
 
         return $element->getValue();
     }
@@ -187,7 +187,7 @@ class Asserter implements Visitor\Visit {
      * @param   mixed                 $eldnah     Handle (not reference).
      * @return  array
      */
-    protected function visitArray ( \Hoa\Visitor\Element $element, &$handle = null, $eldnah = null ) {
+    protected function visitArray ( Visitor\Element $element, &$handle = null, $eldnah = null ) {
 
         $out = [];
 
@@ -206,7 +206,7 @@ class Asserter implements Visitor\Visit {
      * @param   mixed                 $eldnah     Handle (not reference).
      * @return  mixed
      */
-    protected function visitContext ( \Hoa\Visitor\Element $element, &$handle = null, $eldnah = null ) {
+    protected function visitContext ( Visitor\Element $element, &$handle = null, $eldnah = null ) {
 
         $context = $this->getContext();
 

@@ -51,7 +51,7 @@ use Hoa\Visitor;
  * @license    New BSD License
  */
 
-class Compiler implements \Hoa\Visitor\Visit {
+class Compiler implements Visitor\Visit {
 
     /**
      * Indentation level.
