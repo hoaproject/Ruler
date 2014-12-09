@@ -87,8 +87,9 @@ class Compiler implements Visitor\Visit {
         }
         elseif($element instanceof Ruler\Model\Operator) {
 
-            $out  = $_ . '$model->';
-            $name = $element->getName();
+            $out     = $_ . '$model->';
+            $name    = $element->getName();
+            $_handle = [];
 
             if(false === $element->isFunction()) {
 
@@ -97,13 +98,14 @@ class Compiler implements Visitor\Visit {
                 else
                     $out .= '{\'' . $name . '\'}';
 
-                $out     .= '(' . "\n";
+                $out .= '(' . "\n";
             }
-            else
-                $out .= 'func(' . "\n" . $_ . '    ' .
-                        '\'' . $name . '\',' . "\n";
+            else {
 
-            $_handle = [];
+                $out       .= 'func(' . "\n" . $_ . '    ';
+                $_handle[]  = '\'' . $name . '\'';
+            }
+
             ++$this->_indentation;
 
             foreach($element->getArguments() as $argument)
