@@ -87,10 +87,10 @@ class Compiler implements \Hoa\Visitor\Visit {
         }
         elseif($element instanceof Ruler\Model\Operator) {
 
-            $out  = $_ . '$model->';
-            $name = $element->getName();
-
+            $out     = $_ . '$model->';
+            $name    = $element->getName();
             $_handle = [];
+
             if(false === $element->isFunction()) {
 
                 if(true === Core\Consistency::isIdentifier($name))
@@ -98,13 +98,13 @@ class Compiler implements \Hoa\Visitor\Visit {
                 else
                     $out .= '{\'' . $name . '\'}';
 
-                $out     .= '(' . "\n";
+                $out .= '(' . "\n";
             }
             else {
-                $out .= 'func(' . "\n" . $_ . '    ';
-                $_handle[] = '\'' . $name . '\'';
-            }
 
+                $out       .= 'func(' . "\n" . $_ . '    ';
+                $_handle[]  = '\'' . $name . '\'';
+            }
 
             ++$this->_indentation;
 
