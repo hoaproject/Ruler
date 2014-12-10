@@ -164,6 +164,8 @@ $model->expression =
     );
 RESULT;
 
+        $expectedResult = str_replace("\r\n", "\n", $expectedResult);
+
         $this
             ->when($result = LUT::interprete(
                 'logged(user) and group in ["customer", "guest"] and points > 30'
