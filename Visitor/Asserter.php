@@ -81,8 +81,8 @@ class Asserter implements Visitor\Visit {
         if(null !== $context)
             $this->setContext($context);
 
-        $this->setOperator('and', function ( $a, $b ) { return $a && $b; });
-        $this->setOperator('or',  function ( $a, $b ) { return $a || $b; });
+        $this->setOperator('and', function ( $a = false, $b = false ) { return $a && $b; });
+        $this->setOperator('or',  function ( $a = false, $b = false ) { return $a || $b; });
         $this->setOperator('xor', function ( $a, $b ) { return (bool) ($a ^ $b); });
         $this->setOperator('not', function ( $a )     { return !$a; });
         $this->setOperator('=',   function ( $a, $b ) { return $a == $b; });
@@ -154,8 +154,13 @@ class Asserter implements Visitor\Visit {
         $name      = $element->getName();
         $arguments = [];
 
-        foreach($element->getArguments() as $argument)
-            $arguments[] = $argument->accept($this, $handle, $eldnah);
+        foreach($element->getArguments() as $argument) {
+            $value       = $argument->accept($this, $handle, $eldnah);
+            $arguments[] = $value;
+
+            if ( $element::LAZY_BREAK === $element->shouldBreakLazyEvaluation($value) )
+                break;
+        }
 
         if(false === $this->operatorExists($name))
             throw new Ruler\Exception\Asserter(
