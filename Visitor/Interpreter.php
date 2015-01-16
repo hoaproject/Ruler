@@ -66,7 +66,13 @@ class Interpreter implements Visitor\Visit {
      */
     protected $_current = null;
 
-
+    /**
+     * Context keys.
+     *
+     * @var array
+     */
+    protected $_contextKeys = array();
+    
 
     /**
      * Visit an element.
@@ -201,9 +207,11 @@ class Interpreter implements Visitor\Visit {
                 switch($token) {
 
                     case 'identifier':
-                        return true === $variable
-                                   ? $this->_root->variable($value)
-                                   : $value;
+                        if (true === $variable) {
+                            array_push($this->_contextKeys, $value);
+                            return $this->_root->variable($value);
+                        }
+                        return $value;
 
                     case 'true':
                         return true;
@@ -250,5 +258,26 @@ class Interpreter implements Visitor\Visit {
     public function getRoot ( ) {
 
         return $this->_root;
+    }
+    
+    /**
+     * Get context keys.
+     *
+     * @access  public
+     * @return  array
+     */
+    public function getContextKeys ( ) {
+
+        return $this->_contextKeys;
+    }
+    
+    /**
+     * Clear context keys.
+     *
+     * @access  public
+     */
+    public function clearContextKeys ( ) {
+        
+        $this->_contextKeys = array();
     }
 }

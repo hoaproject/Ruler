@@ -113,8 +113,12 @@ class Ruler {
      * @throw   \Hoa\Ruler\Exception
      */
     public static function interprete ( $rule ) {
-
-        return static::getInterpreter()->visit(
+        
+        $interpreter = static::getInterpreter();
+        //clear context keys
+        $interpreter->clearContextKeys();
+        
+        return $interpreter->visit(
             static::getCompiler()->parse($rule)
         );
     }
@@ -198,6 +202,17 @@ class Ruler {
             );
 
         return static::$_compiler;
+    }
+    
+    /**
+     * Get context keys.
+     *
+     * @access  public
+     * @return  array
+     */
+    public function getContextKeys ( ) {
+
+        return static::getInterpreter()->getContextKeys();
     }
 }
 
