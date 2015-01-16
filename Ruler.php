@@ -103,6 +103,19 @@ class Ruler {
 
         return $this->getAsserter($context)->visit($rule);
     }
+    
+    /**
+     * Alias for interprete. Because interpret is the correct English spelling
+     *
+     * @access  public
+     * @param   string  $rule    Rule.
+     * @return  \Hoa\Ruler\Model
+     * @throw   \Hoa\Ruler\Exception
+     */
+    public static function interpret ( $rule ) {
+
+        return static::interprete($rule);
+    }
 
     /**
      * Short interpreter.
