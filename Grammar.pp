@@ -66,7 +66,7 @@
 %token  comma          ,
 %token  dot           \.
 
-%token  identifier    [^\s\(\)\[\],\.]+
+%token  identifier    (\d+[^\d\s\(\)\[\],\.]+|[^\s\(\)\[\],\.]+)
 
 #expression:
     logical_operation()
