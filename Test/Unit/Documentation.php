@@ -124,11 +124,11 @@ class Documentation extends Test\Unit\Suite {
                     ->isFalse();
     }
 
-    public function case_interprete ( ) {
+    public function case_interpret ( ) {
 
         $this
             ->given(
-                $model = LUT::interprete('group in ["customer", "guest"] and points > 30')
+                $model = LUT::interpret('group in ["customer", "guest"] and points > 30')
             )
             ->when($ledom = unserialize(serialize($model)))
             ->then
@@ -165,7 +165,7 @@ $model->expression =
 RESULT;
 
         $this
-            ->when($result = LUT::interprete(
+            ->when($result = LUT::interpret(
                 'logged(user) and group in ["customer", "guest"] and points > 30'
             ) . '')
             ->then
