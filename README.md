@@ -156,13 +156,13 @@ the possible constructions.
 Now, we have two options to save the rule, for example, in a database. Either we
 save the rule as a string directly, or we will save the serialization of the
 rule which will avoid further interpretations. In the next example, we see how
-to serialize and unserialize a rule by using the `Hoa\Ruler\Ruler::interprete`
+to serialize and unserialize a rule by using the `Hoa\Ruler\Ruler::interpret`
 static method:
 
 ```php
 $database->save(
     serialize(
-        Hoa\Ruler\Ruler::interprete(
+        Hoa\Ruler\Ruler::interpret(
             'logged(user) and group in ["customer", "guest"] and points > 30'
         )
     )
@@ -183,7 +183,7 @@ unserialize this model. To see the PHP code needed to create such a model, we
 can print the model itself (as an example). Thus:
 
 ```php
-echo Hoa\Ruler\Ruler::interprete(
+echo Hoa\Ruler\Ruler::interpret(
     'logged(user) and group in ["customer", "guest"] and points > 30'
 );
 
