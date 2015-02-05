@@ -172,4 +172,35 @@ RESULT;
                 ->string($result)
                     ->isEqualTo($expectedResult);
     }
+
+    public function case_not()
+    {
+        $this
+            ->given(
+                $ruler     = new LUT(),
+                $fExecuted = false,
+                $gExecuted = false,
+                $ruler->getDefaultAsserter()->setOperator(
+                    'f',
+                    function ( $a = false ) use ( &$fExecuted ) {
+                        $fExecuted = true;
+                        return $a;
+                    }
+                ),
+                $ruler->getDefaultAsserter()->setOperator(
+                    'g',
+                    function ( $b = false ) use ( &$gExecuted ) {
+                        $gExecuted = true;
+                        return $b;
+                    }
+                )
+            )
+            ->and($rule = 'not f(false) or g(true)')
+            ->when($result = $ruler->assert($rule, new LUT\Context()))
+            ->then
+                ->boolean($result)->isTrue()
+                ->boolean($fExecuted)->isTrue()
+                ->boolean($gExecuted)->isFalse()
+            ;
+    }
 }
