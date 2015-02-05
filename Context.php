@@ -113,8 +113,14 @@ class Context implements \ArrayAccess {
         if($value instanceof DynamicCallable)
             return $value($this);
 
-        if(true === is_callable($value))
+        if(true === is_callable($value)) {
+
+            if(   true  === is_string($value)
+               && false === in_array(strtolower($value), get_defined_functions()['user']))
+                return $value;
+
             $value = $this->_data[$id] = $value($this);
+        }
 
         return $value;
     }
