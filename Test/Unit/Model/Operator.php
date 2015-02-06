@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Hoa community. All rights reserved.
+ * Copyright © 2007-2015, Ivan Enderlin. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -34,15 +34,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Hoa\Ruler\Test\Unit;
+namespace Hoa\Ruler\Test\Unit\Model;
 
 use Hoa\Test;
 use Hoa\Ruler as LUT;
 
 /**
- * Class \Hoa\Ruler\Test\Unit\Documentation.
+ * Class \Hoa\Ruler\Test\Unit\Model\Operator.
  *
- * Test suite of the examples in the documentation.
+ * Test suite of the operator object of the model.
  *
  * @author     Alexis von Glasow <alexis.von-glasow@hoa-project.net>
  * @copyright  Copyright © 2007-2015 Alexis von Glasow.
@@ -51,24 +51,29 @@ use Hoa\Ruler as LUT;
 
 class Operator extends Test\Unit\Suite {
 
-    public function case_and_lazyOperator()
-    {
+    public function case_lazy_and ( ) {
+
         $this
             ->given(
                 $ruler     = new LUT(),
                 $fExecuted = false,
                 $gExecuted = false,
-                $ruler->getDefaultAsserter()->setOperator(
+                $asserter  = $ruler->getDefaultAsserter(),
+                $asserter->setOperator(
                     'f',
                     function ( $a = false ) use ( &$fExecuted ) {
+
                         $fExecuted = true;
+
                         return $a;
                     }
                 ),
-                $ruler->getDefaultAsserter()->setOperator(
+                $asserter->setOperator(
                     'g',
                     function ( $b = false ) use ( &$gExecuted ) {
+
                         $gExecuted = true;
+
                         return $b;
                     }
                 ),
@@ -82,10 +87,11 @@ class Operator extends Test\Unit\Suite {
                     ->isTrue()
                 ->boolean($gExecuted)
                     ->isFalse()
+
             ->given(
                 $fExecuted = false,
                 $gExecuted = false,
-                $rule = 'f(true) and g(true)'
+                $rule      = 'f(true) and g(true)'
             )
             ->when($result = $ruler->assert($rule, new LUT\Context()))
             ->then
@@ -95,10 +101,11 @@ class Operator extends Test\Unit\Suite {
                     ->isTrue()
                 ->boolean($gExecuted)
                     ->isTrue()
+
             ->given(
                 $fExecuted = false,
                 $gExecuted = false,
-                $rule = 'f(true) and g(false)'
+                $rule      = 'f(true) and g(false)'
             )
             ->when($result = $ruler->assert($rule, new LUT\Context()))
             ->then
@@ -108,10 +115,11 @@ class Operator extends Test\Unit\Suite {
                     ->isTrue()
                 ->boolean($gExecuted)
                     ->isTrue()
+
             ->given(
                 $fExecuted = false,
                 $gExecuted = false,
-                $rule = 'f(false) and g(false)'
+                $rule      = 'f(false) and g(false)'
             )
             ->when($result = $ruler->assert($rule, new LUT\Context()))
             ->then
@@ -120,28 +128,32 @@ class Operator extends Test\Unit\Suite {
                 ->boolean($fExecuted)
                     ->isTrue()
                 ->boolean($gExecuted)
-                    ->isFalse()
-            ;
+                    ->isFalse();
     }
 
-    public function case_or_lazyOperator()
-    {
+    public function case_lazy_or ( ) {
+
         $this
             ->given(
                 $ruler     = new LUT(),
                 $fExecuted = false,
                 $gExecuted = false,
-                $ruler->getDefaultAsserter()->setOperator(
+                $asserter  = $ruler->getDefaultAsserter(),
+                $asserter->setOperator(
                     'f',
                     function ( $a ) use ( &$fExecuted ) {
+
                         $fExecuted = true;
+
                         return $a;
                     }
                 ),
-                $ruler->getDefaultAsserter()->setOperator(
+                $asserter->setOperator(
                     'g',
                     function ( $b ) use ( &$gExecuted ) {
+
                         $gExecuted = true;
+
                         return $b;
                     }
                 ),
@@ -155,10 +167,11 @@ class Operator extends Test\Unit\Suite {
                     ->isTrue()
                 ->boolean($gExecuted)
                     ->isTrue()
+
             ->given(
                 $fExecuted = false,
                 $gExecuted = false,
-                $rule = 'f(true) or g(true)'
+                $rule      = 'f(true) or g(true)'
             )
             ->when($result = $ruler->assert($rule, new LUT\Context()))
             ->then
@@ -168,10 +181,11 @@ class Operator extends Test\Unit\Suite {
                     ->isTrue()
                 ->boolean($gExecuted)
                     ->isFalse()
+
             ->given(
                 $fExecuted = false,
                 $gExecuted = false,
-                $rule = 'f(true) or g(false)'
+                $rule      = 'f(true) or g(false)'
             )
             ->when($result = $ruler->assert($rule, new LUT\Context()))
             ->then
@@ -181,10 +195,11 @@ class Operator extends Test\Unit\Suite {
                     ->isTrue()
                 ->boolean($gExecuted)
                     ->isFalse()
+
             ->given(
                 $fExecuted = false,
                 $gExecuted = false,
-                $rule = 'f(false) or g(false)'
+                $rule      = 'f(false) or g(false)'
             )
             ->when($result = $ruler->assert($rule, new LUT\Context()))
             ->then
@@ -193,7 +208,6 @@ class Operator extends Test\Unit\Suite {
                 ->boolean($fExecuted)
                     ->isTrue()
                 ->boolean($gExecuted)
-                    ->isTrue()
-            ;
+                    ->isTrue();
     }
 }

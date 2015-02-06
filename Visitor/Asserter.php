@@ -155,10 +155,11 @@ class Asserter implements Visitor\Visit {
         $arguments = [];
 
         foreach($element->getArguments() as $argument) {
+
             $value       = $argument->accept($this, $handle, $eldnah);
             $arguments[] = $value;
 
-            if ( $element::LAZY_BREAK === $element->shouldBreakLazyEvaluation($value) )
+            if($element::LAZY_BREAK === $element->shouldBreakLazyEvaluation($value))
                 break;
         }
 
