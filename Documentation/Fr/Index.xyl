@@ -99,7 +99,7 @@ var_dump(
     <tbody>
       <tr>
         <td><code>'foo'</code>, <code>"foo"</code>, <code>'f\'oo'</code></td>
-        <td>une chaîne de caractères</td>
+        <td>des chaînes de caractères</td>
       </tr>
       <tr>
         <td><code>true</code>, <code>false</code>, <code>null</code></td>
