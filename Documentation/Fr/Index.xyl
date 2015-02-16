@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<overlay xmlns="http://hoa-project.net/xyl/xylophone">
+<yield id="chapter">
+
+  <p>bla</p>
+
+  <h2 id="Table_of_contents">Table des matières</h2>
+
+  <tableofcontents id="main-toc" />
+
+  <h2 id="Introduction" for="main-toc">Introduction</h2>
+
+  <p>Une règle est un prédicat, c'est à dire que son résultat est toujours un
+  booléen : <code class="language-php">true</code> ou
+  <code class="language-php">false</code>.</p>
+
+  <p>Un des objectifs de la bibliothèque <code>Hoa\Ruler</code> est de fournir
+  un langage pour exprimer des règles qui soit souple et extensible. Nous
+  verrons comment ajouter des fonctions et des opérateurs.</p>
+
+  <h2 id="Global_workflow" for="main-toc">Fonctionnement général</h2>
+
+  <p>Le fonctionnement général de la bibliothèque <code>Hoa\Ruler</code> se
+  déroule en 3 étapes :</p>
+  <ol>
+    <li>définition d'une <strong>règle</strong> ;</li>
+    <li>définition d'un <strong>contexte</strong> ;</li>
+    <li>usage d'un <strong>asserteur</strong> pour l'exécution.</li>
+  </ol>
+  <p>La <strong>règle</strong> est une chaîne de caractères respectant la
+  grammaire du langage défini par la bibliothèque <code>Hoa\Ruler</code>
+  (détaillée ci-après). Cette règle contient des variables dont les valeurs sont
+  définies par le <strong>contexte</strong>. Le contexte peut contenir des
+  valeurs scalaires, des tableaux ou même des fonctions et des objets. Enfin,
+  l'<strong>asserteur</strong> associe le contexte à la règle pour pouvoir
+  l'exécuter et obtenir un résultat. Nous rappelons que ce résultat est
+  nécessairement un booléen.</p>
+  <p>Le contexte est représenté par la classe <code>Hoa\Ruler\Context</code>.
+  L'asserteur est représenté par la classe
+  <code>Hoa\Ruler\Visitor\Asserter</code>. Nous pouvons utiliser la méthode
+  <code>Hoa\Ruler\Ruler::assert</code> qui facilite son utilisation. Ainsi :</p>
+  <pre><code class="language-php">$ruler = new Hoa\Ruler\Ruler();
+
+// 1. Write a rule.
+$rule  = 'group in ["customer", "guest"] and points > 30';
+
+// 2. Create a context.
+$context           = new Hoa\Ruler\Context();
+$context['group']  = 'customer';
+$context['points'] = function ( ) {
+
+    return 42;
+};
+
+// 3. Assert!
+var_dump(
+    $ruler->assert($rule, $context)
+);
+
+/**
+ * Will output:
+ *     bool(true)
+ */</code></pre>
+  <p>La règle est définie dans la variable
+  <code class="language-php">$rule</code>. Le contexte, quant à lui, dans la
+  varaible <code class="language-php">$context</code>. Le contexte contient
+  2 variables : <code>group</code> et <code>points</code>, respectivement avec
+  les valeurs <code class="language-php">'customer'</code> et
+  <code class="language-php">42</code> (retourné par une fonction). Enfin, la
+  dernière étape utilise la méthode <code>Hoa\Ruler\Ruler::assert</code> pour
+  exécuter la règle <code class="language-php">$rule</code> avec le contexte
+  <code class="language-php">$context</code>. Le résultat est <code>true</code>
+  car <code>group</code> est bien dans la liste <code>customer</code> ou
+  <code>guest</code>, et <code>point</code> est bien supérieur à 30. Changez les
+  valeurs dans le contexte ou la règle pour observer un résultat différent.</p>
+  <p>Les sections suivantes détaillent le fonctionnement de chaque partie mais
+  l'usage classique reste aussi simple que ça !</p>
+
+  <h3 id="Grammar" for="main-toc">Grammaire (par l'exemple)</h3>
+
+  <p>La grammaire du langage des règles est décrite dans le fichier
+  <a href="@central_resource:path=Library/Ruler/Grammar.pp"><code>hoa://Library/Ruler/Grammar.pp</code></a>.
+  Cette grammaire est exprimée avec le langage PP. Pour plus d'informations,
+  voir <a href="@hack:chapter=Compiler">la bibliothèque
+  <code>Hoa\Compiler</code></a>. Nous précisons que le langage supporte Unicode.
+  Nous n'allons pas expliquer le langage alors que la grammaire donne tous les
+  détails nécessaires. En revanche, nous allons donner plusieurs exemples de
+  syntaxe.</p>
+
+  <table>
+    <caption>Langage de <code>Hoa\Ruler</code> par l'exemple</caption>
+    <thead>
+      <tr>
+        <th>syntaxe</th>
+        <th>sémantique</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>'foo'</code>, <code>"foo"</code>, <code>'f\'oo'</code></td>
+        <td>une chaîne de caractères</td>
+      </tr>
+      <tr>
+        <td><code>true</code>, <code>false</code>, <code>null</code></td>
+        <td>des constantes pré-définies</td>
+      </tr>
+      <tr>
+        <td><code>4.2</code></td>
+        <td>un réel</td>
+      </tr>
+      <tr>
+        <td><code>42</code></td>
+        <td>un entier</td>
+      </tr>
+      <tr>
+        <td><code>['foo', true, 4.2, 42]</code></td>
+        <td>un tableau (hétérogène)</td>
+      </tr>
+      <tr>
+        <td><code>sum(1, 2, 3)</code></td>
+        <td>un appel de la fonction <code>sum</code> avec 3 arguments</td>
+      </tr>
+      <tr>
+        <td><code><em>points</em></code></td>
+        <td>une variable</td>
+      </tr>
+      <tr>
+        <td><code><em>points</em>['x']</code></td>
+        <td>un accès tableau</td>
+      </tr>
+      <tr>
+        <td><code><em>line</em>.pointA</code></td>
+        <td>un accès objet (attribut)</td>
+      </tr>
+      <tr>
+        <td><code><em>line</em>.length()</code></td>
+        <td>un appel à une méthode</td>
+      </tr>
+      <tr>
+        <td><code>and</code>, <code>or</code>, <code>xor</code>, <code>not</code></td>
+        <td>des opérateurs logiques</td>
+      </tr>
+      <tr>
+        <td><code>=</code>, <code>!=</code>, <code>></code>, <code>&amp;lt;</code>,
+            <code>>=</code>, <code>&amp;lt;=</code></td>
+        <td>des opérateurs de comparaisons</td>
+      </tr>
+      <tr>
+        <td><code>is</code>, <code>in</code></td>
+        <td>des opérateurs d'appartenances</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Bien sûr, ces exemples représentent des parties atomiques de la grammaire
+  que nous pouvons combiner. Ainsi :
+  <code><em>userA</em>.allows(<em>groups</em>[<em>groupId</em>][<em>userB</em>])</code>
+  est valide. De même que <code>f(<em>user</em>, <em>points</em> > 7 and
+  <em>points</em> &amp;lt; 42)</code> est également valide.</p>
+  <p>En réalité, les fonctions, les opérateurs de comparaisons et les opérateurs
+  d'appartenances ne sont pas définis par la grammaire mais par l'asserteur
+  (détaillé ci-après). <code>Hoa\Ruler</code> ne fait pas la différence entre un
+  opérateur et une fonction. <strong>Les opérateurs sont considérés comme des
+  fonctions</strong> ; un opérateur n'étant qu'une fonction d'arité 1 ou 2.
+  Ainsi, nous pouvons écrire <code>2 = 2</code> ou <code>=(2, 2)</code>, cela
+  produira strictement le même résultat. Comme le nom des fonctions n'est pas
+  défini par la grammaire, le nom des opérateurs n'est lui non plus pas défini
+  par la grammaire, excepté pour les opérateurs logiques qui ont un traitement
+  particuliers (à cause de la précédence des opérateurs). Cela a pour effet de
+  pouvoir créer nos propres opérateurs ou fonctions. Nous pouvons imaginer
+  <code><em>a</em> ∈ <em>A</em></code>, <code>√(42)</code> ou encore
+  <code><em>userA</em> allows <em>userB</em></code> comme étant des expressions
+  valides.</p>
+
+  <h3 id="Context" for="main-toc">Contexte</h3>
+
+  <h3 id="Asserter" for="main-toc">Asserteur</h3>
+
+  <h4 id="Add_functions" for="main-toc">Ajout de fonctions</h4>
+
+  <h2 id="Language_transformation" for="main-toc">Transformation du langage</h2>
+
+  <h3 id="Interpreter_language_to_object_model" for="main-toc">Interpréteur :
+  langage vers modèle objet</h3>
+
+  <h3 id="Compiler_object_model_to_PHP" for="main-toc">Compilateur : modèle
+  objet vers PHP</h3>
+
+  <h3 id="Disassembler_object_model_to_language" for="main-toc">Désassembleur :
+  modèle objet vers langage</h3>
+
+  <h2 id="Language_execution" for="main-toc">Exécution du langage</h2>
+
+  <h2 id="Conclusion" for="main-toc">Conclusion</h2>
+
+  <p>foobar</p>
+
+</yield>
+</overlay>
