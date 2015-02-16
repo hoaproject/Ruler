@@ -1,9 +1,3 @@
-# 1.15.02.16
-
-  * Fix CS and API documentation. (Ivan Enderlin, 2015-02-06T10:37:23+01:00)
-  * Add lazy operator (Alexis von Glasow, 2014-12-15T23:42:34+01:00)
-  * Add tests for the dynamic callable. (Ivan Enderlin, 2015-02-05T17:13:12+01:00)
-
 # 1.15.02.05
 
   * Sandbox function calls in the context (Ivan Enderlin, 2015-02-05T16:50:13+01:00)
@@ -22,7 +16,7 @@
 
 # 1.14.12.09
 
-  * Fix a bug in the `Visitor\Compiler` when function has no argument (Catalin Criste), 2014-12-09T18:25:25+01:00)
+  * Fix a bug in the `Visitor\Compiler` when function has no argument (Catalin Criste, 2014-12-09T18:25:25+01:00)
   * Format namespace. (Ivan Enderlin, 2014-12-08T14:04:08+01:00)
   * Require `hoa/test`. (Alexis von Glasow, 2014-11-26T13:21:41+01:00)
   * `Hoa\Visitor` has been finalized. (Ivan Enderlin, 2014-11-15T22:28:07+01:00)
