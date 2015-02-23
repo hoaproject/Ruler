@@ -486,9 +486,32 @@ var_dump(
   <pre><code class="language-php">$model = Hoa\Ruler\Ruler::interpret('points > 30');</code></pre>
   <p>Nous pouvons obtenir le compilateur avec la méthode
   <code>Hoa\Ruler\Ruler::getCompiler</code>.</p>
+  <p>Nous verrons comment cette étape peut être importante pour améliorer les
+  performances.</p>
 
   <h3 id="Compiler_object_model_to_PHP" for="main-toc">Compilateur : modèle
   objet vers PHP</h3>
+
+  <p>Le modèle objet peut être créé manuellement en instanciant tous les objets
+  de type <code>Hoa\Ruler\Model\<em>*</em></code> et en les combinant ensemble.
+  Le code PHP nécessaire à cette opération peut être automatiquement généré
+  grâce à la classe <code>Hoa\Ruler\Visitor\Compiler</code>. Ainsi :</p>
+  <pre><code class="language-php">$compiler = new Hoa\Ruler\Visitor\Compiler();
+echo $compiler->visit($model);
+
+/**
+ * Will output:
+ *     $model = new \Hoa\Ruler\Model();
+ *     $model->expression =
+ *         $model->{'>'}(
+ *             $model->variable('points'),
+ *             30
+ *         );
+ */</code></pre>
+  <p>Le code généré est simplifié et optimisé pour être le plus court possible
+  tout en restant lisible par un être humain.</p>
+  <p>Nous verrons comment cette étape peut être importante pour améliorer les
+  performances.</p>
 
   <h3 id="Disassembler_object_model_to_language" for="main-toc">Désassembleur :
   modèle objet vers langage</h3>
