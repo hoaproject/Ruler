@@ -71,12 +71,13 @@ var_dump(
   <code class="language-php">42</code> (retournée par une fonction). Enfin, la
   dernière étape utilise la méthode <code>Hoa\Ruler\Ruler::assert</code> pour
   exécuter la règle <code class="language-php">$rule</code> avec le contexte
-  <code class="language-php">$context</code>. Le résultat est <code>true</code>
-  car <code>group</code> est bien dans la liste <code>customer</code> ou
-  <code>guest</code>, et <code>point</code> est bien supérieur à 30. Changez les
-  valeurs dans le contexte ou la règle pour observer un résultat différent.</p>
-  <p>Les sections suivantes détaillent le fonctionnement de chaque partie mais
-  l'usage classique reste aussi simple que ça !</p>
+  <code class="language-php">$context</code> (ce dernier est optionnel). Le
+  résultat est <code>true</code> car <code>group</code> est bien dans la liste
+  <code>customer</code> ou <code>guest</code>, et <code>point</code> est bien
+  supérieur à 30. Changez les valeurs dans le contexte ou la règle pour observer
+  un résultat différent.</p> <p>Les sections suivantes détaillent le
+  fonctionnement de chaque partie mais l'usage classique reste aussi simple que
+  ça !</p>
 
   <h3 id="Grammar" for="main-toc">Grammaire (par l'exemple)</h3>
 
@@ -191,7 +192,7 @@ var_dump(
   objet de type <code>Hoa\Ruler\DynamicCallable</code>.</p>
   <p>Avant de détailler cette partie, présentons le contexte. Un contexte est
   une instance de la classe <code>Hoa\Ruler\Context</code> qui implémente
-  l'<a href="http://php.net/arrayaccess">interface <code>ArrayAccess</code></a>.
+  <a href="http://php.net/arrayaccess">l'interface <code>ArrayAccess</code></a>.
   Ainsi nous utilisons le contexte comme un tableau :</p>
   <pre><code class="language-php">$context        = new Hoa\Ruler\Context();
 $context['key'] = 'value';
@@ -291,7 +292,126 @@ var_dump($context['the_answer']);
 
   <h3 id="Asserter" for="main-toc">Asserteur</h3>
 
+  <p>Étant donné une règle et un contexte, l'asserteur est chargé de calculer le
+  résultat de cette règle, dont les valeurs des variables sont dans le
+  contexte.</p>
+  <p>La règle peut avoir deux formes possibles : une chaîne de caractère ou un
+  modèle objet. Si c'est une chaîne de caractère, elle sera transformée en
+  modèle objet automatiquement par la méthode
+  <code>Hoa\Ruler\Ruler::assert</code>. Ce modèle objet implémente les
+  interfaces de <a href="@hack:chapter=Visitor">la bibliothèque
+  <code>Hoa\Visitor</code></a> et peut donc être visité. C'est pourquoi
+  l'asserteur <code>Hoa\Ruler\Visitor\Asserter</code> est un
+  <strong>visiteur</strong>. Le contexte quant à lui est défini auprès de
+  l'asserteur avec la méthode
+  <code>Hoa\Ruler\Visitor\Asserter::setContext</code>. Ainsi :</p>
+  <pre><code class="language-php">$ruler             = new Hoa\Ruler\Ruler();
+$rule              = 'points > 30';
+$context           = new Hoa\Ruler\Context();
+$context['points'] = 42;
+
+// Define an asserter.
+$asserter          = new Hoa\Ruler\Visitor\Asserter();
+
+// Set this asserter on the ruler.
+$ruler->setAsserter($asserter);
+
+// Assert!
+var_dump(
+    $ruler->assert($rule, $context)
+);
+
+/**
+ * Will output:
+ *     bool(true)
+ */</code></pre>
+  <p>La méthode <code>Hoa\Ruler\Ruler::assert</code> va automatiquement définir
+  le contexte auprès de l'asserteur.</p>
+
   <h4 id="Add_functions" for="main-toc">Ajout de fonctions</h4>
+
+  <p>Nous avons précisé que les noms des opérateurs et des fonctions dans les
+  règles sont libres. Ainsi, nous avons évoqué la possibilité de définir nos
+  propres opérateurs et fonctions. Ajoutons la fonction <code>logged</code>
+  qui teste si un objet de type <code>User</code> est connecté. Voici cet
+  objet :</p>
+  <pre><code class="language-php">class User {
+
+    const DISCONNECTED = 0;
+    const CONNECTED    = 1;
+    protected $_status = 1;
+
+    public function getStatus ( ) {
+
+        return $this->_status;
+    }
+}</code></pre>
+  <p>L'implémentation de la fonction <code>logged</code> serait alors :</p>
+  <pre><code class="language-php">$logged = function ( User $user ) {
+
+    return $user::CONNECTED === $user->getStatus();
+};</code></pre>
+  <p>Enfin, pour déclarer cette fonction, nous allons utiliser la méthode
+  <code>Hoa\Ruler\Visitor\Asserter::setOperator</code>. Nous pouvons aussi citer
+  les méthodes <code>operatorExists</code>, <code>getOperator</code> et
+  <code>getOperators</code> qui permettent respectivement de tester si un
+  opérateur existe, d'obtenir un opérateur précédemment déclaré et d'obtenir
+  tous les opérateurs déclarés. Ainsi :</p>
+  <pre><code class="language-php">$ruler             = new Hoa\Ruler\Ruler();
+$rule              = 'logged(user) and points > 30';
+$context           = new Hoa\Ruler\Context();
+$context['user']   = new User();
+$context['points'] = 42;
+
+// Declare the `logged` function.
+$asserter = new Hoa\Ruler\Visitor\Asserter();
+$asserter->setOperator('logged', $logged);
+
+$ruler->setAsserter($asserter);
+
+// Assert!
+var_dump(
+    $ruler->assert($rule, $context)
+);
+
+/**
+ * Will output:
+ *     bool(true)
+ */</code></pre>
+
+  <p>La classe <code>Hoa\Ruler\Ruler</code> ne contient que des méthodes pour
+  travailler plus vite et cacher le mécanisme sous-jacent (détaillé ci-après).
+  Elle contient entre autre la méthode statique <code>getDefaultAsserter</code>
+  qui retourne une instance unique de la classe
+  <code>Hoa\Ruler\Visitor\Asserter</code>. Nous pouvons utiliser cette instance
+  unique pour définir des nouveaux opérateurs pour toutes les règles. Son
+  utilisation est très similaire à ce que nous avons vu précédemment :</p>
+  <pre><code class="language-php">$ruler             = new Hoa\Ruler\Ruler();
+$rule              = 'logged(user) and points > 30';
+$context           = new Hoa\Ruler\Context();
+$context['user']   = new User();
+$context['points'] = 42;
+
+// Declare the `logged` function.
+$ruler->getDefaultAsserter()->setOperator('logged', $logged);
+
+// Assert!
+var_dump(
+    $ruler->assert($rule, $context)
+);
+
+/**
+ * Will output:
+ *     bool(true)
+ */</code></pre>
+  <p>La méthode <code>Hoa\Ruler\Visitor\Asserter::setOperator</code> utilise
+  n'importe quel <em lang="en">callable</em> valide.</p>
+  <p>Les opérateurs <code>and</code>, <code>or</code>, <code>xor</code>,
+  <code>not</code>, <code>=</code>, <code>!=</code>, <code>sum</code> etc. sont
+  définis dans
+  <a href="@central_resource:path=Library/Ruler/Visitor/Asserter.php">la classe
+  <code>Hoa\Ruler\Visitor\Asserter</code></a>.  N'hésitez pas à vous en
+  inspirer !</p>
 
   <h2 id="Language_transformation" for="main-toc">Transformation du langage</h2>
 
