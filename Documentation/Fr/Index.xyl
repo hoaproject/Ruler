@@ -549,7 +549,8 @@ echo $disassembly->visit($model);
   stocker en base de données à la place des règles. Cela nécessite un peu plus
   de place mais rappelons que nous pouvons transformer le modèle objet vers sa
   règle facilement grâce à la classe
-  <code>Hoa\Ruler\Visitor\Disassembly</code>. Ainsi :</p>
+  <code>Hoa\Ruler\Visitor\Disassembly</code>, cette information n'est donc pas
+  perdue. Ainsi :</p>
   <pre><code class="language-php">$ruler             = new Hoa\Ruler\Ruler();
 $rule              = 'points > 30';
 $context           = new Hoa\Ruler\Context();
