@@ -81,10 +81,11 @@ var_dump(
 
   <h3 id="Grammar" for="main-toc">Grammaire (par l'exemple)</h3>
 
-  <p>La grammaire du langage des règles est décrite dans le fichier
-  <a href="@central_resource:path=Library/Ruler/Grammar.pp"><code>hoa://Library/Ruler/Grammar.pp</code></a>.
-  Cette grammaire est exprimée avec le langage PP. Pour plus d'informations,
-  voir <a href="@hack:chapter=Compiler">la bibliothèque
+  <p>La grammaire du langage des règles est décrite dans
+  <a href="@central_resource:path=Library/Ruler/Grammar.pp">le fichier
+  <code>hoa://Library/Ruler/Grammar.pp</code></a>. Cette grammaire est exprimée
+  avec le langage PP. Pour plus d'informations, voir
+  <a href="@hack:chapter=Compiler">la bibliothèque
   <code>Hoa\Compiler</code></a>. Nous précisons que le langage supporte Unicode.
   Nous n'allons pas expliquer le langage alors que la grammaire donne tous les
   détails nécessaires. En revanche, nous allons donner plusieurs exemples de
@@ -415,8 +416,76 @@ var_dump(
 
   <h2 id="Language_transformation" for="main-toc">Transformation du langage</h2>
 
+  <p>Le mécanisme sous-jacent caché par la classe <code>Hoa\Ruler\Ruler</code>
+  est très simple et très modulaire. Les sections suivantes détaillent les
+  transformations possibles du langage et leur utilisation. Tout d'abord, la
+  règle est interprété par une interpréteur pour être transformé en modèle
+  objet. Ensuite, ce modèle objet est utilisé par l'asserteur, ou peut être
+  transformé en code PHP ou transformé en une règle. Le modèle objet est le
+  point central du langage, c'est sa forme la plus avancée.</p>
+  <div id="transformation" class="schema"></div>
+  <script>
+  Hoa.Document.onReady(function ( ) {
+
+      var paper        = Hoa.Graph(Hoa.$('#transformation'), 800, 300);
+      var grid         = paper.grid(0, 0, 800, 300, 5, 3);
+      var rule         = grid.push(paper.rect(0, 0, 110, 80, 3, 'règle'), 0, 1);
+      var vinterpreter = grid.push(paper.rect(0, 0, 110, 80, 3, 'interpréteur'), 1, 1);
+      var model        = grid.push(paper.rect(0, 0, 110, 80, 3, 'modèle'), 2, 1);
+      var vasserter    = grid.push(paper.rect(0, 0, 110, 80, 3, 'asserteur'), 4, 0);
+      var vcompiler    = grid.push(paper.rect(0, 0, 110, 80, 3, 'PHP code'), 4, 1);
+      var vdisassembly = grid.push(paper.rect(0, 0, 110, 80, 3, 'règle'), 4, 2);
+
+      paper.link.between(rule, vinterpreter, '');
+      paper.link.between(vinterpreter, model, '');
+      paper.link.between(model, vasserter, '');
+      paper.link.between(model, vcompiler, '');
+      paper.link.between(model, vdisassembly, '');
+  });
+  </script>
+
   <h3 id="Interpreter_language_to_object_model" for="main-toc">Interpréteur :
   langage vers modèle objet</h3>
+
+  <p>Une règle est une chaîne de caractères. Pour la transformer en modèle
+  objet, nous utilisons <a href="@hack:chapter=Compiler">la bibliothèque
+  <code>Hoa\Compiler</code></a>. Grâce à la grammaire des règles (définie dans
+  <a href="@central_resource:path=Library/Ruler/Grammar.pp">le fichier
+  <code>hoa://Library/Ruler/Grammar.pp</code></a>), nous allons obtenir un AST :
+  un arbre abstrait. Par exemple, pour la règle <code>points > 30</code>, son
+  AST est :</p>
+  <pre><code class="language-shell">$ echo 'points > 30' | hoa compiler:pp hoa://Library/Ruler/Grammar.pp 0 --visitor dump
+>  #expression
+>  >  #operation
+>  >  >  token(identifier, points)
+>  >  >  token(identifier, >)
+>  >  >  token(integer, 30)</code></pre>
+  <p>Pour que cet arbre soit exploitable plus facilement, il va être transformé
+  en <strong>modèle objet</strong>. Cette transformation est assurée par la
+  classe <code>Hoa\Ruler\Visitor\Interpreter</code>. Ainsi, si nous devions le
+  faire manuellement :</p>
+  <pre><code class="language-php">$compiler    = Hoa\Compiler\Llk::load(
+    new Hoa\File\Read('hoa://Library/Ruler/Grammar.pp')
+);
+$ast         = $compiler->parse('points > 30');
+$interpreter = new Hoa\Ruler\Visitor\Interpreter();
+$model       = $interpreter->visit($ast);
+
+var_dump(
+    get_class($model)
+);
+
+/**
+ * Will output:
+ *     string(21) "Hoa\Ruler\Model\Model"
+ */</code></pre>
+  <p>Nous apprenons alors que le modèle est représenté par les classes
+  appartenant à l'espace de nom <code>Hoa\Ruler\Model</code>.</p>
+  <p>Toutes ces opérations sont remplacées par la méthode statique
+  <code>Hoa\Ruler\Ruler::interpret</code> :</p>
+  <pre><code class="language-php">$model = Hoa\Ruler\Ruler::interpret('points > 30');</code></pre>
+  <p>Nous pouvons obtenir le compilateur avec la méthode
+  <code>Hoa\Ruler\Ruler::getCompiler</code>.</p>
 
   <h3 id="Compiler_object_model_to_PHP" for="main-toc">Compilateur : modèle
   objet vers PHP</h3>
@@ -425,6 +494,8 @@ var_dump(
   modèle objet vers langage</h3>
 
   <h2 id="Language_execution" for="main-toc">Exécution du langage</h2>
+
+  <h2 id="Performance" for="main-toc">Performance</h2>
 
   <h2 id="Conclusion" for="main-toc">Conclusion</h2>
 
