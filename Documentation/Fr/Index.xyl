@@ -529,7 +529,59 @@ echo $disassembly->visit($model);
  *     (points > 30)
  */</code></pre>
 
-  <h2 id="Performance" for="main-toc">Performance</h2>
+  <h2 id="Performances" for="main-toc">Performances</h2>
+
+  <p>Transformer une règle vers un modèle objet est une opération coûteuse si
+  elle est appliquée des milliers de fois à la minute. Appliquer un asserteur
+  sur un modèle objet n'est pas coûteux. Nous allons donc présenter deux façons
+  d'éviter la transformation d'une règle vers un modèle objet car cette
+  opération.</p>
+
+  <h3 id="Serialize_the_object_model" for="main-toc">Sérialiser le modèle
+  objet</h3>
+
+  <p>Une fois le modèle objet obtenu, nous pouvons le sérialiser à l'aide de
+  <a href="http://php.net/serialize">la fonction PHP <code>serialize</code></a>.
+  Nous allons obtenir une chaîne de caractères représentant les instances des
+  objets constituant le modèle objet. Pour obtenir à nouveau le modèle objet et
+  être capable d'y appliquer un asserteur, nous utiliserons
+  <a href="http://php.net/unserialize">la fonction PHP
+  <code>unserialize</code></a>. Le résultat de la sérialisation peut être
+  stocker en base de données à la place des règles. Cela nécessite un peu plus
+  de place mais rappelons que nous pouvons transformer le modèle objet vers sa
+  règle facilement grâce à la classe
+  <code>Hoa\Ruler\Visitor\Disassembly</code>. Ainsi :</p>
+  <pre><code class="language-php">$ruler             = new Hoa\Ruler\Ruler();
+$rule              = 'points > 30';
+$context           = new Hoa\Ruler\Context();
+$context['points'] = 42;
+
+// Nothing in the database.
+if(null === $serialized = $database->get($ruleId)) {
+
+    // We transform the rule into an object model.
+    $model = Hoa\Ruler\Ruler::interpret($rule);
+
+    // We serialize and save the object model.
+    $database->save($ruleId, serialize($model));
+}
+else {
+
+    // We have a serialization! We unserialize it to get the object model.
+    $model = unserialize($serialized);
+}
+
+// We can assert by using a model instead of a rule!
+var_dump(
+    $ruler->assert($model, $context)
+);
+
+/**
+ * Will output:
+ *     bool(true)
+ */</code></pre>
+  <p>De cette manière, la règle n'est transformée en modèle objet qu'une seule
+  fois !</p>
 
   <h2 id="Conclusion" for="main-toc">Conclusion</h2>
 
