@@ -516,6 +516,19 @@ echo $compiler->visit($model);
   <h3 id="Disassembler_object_model_to_language" for="main-toc">Désassembleur :
   modèle objet vers langage</h3>
 
+  <p>Jusqu'à maintenant, nous avons vu comment passer d'une règle vers son
+  modèle objet. Le désassembleur applique l'opération inverse : il transforme un
+  modèle objet vers une chaîne de caractères. La règle générée peut différée un
+  peu de la règle originale syntaxiquement (parenthèses, guillemets,
+  espacements…) mais jamais sémantiquement. Ainsi :</p>
+  <pre><code class="language-php">$disassembly = new Hoa\Ruler\Visitor\Disassembly();
+echo $disassembly->visit($model);
+
+/**
+ * Will output:
+ *     (points > 30)
+ */</code></pre>
+
   <h2 id="Language_execution" for="main-toc">Exécution du langage</h2>
 
   <h2 id="Performance" for="main-toc">Performance</h2>
