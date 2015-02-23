@@ -583,6 +583,16 @@ var_dump(
   <p>De cette manière, la règle n'est transformée en modèle objet qu'une seule
   fois !</p>
 
+  <h3 id="Save_and_execute_PHP_code" for="main-toc">Enregistrer et exécute du
+  code PHP</h3>
+
+  <p>Une autre façon d'éviter la transformation d'une règle en modèle objet est
+  d'enregistrer le code PHP permettant de construire le modèle objet grâce à la
+  classe <code>Hoa\Ruler\Visitor\Compiler</code>. Une fois ce code PHP
+  enregistré et exécuté, nous retrouverons notre modèle objet.</p>
+  <p>Toutefois, exécuter un tel code PHP s'avèrera légèrement plus lent et plus
+  difficile à mettre en œuvre que la technique précédente.</p>
+
   <h2 id="Conclusion" for="main-toc">Conclusion</h2>
 
   <p>foobar</p>
