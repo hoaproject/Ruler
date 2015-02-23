@@ -28,14 +28,15 @@
     <li>définition d'un <strong>contexte</strong> ;</li>
     <li>usage d'un <strong>asserteur</strong> pour l'exécution.</li>
   </ol>
-  <p>La <strong>règle</strong> est une chaîne de caractères respectant la
-  grammaire du langage défini par la bibliothèque <code>Hoa\Ruler</code>
-  (détaillée ci-après). Cette règle contient des variables dont les valeurs sont
-  définies par le <strong>contexte</strong>. Le contexte peut contenir des
-  valeurs scalaires, des tableaux ou même des fonctions et des objets. Enfin,
-  l'<strong>asserteur</strong> associe le contexte à la règle pour pouvoir
-  l'exécuter et obtenir un résultat. Nous rappelons que ce résultat est
-  nécessairement un booléen.</p>
+  <p>La <strong>règle</strong> est une chaîne de caractères respectant une
+  syntaxe précise, décrite par la grammaire du langage définie par la
+  bibliothèque <code>Hoa\Ruler</code> (détaillée ci-après). Cette règle contient
+  des variables dont les valeurs sont définies par le <strong>contexte</strong>.
+  Le contexte peut contenir des valeurs scalaires, des tableaux ou même des
+  fonctions et des objets. Enfin, l'<strong>asserteur</strong> associe le
+  contexte à la règle pour pouvoir l'exécuter et obtenir un résultat. Nous
+  rappelons que ce résultat est nécessairement un booléen. C'est alors un
+  prédicat.</p>
   <p>Le contexte est représenté par la classe <code>Hoa\Ruler\Context</code>.
   L'asserteur est représenté par la classe
   <code>Hoa\Ruler\Visitor\Asserter</code>. Nous pouvons utiliser la méthode
@@ -64,10 +65,10 @@ var_dump(
  */</code></pre>
   <p>La règle est définie dans la variable
   <code class="language-php">$rule</code>. Le contexte, quant à lui, dans la
-  varaible <code class="language-php">$context</code>. Le contexte contient
+  variable <code class="language-php">$context</code>. Le contexte contient
   2 variables : <code>group</code> et <code>points</code>, respectivement avec
   les valeurs <code class="language-php">'customer'</code> et
-  <code class="language-php">42</code> (retourné par une fonction). Enfin, la
+  <code class="language-php">42</code> (retournée par une fonction). Enfin, la
   dernière étape utilise la méthode <code>Hoa\Ruler\Ruler::assert</code> pour
   exécuter la règle <code class="language-php">$rule</code> avec le contexte
   <code class="language-php">$context</code>. Le résultat est <code>true</code>
@@ -164,16 +165,129 @@ var_dump(
   opérateur et une fonction. <strong>Les opérateurs sont considérés comme des
   fonctions</strong> ; un opérateur n'étant qu'une fonction d'arité 1 ou 2.
   Ainsi, nous pouvons écrire <code>2 = 2</code> ou <code>=(2, 2)</code>, cela
-  produira strictement le même résultat. Comme le nom des fonctions n'est pas
-  défini par la grammaire, le nom des opérateurs n'est lui non plus pas défini
-  par la grammaire, excepté pour les opérateurs logiques qui ont un traitement
-  particuliers (à cause de la précédence des opérateurs). Cela a pour effet de
-  pouvoir créer nos propres opérateurs ou fonctions. Nous pouvons imaginer
-  <code><em>a</em> ∈ <em>A</em></code>, <code>√(42)</code> ou encore
-  <code><em>userA</em> allows <em>userB</em></code> comme étant des expressions
-  valides.</p>
+  produira strictement le même résultat. Tout comme le nom des fonctions qui
+  n'est pas défini par la grammaire, le nom des opérateurs n'est lui non plus
+  pas défini par la grammaire, excepté pour les opérateurs logiques qui ont un
+  traitement particuliers (à cause de la précédence des opérateurs). Cela a pour
+  effet de pouvoir <strong>créer</strong> nos propres opérateurs ou fonctions.
+  Nous pouvons imaginer <code><em>a</em> ∈ <em>A</em></code>, <code>√(42)</code>
+  ou encore <code><em>userA</em> allows <em>userB</em></code> comme étant des
+  expressions valides.</p>
 
   <h3 id="Context" for="main-toc">Contexte</h3>
+
+  <p>Le contexte définit les valeurs des variables présentes dans des
+  règles. Ces valeurs peuvent être :</p>
+  <ul>
+    <li>des <strong>constantes</strong>, comme <code>42</code> ou
+    <code>'foo'</code> qui sont des scalaires, ou <code>[1, 1, 2, 3, 5]</code>
+    ou un objet qui sont des types structurés ;</li>
+    <li>des <strong>valeurs calculées</strong>, c'est à dire retournée par une
+    fonction ou une méthode.</li>
+  </ul>
+  <p>Par défaut, les valeurs calculées ne le sont qu'une seule fois. En effet,
+  elles sont placées dans un cache pour des raisons de performance. Si nous
+  voulons les recalculer à chaque lecture, il faudra les encapsuler dans un
+  objet de type <code>Hoa\Ruler\DynamicCallable</code>.</p>
+  <p>Avant de détailler cette partie, présentons le contexte. Un contexte est
+  une instance de la classe <code>Hoa\Ruler\Context</code> qui implémente
+  l'<a href="http://php.net/arrayaccess">interface <code>ArrayAccess</code></a>.
+  Ainsi nous utilisons le contexte comme un tableau :</p>
+  <pre><code class="language-php">$context        = new Hoa\Ruler\Context();
+$context['key'] = 'value';
+
+var_dump(
+    isset($context['key']),
+    $context['key']
+);
+
+/**
+ * Will output:
+ *     bool(true)
+ *     string(5) "value"
+ */</code></pre>
+  <p>Pour y déposer des valeurs calculées, nous pouvons le faire via une
+  fonction ; ainsi :</p>
+  <pre><code class="language-php">$context['computed'] = function ( ) {
+
+    return 42;
+};
+
+var_dump($context['computed']);
+
+/**
+ * Will output:
+ *     int(42)
+ */</code></pre>
+  <p>Nous avons dit que les valeurs calculées sont placées en cache dès la
+  première lecture. Pour l'illustrer, nous allons utiliser une fonction qui
+  incrémente un entier à chaque appel :</p>
+  <pre><code class="language-php">$i              = 0;
+$context['int'] = function ( ) use ( &amp;amp;$i ) {
+
+    return ++$i;
+};
+
+var_dump(
+    $context['int'],
+    $context['int'],
+    $context['int'],
+    $i
+);
+
+/**
+ * Will output:
+ *     int(1)
+ *     int(1)
+ *     int(1)
+ *     int(1)
+ */</code></pre>
+  <p>La variable <code class="language-php">$i</code> a été incrémentée une
+  seule fois pour passer de 0 à 1, puis elle a été placée en cache. Maintenant,
+  si nous encapsulons cette fonction dans une instance de la classe
+  <code>Hoa\Ruler\DynamicCallable</code>, observons ce qu'il se passe :</p>
+  <pre><code class="language-php">$i              = 0;
+$context['int'] = new Hoa\Ruler\DynamicCallable(
+    function ( ) use ( &amp;amp;$i ) {
+
+        return ++$i;
+    }
+);
+
+var_dump(
+    $context['int'],
+    $context['int'],
+    $context['int'],
+    $i
+);
+
+/**
+ * Will output:
+ *     int(1)
+ *     int(2)
+ *     int(3)
+ *     int(3)
+ */</code></pre>
+  <p>Le résultat n'est plus mis en cache.</p>
+  <p>Nous pouvons également utiliser une fonction déclarée grâce à son nom.
+  Attention toutefois, il sera impossible d'appeler les fonctions natives de PHP
+  pour des raisons de sécurité. Le contexte n'a pas une telle
+  <strong>portée</strong>. Ainsi :</p>
+  <pre><code class="language-php">function answer ( ) {
+
+    return 42;
+}
+
+$context['the_answer'] = 'answer';
+
+var_dump($context['the_answer']);
+
+/**
+ * Will output:
+ *     int(42)
+ */</code></pre>
+  <p>C'est tout ce qu'il faut savoir sur le contexte. Ce n'est pas plus
+  compliqué que ça !</p>
 
   <h3 id="Asserter" for="main-toc">Asserteur</h3>
 
