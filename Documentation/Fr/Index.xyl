@@ -529,8 +529,6 @@ echo $disassembly->visit($model);
  *     (points > 30)
  */</code></pre>
 
-  <h2 id="Language_execution" for="main-toc">Exécution du langage</h2>
-
   <h2 id="Performance" for="main-toc">Performance</h2>
 
   <h2 id="Conclusion" for="main-toc">Conclusion</h2>
