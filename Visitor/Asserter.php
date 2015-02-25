@@ -430,13 +430,13 @@ class Asserter implements Visitor\Visit {
      * Set an operator.
      *
      * @access  public
-     * @param   string  $operator     Operator.
-     * @param   string  $classname    Classname.
+     * @param   string    $operator    Operator.
+     * @param   callable  $callable    Callable.
      * @return  Ruler\Visitor\Asserter
      */
-    public function setOperator ( $operator, $classname ) {
+    public function setOperator ( $operator, $callable ) {
 
-        $this->_operators[$operator] = $classname;
+        $this->_operators[$operator] = $callable;
 
         return $this;
     }
