@@ -1,6 +1,6 @@
 # 1.15.02.05
 
-  * Sandbox function calls in the context (Ivan Enderlin, 2015-02-05T16:50:13+01:00)
+  * Sandbox function calls in the context. (Ivan Enderlin, 2015-02-05T16:50:13+01:00)
   * Add tests for the context. (Ivan Enderlin, 2015-02-05T16:49:30+01:00)
 
 # 1.15.02.02
