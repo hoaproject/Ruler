@@ -602,7 +602,18 @@ var_dump(
 
   <h2 id="Conclusion" for="main-toc">Conclusion</h2>
 
-  <p>foobar</p>
+  <p>La bibliothèque <code>Hoa\Ruler</code> définit un <strong>langage</strong>
+  de règles métiers <strong>simple</strong> et inspiré du langage SQL dans sa
+  syntaxe. Le langage peut être <strong>transformé</strong> de plusieurs
+  façons : vers un modèle objet pour qu'il puisse être exécuté, ou à partir de
+  ce modèle, vers du code PHP ou vers le langage d'origine. L'instanciation des
+  variables dans ce langage se fait à travers un <strong>contexte</strong>.
+  Toutes ces opérations sont cachées à travers une interface simple et
+  clair.</p>
+  <p>La question des <strong>performances</strong> a été abordée et deux
+  solutions sont proposées. Aujourd'hui utilisé dans l'industrie sur de gros
+  projets, <code>Hoa\Ruler</code> est capable de supporter de lourde charge si
+  ces pratiques simples sont mises en œuvre.</p>
 
 </yield>
 </overlay>
