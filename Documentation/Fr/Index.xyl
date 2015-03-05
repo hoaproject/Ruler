@@ -3,7 +3,14 @@
 <overlay xmlns="http://hoa-project.net/xyl/xylophone">
 <yield id="chapter">
 
-  <p>bla</p>
+  <p>Les <strong>règles métiers</strong> (comme « <q>tous les clients qui ont
+  dépensé plus de 100€ en une fois reçoivent une réduction de 10% sur le
+  prochain achat</q> ») sont souvent définies à l'<strong>extérieur</strong> à
+  l'application.  Elles sont même souvent exprimées dans un <strong>langage
+  différent</strong> que le langage de programmation utilisé.  La bibliothèque
+  <code>Hoa\Ruler</code> offre un moteur permettant d'exécuter des règles
+  métiers simplement et de manière <strong>performante</strong> tout en restant
+  très <strong>extensible</strong>.</p>
 
   <h2 id="Table_of_contents">Table des matières</h2>
 
