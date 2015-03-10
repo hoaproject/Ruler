@@ -5,12 +5,13 @@
 
   <p>Les <strong>règles métiers</strong> (comme « <q>tous les clients qui ont
   dépensé plus de 100€ en une fois reçoivent une réduction de 10% sur le
-  prochain achat</q> ») sont souvent définies à l'<strong>extérieur</strong> à
-  l'application.  Elles sont même souvent exprimées dans un <strong>langage
-  différent</strong> que le langage de programmation utilisé.  La bibliothèque
-  <code>Hoa\Ruler</code> offre un moteur permettant d'exécuter des règles
-  métiers simplement et de manière <strong>performante</strong> tout en restant
-  très <strong>extensible</strong>.</p>
+  prochain achat</q> ») sont la plupart du temps définies à
+  l'<strong>extérieur</strong> de l'application.  Elles sont même souvent
+  exprimées dans un <strong>langage différent</strong> que le langage de
+  programmation utilisé.  La bibliothèque <code>Hoa\Ruler</code> offre un moteur
+  permettant d'exécuter des règles métiers simplement et de manière
+  <strong>performante</strong> tout en restant très
+  <strong>extensible</strong>.</p>
 
   <h2 id="Table_of_contents">Table des matières</h2>
 
@@ -18,13 +19,46 @@
 
   <h2 id="Introduction" for="main-toc">Introduction</h2>
 
-  <p>Une règle est un prédicat, c'est à dire que son résultat est toujours un
-  booléen : <code class="language-php">true</code> ou
-  <code class="language-php">false</code>.</p>
-
-  <p>Un des objectifs de la bibliothèque <code>Hoa\Ruler</code> est de fournir
-  un langage pour exprimer des règles qui soit souple et extensible. Nous
-  verrons comment ajouter des fonctions et des opérateurs.</p>
+  <p>La logique métier est très différente de la logique Informatique. « <q>Tous
+  les clients qui ont dépensé plus de 100€ en une fois reçoivent une réduction
+  de 10% sur le prochain achat</q> ». Cette règle permet d'accéder à certaines
+  parties du programme si elle est <strong>validée</strong>.  Toutefois, elle
+  peut <strong>changer</strong> à n'importe quel moment. Très souvent, dans une
+  équipe, ce ne sera pas au développeur d'implémenter cette règle. Elle
+  proviendra probablement d'un <strong>dépôt de règles métiers</strong>, qui
+  auront été écrites par d'autres personnes, soit <strong>manuellement</strong>,
+  soit à l'aide d'un <strong>programme tiers</strong>. Cela implique que le
+  langage utilisé pour exprimer une règle n'est pas le langage utilisé pour
+  développer le programme. Un exemple encore plus évident avec l'utilisation
+  d'une règle pour filtrer des éléments : un élément est accepté si « <q>son
+  groupe est <em lang="en">customer</em> ou <em lang="en">guest</em> et que son
+  nombre de points est supérieur à 30</q> ». Cette règle peut très bien être
+  écrite par un utilisateur via une interface en ligne de commande pour filtrer
+  des résultats d'une base de données ou de logs.</p>
+  <p>Il est important de comprendre que les règles doivent être écrites dans un
+  <strong>langage dédié</strong>. Néanmoins, l'usage qui est fait des règles est
+  très <strong>vaste</strong> et <strong>imprédictible</strong>. C'est pourquoi
+  il est primordiale que les règles soient souples et
+  <strong>extensibles</strong> dans leur syntaxe. Par exemple, il doit être
+  permis d'ajouter des opérateurs ou des fonctions : « <q>tous les clients de
+  l'hôtel avec un pass Gold auront une réduction de 10%</q> ». Le « pass Gold »
+  peut être un opérateur ou une fonction spécifique au métier du programme
+  concerné.</p>
+  <p>Le langage utilisé par la bibliothèque <code>Hoa\Ruler</code> pour décrire
+  des règles respecte ces contraintes d'extensibilité. Les règles ne seront pas
+  proches du langage humain mais resterons <strong>naturelles</strong> à lire.
+  Si nous reprenons l'exemple de la règle « <q>son groupe est
+  <em lang="en">customer</em> ou <em lang="en">guest</em> et que son nombre de
+  points est supérieur à 30</q> », elle s'écrira : <code><em>group</em> in
+  ["customer", "guest"] and <em>points</em> > 30</code>.  Les éléments
+  <code><em>group</em></code> et <code><em>points</em></code> sont des variables
+  de la règle. Leurs valeurs seront définies par un contexte.</p>
+  <p>D'une point de vue plus formel, une règle est un prédicat, c'est à dire que
+  son résultat est toujours un booléen : <code class="language-php">true</code>
+  ou <code class="language-php">false</code>. Comme ces règles sont destinées à
+  être manipulées (modifiées) et exécutées, la bibliothèque
+  <code>Hoa\Ruler</code> propose plusieurs outils pour travailler efficacement
+  avec ces contraintes, présentés dans les sections suivantes.</p>
 
   <h2 id="Global_workflow" for="main-toc">Fonctionnement général</h2>
 
@@ -99,7 +133,7 @@ var_dump(
   syntaxe.</p>
 
   <table>
-    <caption>Langage de <code>Hoa\Ruler</code> par l'exemple</caption>
+    <caption>Langage de <code>Hoa\Ruler</code> par l'exemple.</caption>
     <thead>
       <tr>
         <th>syntaxe</th>
