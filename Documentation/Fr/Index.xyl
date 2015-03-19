@@ -4,7 +4,7 @@
 <yield id="chapter">
 
   <p>Les <strong>règles métiers</strong> (comme « <q>tous les clients qui ont
-  dépensé plus de 100€ en une fois reçoivent une réduction de 10% sur le
+  dépensé plus de 100€ en une fois reçoivent une réduction de 10% sur leur
   prochain achat</q> ») sont la plupart du temps définies à
   l'<strong>extérieur</strong> de l'application.  Elles sont même souvent
   exprimées dans un <strong>langage différent</strong> que le langage de
@@ -21,7 +21,7 @@
 
   <p>La logique métier est très différente de la logique Informatique. « <q>Tous
   les clients qui ont dépensé plus de 100€ en une fois reçoivent une réduction
-  de 10% sur le prochain achat</q> ». Cette règle permet d'accéder à certaines
+  de 10% sur leur prochain achat</q> ». Cette règle permet d'accéder à certaines
   parties du programme si elle est <strong>validée</strong>.  Toutefois, elle
   peut <strong>changer</strong> à n'importe quel moment. Très souvent, dans une
   équipe, ce ne sera pas au développeur d'implémenter cette règle. Elle
@@ -31,29 +31,28 @@
   langage utilisé pour exprimer une règle n'est pas le langage utilisé pour
   développer le programme. Un exemple encore plus évident avec l'utilisation
   d'une règle pour filtrer des éléments : un élément est accepté si « <q>son
-  groupe est <em lang="en">customer</em> ou <em lang="en">guest</em> et que son
+  groupe est <em lang="en">customer</em> ou <em lang="en">guest</em> et son
   nombre de points est supérieur à 30</q> ». Cette règle peut très bien être
   écrite par un utilisateur via une interface en ligne de commande pour filtrer
   des résultats d'une base de données ou de logs.</p>
   <p>Il est important de comprendre que les règles doivent être écrites dans un
   <strong>langage dédié</strong>. Néanmoins, l'usage qui est fait des règles est
   très <strong>vaste</strong> et <strong>imprédictible</strong>. C'est pourquoi
-  il est primordiale que les règles soient souples et
-  <strong>extensibles</strong> dans leur syntaxe. Par exemple, il doit être
-  permis d'ajouter des opérateurs ou des fonctions : « <q>tous les clients de
-  l'hôtel avec un pass Gold auront une réduction de 10%</q> ». Le « pass Gold »
-  peut être un opérateur ou une fonction spécifique au métier du programme
-  concerné.</p>
+  il est primordiale d'avoir des règles souples et <strong>extensibles</strong>
+  dans leur syntaxe. Par exemple, il doit être permis d'ajouter des opérateurs
+  ou des fonctions : « <q>tous les clients de l'hôtel avec un pass Gold auront
+  une réduction de 10%</q> ». Le « pass Gold » peut être un opérateur ou une
+  fonction spécifique au métier du programme concerné.</p>
   <p>Le langage utilisé par la bibliothèque <code>Hoa\Ruler</code> pour décrire
   des règles respecte ces contraintes d'extensibilité. Les règles ne seront pas
   proches du langage humain mais resterons <strong>naturelles</strong> à lire.
   Si nous reprenons l'exemple de la règle « <q>son groupe est
-  <em lang="en">customer</em> ou <em lang="en">guest</em> et que son nombre de
+  <em lang="en">customer</em> ou <em lang="en">guest</em> et son nombre de
   points est supérieur à 30</q> », elle s'écrira : <code><em>group</em> in
   ["customer", "guest"] and <em>points</em> > 30</code>.  Les éléments
   <code><em>group</em></code> et <code><em>points</em></code> sont des variables
   de la règle. Leurs valeurs seront définies par un contexte.</p>
-  <p>D'une point de vue plus formel, une règle est un prédicat, c'est à dire que
+  <p>D'un point de vue plus formel, une règle est un prédicat, c'est à dire que
   son résultat est toujours un booléen : <code class="language-php">true</code>
   ou <code class="language-php">false</code>. Comme ces règles sont destinées à
   être manipulées (modifiées) et exécutées, la bibliothèque
@@ -80,7 +79,7 @@
   prédicat.</p>
   <p>Le contexte est représenté par la classe <code>Hoa\Ruler\Context</code>.
   L'asserteur est représenté par la classe
-  <code>Hoa\Ruler\Visitor\Asserter</code>. Nous pouvons utiliser la méthode
+  <code>Hoa\Ruler\Visitor\Asserter</code>. Nous pouvons employer la méthode
   <code>Hoa\Ruler\Ruler::assert</code> qui facilite son utilisation. Ainsi :</p>
   <pre><code class="language-php">$ruler = new Hoa\Ruler\Ruler();
 
@@ -105,8 +104,8 @@ var_dump(
  *     bool(true)
  */</code></pre>
   <p>La règle est définie dans la variable
-  <code class="language-php">$rule</code>. Le contexte, quant à lui, dans la
-  variable <code class="language-php">$context</code>. Le contexte contient
+  <code class="language-php">$rule</code>. Le contexte, quant à lui, est défini
+  dans la variable <code class="language-php">$context</code>. Il contient
   2 variables : <code>group</code> et <code>points</code>, respectivement avec
   les valeurs <code class="language-php">'customer'</code> et
   <code class="language-php">42</code> (retournée par une fonction). Enfin, la
@@ -192,7 +191,7 @@ var_dump(
       </tr>
       <tr>
         <td><code>is</code>, <code>in</code></td>
-        <td>des opérateurs d'appartenances</td>
+        <td>des opérateurs d'appartenance</td>
       </tr>
     </tbody>
   </table>
@@ -203,7 +202,7 @@ var_dump(
   est valide. De même que <code>f(<em>user</em>, <em>points</em> > 7 and
   <em>points</em> &amp;lt; 42)</code> est également valide.</p>
   <p>En réalité, les fonctions, les opérateurs de comparaisons et les opérateurs
-  d'appartenances ne sont pas définis par la grammaire mais par l'asserteur
+  d'appartenance ne sont pas définis par la grammaire mais par l'asserteur
   (détaillé ci-après). <code>Hoa\Ruler</code> ne fait pas la différence entre un
   opérateur et une fonction. <strong>Les opérateurs sont considérés comme des
   fonctions</strong> ; un opérateur n'étant qu'une fonction d'arité 1 ou 2.
@@ -487,8 +486,8 @@ var_dump(
   });
   </script>
 
-  <p>Tout d'abord, la règle est interprété par une interpréteur pour être
-  transformé en modèle objet. Ensuite, ce modèle objet est utilisé par
+  <p>Tout d'abord, la règle est interprétée par un interpréteur pour être
+  transformée en modèle objet. Ensuite, ce modèle objet est utilisé par
   l'asserteur, ou peut être transformé en code PHP ou transformé en une règle.
   Le modèle objet est le point central du langage, c'est sa forme la plus
   avancée.</p>
@@ -635,9 +634,9 @@ echo $compiler->visit($model);
       paper.link.between(model, vdisassembly, '');
   });
   </script>
-  <p>La règle générée peut différée un
-  peu de la règle originale syntaxiquement (parenthèses, guillemets,
-  espacements…) mais jamais sémantiquement. Ainsi :</p>
+  <p>La règle générée peut différer un peu de la règle originale syntaxiquement
+  (parenthèses, guillemets, espacements…) mais jamais sémantiquement.
+  Ainsi :</p>
   <pre><code class="language-php">$disassembly = new Hoa\Ruler\Visitor\Disassembly();
 echo $disassembly->visit($model);
 
@@ -663,7 +662,7 @@ echo $disassembly->visit($model);
   être capable d'y appliquer un asserteur, nous utiliserons
   <a href="http://php.net/unserialize">la fonction PHP
   <code>unserialize</code></a>. Le résultat de la sérialisation peut être
-  stocker en base de données à la place des règles. Cela nécessite un peu plus
+  stocké en base de données à la place des règles. Cela nécessite un peu plus
   de place mais rappelons que nous pouvons transformer le modèle objet vers sa
   règle facilement grâce à la classe
   <code>Hoa\Ruler\Visitor\Disassembly</code>, cette information n'est donc pas
