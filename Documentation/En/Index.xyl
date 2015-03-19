@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<overlay xmlns="http://hoa-project.net/xyl/xylophone">
+<yield id="chapter">
+
+  <p class="warning">This chapter is not yet translated. Contributions are
+  welcomed!</p>
+
+</yield>
+</overlay>
