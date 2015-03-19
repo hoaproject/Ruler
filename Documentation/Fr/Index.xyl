@@ -1,0 +1,728 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<overlay xmlns="http://hoa-project.net/xyl/xylophone">
+<yield id="chapter">
+
+  <p>Les <strong>règles métiers</strong> (comme « <q>tous les clients qui ont
+  dépensé plus de 100€ en une fois reçoivent une réduction de 10% sur leur
+  prochain achat</q> ») sont la plupart du temps définies à
+  l'<strong>extérieur</strong> de l'application.  Elles sont même souvent
+  exprimées dans un <strong>langage différent</strong> que le langage de
+  programmation utilisé.  La bibliothèque <code>Hoa\Ruler</code> offre un moteur
+  permettant d'exécuter des règles métiers simplement et de manière
+  <strong>performante</strong> tout en restant très
+  <strong>extensible</strong>.</p>
+
+  <h2 id="Table_of_contents">Table des matières</h2>
+
+  <tableofcontents id="main-toc" />
+
+  <h2 id="Introduction" for="main-toc">Introduction</h2>
+
+  <p>La logique métier est très différente de la logique Informatique. « <q>Tous
+  les clients qui ont dépensé plus de 100€ en une fois reçoivent une réduction
+  de 10% sur leur prochain achat</q> ». Cette règle permet d'accéder à certaines
+  parties du programme si elle est <strong>validée</strong>.  Toutefois, elle
+  peut <strong>changer</strong> à n'importe quel moment. Très souvent, dans une
+  équipe, ce ne sera pas au développeur d'implémenter cette règle. Elle
+  proviendra probablement d'un <strong>dépôt de règles métiers</strong>, qui
+  auront été écrites par d'autres personnes, soit <strong>manuellement</strong>,
+  soit à l'aide d'un <strong>programme tiers</strong>. Cela implique que le
+  langage utilisé pour exprimer une règle n'est pas le langage utilisé pour
+  développer le programme. Un exemple encore plus évident avec l'utilisation
+  d'une règle pour filtrer des éléments : un élément est accepté si « <q>son
+  groupe est <em lang="en">customer</em> ou <em lang="en">guest</em> et son
+  nombre de points est supérieur à 30</q> ». Cette règle peut très bien être
+  écrite par un utilisateur via une interface en ligne de commande pour filtrer
+  des résultats d'une base de données ou de logs.</p>
+  <p>Il est important de comprendre que les règles doivent être écrites dans un
+  <strong>langage dédié</strong>. Néanmoins, l'usage qui est fait des règles est
+  très <strong>vaste</strong> et <strong>imprédictible</strong>. C'est pourquoi
+  il est primordiale d'avoir des règles souples et <strong>extensibles</strong>
+  dans leur syntaxe. Par exemple, il doit être permis d'ajouter des opérateurs
+  ou des fonctions : « <q>tous les clients de l'hôtel avec un pass Gold auront
+  une réduction de 10%</q> ». Le « pass Gold » peut être un opérateur ou une
+  fonction spécifique au métier du programme concerné.</p>
+  <p>Le langage utilisé par la bibliothèque <code>Hoa\Ruler</code> pour décrire
+  des règles respecte ces contraintes d'extensibilité. Les règles ne seront pas
+  proches du langage humain mais resterons <strong>naturelles</strong> à lire.
+  Si nous reprenons l'exemple de la règle « <q>son groupe est
+  <em lang="en">customer</em> ou <em lang="en">guest</em> et son nombre de
+  points est supérieur à 30</q> », elle s'écrira : <code><em>group</em> in
+  ["customer", "guest"] and <em>points</em> > 30</code>.  Les éléments
+  <code><em>group</em></code> et <code><em>points</em></code> sont des variables
+  de la règle. Leurs valeurs seront définies par un contexte.</p>
+  <p>D'un point de vue plus formel, une règle est un prédicat, c'est à dire que
+  son résultat est toujours un booléen : <code class="language-php">true</code>
+  ou <code class="language-php">false</code>. Comme ces règles sont destinées à
+  être manipulées (modifiées) et exécutées, la bibliothèque
+  <code>Hoa\Ruler</code> propose plusieurs outils pour travailler efficacement
+  avec ces contraintes, présentés dans les sections suivantes.</p>
+
+  <h2 id="Global_workflow" for="main-toc">Fonctionnement général</h2>
+
+  <p>Le fonctionnement général de la bibliothèque <code>Hoa\Ruler</code> se
+  déroule en 3 étapes :</p>
+  <ol>
+    <li>définition d'une <strong>règle</strong> ;</li>
+    <li>définition d'un <strong>contexte</strong> ;</li>
+    <li>usage d'un <strong>asserteur</strong> pour l'exécution.</li>
+  </ol>
+  <p>La <strong>règle</strong> est une chaîne de caractères respectant une
+  syntaxe précise, décrite par la grammaire du langage définie par la
+  bibliothèque <code>Hoa\Ruler</code> (détaillée ci-après). Cette règle contient
+  des variables dont les valeurs sont définies par le <strong>contexte</strong>.
+  Le contexte peut contenir des valeurs scalaires, des tableaux ou même des
+  fonctions et des objets. Enfin, l'<strong>asserteur</strong> associe le
+  contexte à la règle pour pouvoir l'exécuter et obtenir un résultat. Nous
+  rappelons que ce résultat est nécessairement un booléen. C'est alors un
+  prédicat.</p>
+  <p>Le contexte est représenté par la classe <code>Hoa\Ruler\Context</code>.
+  L'asserteur est représenté par la classe
+  <code>Hoa\Ruler\Visitor\Asserter</code>. Nous pouvons employer la méthode
+  <code>Hoa\Ruler\Ruler::assert</code> qui facilite son utilisation. Ainsi :</p>
+  <pre><code class="language-php">$ruler = new Hoa\Ruler\Ruler();
+
+// 1. Write a rule.
+$rule  = 'group in ["customer", "guest"] and points > 30';
+
+// 2. Create a context.
+$context           = new Hoa\Ruler\Context();
+$context['group']  = 'customer';
+$context['points'] = function ( ) {
+
+    return 42;
+};
+
+// 3. Assert!
+var_dump(
+    $ruler->assert($rule, $context)
+);
+
+/**
+ * Will output:
+ *     bool(true)
+ */</code></pre>
+  <p>La règle est définie dans la variable
+  <code class="language-php">$rule</code>. Le contexte, quant à lui, est défini
+  dans la variable <code class="language-php">$context</code>. Il contient
+  2 variables : <code>group</code> et <code>points</code>, respectivement avec
+  les valeurs <code class="language-php">'customer'</code> et
+  <code class="language-php">42</code> (retournée par une fonction). Enfin, la
+  dernière étape utilise la méthode <code>Hoa\Ruler\Ruler::assert</code> pour
+  exécuter la règle <code class="language-php">$rule</code> avec le contexte
+  <code class="language-php">$context</code> (ce dernier est optionnel). Le
+  résultat est <code>true</code> car <code>group</code> est bien dans la liste
+  <code>customer</code> ou <code>guest</code>, et <code>point</code> est bien
+  supérieur à 30. Changez les valeurs dans le contexte ou la règle pour observer
+  un résultat différent.</p> <p>Les sections suivantes détaillent le
+  fonctionnement de chaque partie mais l'usage classique reste aussi simple que
+  ça !</p>
+
+  <h3 id="Grammar" for="main-toc">Grammaire (par l'exemple)</h3>
+
+  <p>La grammaire du langage des règles est décrite dans
+  <a href="@central_resource:path=Library/Ruler/Grammar.pp">le fichier
+  <code>hoa://Library/Ruler/Grammar.pp</code></a>. Cette grammaire est exprimée
+  avec le langage PP. Pour plus d'informations, voir
+  <a href="@hack:chapter=Compiler">la bibliothèque
+  <code>Hoa\Compiler</code></a>. Nous précisons que le langage supporte Unicode.
+  Nous n'allons pas expliquer le langage alors que la grammaire donne tous les
+  <strong>détails</strong> nécessaires. En revanche, nous allons donner
+  plusieurs exemples de syntaxe.</p>
+
+  <table>
+    <caption>Langage de <code>Hoa\Ruler</code> par l'exemple.</caption>
+    <thead>
+      <tr>
+        <th>syntaxe</th>
+        <th>sémantique</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>'foo'</code>, <code>"foo"</code>, <code>'f\'oo'</code></td>
+        <td>des chaînes de caractères</td>
+      </tr>
+      <tr>
+        <td><code>true</code>, <code>false</code>, <code>null</code></td>
+        <td>des constantes pré-définies</td>
+      </tr>
+      <tr>
+        <td><code>4.2</code></td>
+        <td>un réel</td>
+      </tr>
+      <tr>
+        <td><code>42</code></td>
+        <td>un entier</td>
+      </tr>
+      <tr>
+        <td><code>['foo', true, 4.2, 42]</code></td>
+        <td>un tableau (hétérogène)</td>
+      </tr>
+      <tr>
+        <td><code>sum(1, 2, 3)</code></td>
+        <td>un appel de la fonction <code>sum</code> avec 3 arguments</td>
+      </tr>
+      <tr>
+        <td><code><em>points</em></code></td>
+        <td>une variable</td>
+      </tr>
+      <tr>
+        <td><code><em>points</em>['x']</code></td>
+        <td>un accès tableau</td>
+      </tr>
+      <tr>
+        <td><code><em>line</em>.pointA</code></td>
+        <td>un accès objet (attribut)</td>
+      </tr>
+      <tr>
+        <td><code><em>line</em>.length()</code></td>
+        <td>un appel à une méthode</td>
+      </tr>
+      <tr>
+        <td><code>and</code>, <code>or</code>, <code>xor</code>, <code>not</code></td>
+        <td>des opérateurs logiques</td>
+      </tr>
+      <tr>
+        <td><code>=</code>, <code>!=</code>, <code>></code>, <code>&amp;lt;</code>,
+            <code>>=</code>, <code>&amp;lt;=</code></td>
+        <td>des opérateurs de comparaisons</td>
+      </tr>
+      <tr>
+        <td><code>is</code>, <code>in</code></td>
+        <td>des opérateurs d'appartenance</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Bien sûr, ces exemples représentent des parties atomiques de la grammaire
+  que nous pouvons combiner. Ainsi :
+  <code><em>userA</em>.allows(<em>groups</em>[<em>groupId</em>][<em>userB</em>])</code>
+  est valide. De même que <code>f(<em>user</em>, <em>points</em> > 7 and
+  <em>points</em> &amp;lt; 42)</code> est également valide.</p>
+  <p>En réalité, les fonctions, les opérateurs de comparaisons et les opérateurs
+  d'appartenance ne sont pas définis par la grammaire mais par l'asserteur
+  (détaillé ci-après). <code>Hoa\Ruler</code> ne fait pas la différence entre un
+  opérateur et une fonction. <strong>Les opérateurs sont considérés comme des
+  fonctions</strong> ; un opérateur n'étant qu'une fonction d'arité 1 ou 2.
+  Ainsi, nous pouvons écrire <code>2 = 2</code> ou <code>=(2, 2)</code>, cela
+  produira strictement le même résultat. Tout comme le nom des fonctions qui
+  n'est pas défini par la grammaire, le nom des opérateurs n'est lui non plus
+  pas défini par la grammaire, excepté pour les opérateurs logiques qui ont un
+  traitement particuliers (à cause de la précédence des opérateurs). Cela a pour
+  effet de pouvoir <strong>créer</strong> nos propres opérateurs ou fonctions.
+  Nous pouvons imaginer <code><em>a</em> ∈ <em>A</em></code>, <code>√(42)</code>
+  ou encore <code><em>userA</em> allows <em>userB</em></code> comme étant des
+  expressions valides.</p>
+
+  <h3 id="Context" for="main-toc">Contexte</h3>
+
+  <p>Le contexte définit les valeurs des variables présentes dans des
+  règles. Ces valeurs peuvent être :</p>
+  <ul>
+    <li>des <strong>constantes</strong>, comme <code>42</code> ou
+    <code>'foo'</code> qui sont des scalaires, ou <code>[1, 1, 2, 3, 5]</code>
+    ou un objet qui sont des types structurés ;</li>
+    <li>des <strong>valeurs calculées</strong>, c'est à dire retournée par une
+    fonction ou une méthode.</li>
+  </ul>
+  <p>Par défaut, les valeurs calculées ne le sont qu'une seule fois. En effet,
+  elles sont placées dans un cache pour des raisons de performance. Si nous
+  voulons les recalculer à chaque lecture, il faudra les encapsuler dans un
+  objet de type <code>Hoa\Ruler\DynamicCallable</code>.</p>
+  <p>Avant de détailler cette partie, présentons le contexte. Un contexte est
+  une instance de la classe <code>Hoa\Ruler\Context</code> qui implémente
+  <a href="http://php.net/arrayaccess">l'interface <code>ArrayAccess</code></a>.
+  Ainsi nous utilisons le contexte comme un tableau :</p>
+  <pre><code class="language-php">$context        = new Hoa\Ruler\Context();
+$context['key'] = 'value';
+
+var_dump(
+    isset($context['key']),
+    $context['key']
+);
+
+/**
+ * Will output:
+ *     bool(true)
+ *     string(5) "value"
+ */</code></pre>
+  <p>Pour y déposer des valeurs calculées, nous pouvons le faire via une
+  fonction ; ainsi :</p>
+  <pre><code class="language-php">$context['computed'] = function ( ) {
+
+    return 42;
+};
+
+var_dump($context['computed']);
+
+/**
+ * Will output:
+ *     int(42)
+ */</code></pre>
+  <p>Nous avons dit que les valeurs calculées sont placées en
+  <strong>cache</strong> dès la première lecture. Pour l'illustrer, nous allons
+  utiliser une fonction qui incrémente un entier à chaque appel :</p>
+  <pre><code class="language-php">$i              = 0;
+$context['int'] = function ( ) use ( &amp;amp;$i ) {
+
+    return ++$i;
+};
+
+var_dump(
+    $context['int'],
+    $context['int'],
+    $context['int'],
+    $i
+);
+
+/**
+ * Will output:
+ *     int(1)
+ *     int(1)
+ *     int(1)
+ *     int(1)
+ */</code></pre>
+  <p>La variable <code class="language-php">$i</code> a été incrémentée une
+  seule fois pour passer de 0 à 1, puis elle a été placée en cache. Maintenant,
+  si nous encapsulons cette fonction dans une instance de la classe
+  <code>Hoa\Ruler\DynamicCallable</code>, observons ce qu'il se passe :</p>
+  <pre><code class="language-php">$i              = 0;
+$context['int'] = new Hoa\Ruler\DynamicCallable(
+    function ( ) use ( &amp;amp;$i ) {
+
+        return ++$i;
+    }
+);
+
+var_dump(
+    $context['int'],
+    $context['int'],
+    $context['int'],
+    $i
+);
+
+/**
+ * Will output:
+ *     int(1)
+ *     int(2)
+ *     int(3)
+ *     int(3)
+ */</code></pre>
+  <p>Le résultat n'est plus mis en cache.</p>
+  <p>Nous pouvons également utiliser une fonction déclarée grâce à son nom.
+  Attention toutefois, il sera impossible d'appeler les fonctions natives de PHP
+  pour des raisons de sécurité. Le contexte n'a pas une telle
+  <strong>portée</strong>. Ainsi :</p>
+  <pre><code class="language-php">function answer ( ) {
+
+    return 42;
+}
+
+$context['the_answer'] = 'answer';
+
+var_dump($context['the_answer']);
+
+/**
+ * Will output:
+ *     int(42)
+ */</code></pre>
+  <p>C'est tout ce qu'il faut savoir sur le contexte. Ce n'est pas plus
+  compliqué que ça !</p>
+
+  <h3 id="Asserter" for="main-toc">Asserteur</h3>
+
+  <p>Étant donné une règle et un contexte, l'asserteur est chargé de calculer le
+  résultat de cette règle, dont les valeurs des variables sont dans le
+  contexte.</p>
+  <p>La règle peut avoir deux formes possibles :</p>
+  <ul>
+    <li>une <strong>chaîne de caractère</strong> ou</li>
+    <li>un modèle <strong>objet</strong>.</li>
+  </ul>
+  <p>Si c'est une chaîne de caractère, elle sera transformée en modèle objet
+  automatiquement par la méthode <code>Hoa\Ruler\Ruler::assert</code>. Ce modèle
+  objet implémente les interfaces de <a href="@hack:chapter=Visitor">la
+  bibliothèque <code>Hoa\Visitor</code></a> et peut donc être visité. C'est
+  pourquoi l'asserteur <code>Hoa\Ruler\Visitor\Asserter</code> est un
+  <strong>visiteur</strong>. Le contexte quant à lui est défini auprès de
+  l'asserteur avec la méthode
+  <code>Hoa\Ruler\Visitor\Asserter::setContext</code>. Ainsi :</p>
+  <pre><code class="language-php">$ruler             = new Hoa\Ruler\Ruler();
+$rule              = 'points > 30';
+$context           = new Hoa\Ruler\Context();
+$context['points'] = 42;
+
+// Define an asserter.
+$asserter          = new Hoa\Ruler\Visitor\Asserter();
+
+// Set this asserter on the ruler.
+$ruler->setAsserter($asserter);
+
+// Assert!
+var_dump(
+    $ruler->assert($rule, $context)
+);
+
+/**
+ * Will output:
+ *     bool(true)
+ */</code></pre>
+  <p>La méthode <code>Hoa\Ruler\Ruler::assert</code> va automatiquement définir
+  le contexte auprès de l'asserteur.</p>
+
+  <h4 id="Add_functions" for="main-toc">Ajout de fonctions</h4>
+
+  <p>Nous avons précisé que les noms des opérateurs et des fonctions dans les
+  règles sont <strong>libres</strong>. Ainsi, nous avons évoqué la possibilité
+  de définir nos propres opérateurs et fonctions. Ajoutons la fonction
+  <code>logged</code> qui teste si un objet de type <code>User</code> est
+  connecté. Voici cet objet :</p>
+  <pre><code class="language-php">class User {
+
+    const DISCONNECTED = 0;
+    const CONNECTED    = 1;
+    protected $_status = 1;
+
+    public function getStatus ( ) {
+
+        return $this->_status;
+    }
+}</code></pre>
+  <p>L'implémentation de la fonction <code>logged</code> serait alors :</p>
+  <pre><code class="language-php">$logged = function ( User $user ) {
+
+    return $user::CONNECTED === $user->getStatus();
+};</code></pre>
+  <p>Enfin, pour déclarer cette fonction, nous allons utiliser la méthode
+  <code>Hoa\Ruler\Visitor\Asserter::setOperator</code>. Nous pouvons aussi citer
+  les méthodes <code>operatorExists</code>, <code>getOperator</code> et
+  <code>getOperators</code> qui permettent respectivement de tester si un
+  opérateur existe, d'obtenir un opérateur précédemment déclaré et d'obtenir
+  tous les opérateurs déclarés. Ainsi :</p>
+  <pre><code class="language-php">$ruler             = new Hoa\Ruler\Ruler();
+$rule              = 'logged(user) and points > 30';
+$context           = new Hoa\Ruler\Context();
+$context['user']   = new User();
+$context['points'] = 42;
+
+// Declare the `logged` function.
+$asserter = new Hoa\Ruler\Visitor\Asserter();
+$asserter->setOperator('logged', $logged);
+
+$ruler->setAsserter($asserter);
+
+// Assert!
+var_dump(
+    $ruler->assert($rule, $context)
+);
+
+/**
+ * Will output:
+ *     bool(true)
+ */</code></pre>
+
+  <p>La classe <code>Hoa\Ruler\Ruler</code> ne contient que des méthodes pour
+  travailler plus vite et cacher le mécanisme sous-jacent (détaillé ci-après).
+  Elle contient entre autre la méthode statique <code>getDefaultAsserter</code>
+  qui retourne une instance unique de la classe
+  <code>Hoa\Ruler\Visitor\Asserter</code>. Nous pouvons utiliser cette instance
+  unique pour définir des nouveaux opérateurs pour <strong>toutes</strong> les
+  règles. Son utilisation est très similaire à ce que nous avons vu
+  précédemment :</p>
+  <pre><code class="language-php">$ruler             = new Hoa\Ruler\Ruler();
+$rule              = 'logged(user) and points > 30';
+$context           = new Hoa\Ruler\Context();
+$context['user']   = new User();
+$context['points'] = 42;
+
+// Declare the `logged` function.
+$ruler->getDefaultAsserter()->setOperator('logged', $logged);
+
+// Assert!
+var_dump(
+    $ruler->assert($rule, $context)
+);
+
+/**
+ * Will output:
+ *     bool(true)
+ */</code></pre>
+  <p>La méthode <code>Hoa\Ruler\Visitor\Asserter::setOperator</code> utilise
+  n'importe quel <em lang="en">callable</em> valide.</p>
+  <p>Les opérateurs <code>and</code>, <code>or</code>, <code>xor</code>,
+  <code>not</code>, <code>=</code>, <code>!=</code>, <code>sum</code> etc. sont
+  définis dans
+  <a href="@central_resource:path=Library/Ruler/Visitor/Asserter.php">la classe
+  <code>Hoa\Ruler\Visitor\Asserter</code></a>.  N'hésitez pas à vous en
+  inspirer !</p>
+
+  <h2 id="Language_transformation" for="main-toc">Transformation du langage</h2>
+
+  <p>Le mécanisme sous-jacent caché par la classe <code>Hoa\Ruler\Ruler</code>
+  est simple et très <strong>modulaire</strong>. Les sections suivantes
+  détaillent les <strong>transformations</strong> possibles du langage et leur
+  utilisation.</p>
+
+  <div id="transformation" class="schema"></div>
+  <script>
+  Hoa.Document.onReady(function ( ) {
+
+      var paper        = Hoa.Graph(Hoa.$('#transformation'), 800, 300);
+      var grid         = paper.grid(0, 0, 800, 300, 5, 3);
+      var rule         = grid.push(paper.rect(0, 0, 110, 80, 3, 'règle'), 0, 1);
+      var vinterpreter = grid.push(paper.rect(0, 0, 110, 80, 3, 'interpréteur'), 1, 1);
+      var model        = grid.push(paper.rect(0, 0, 110, 80, 3, 'modèle'), 2, 1);
+      var vasserter    = grid.push(paper.rect(0, 0, 110, 80, 3, 'asserteur'), 4, 0);
+      var vcompiler    = grid.push(paper.rect(0, 0, 110, 80, 3, 'PHP code'), 4, 1);
+      var vdisassembly = grid.push(paper.rect(0, 0, 110, 80, 3, 'règle'), 4, 2);
+
+      paper.link.between(rule, vinterpreter, '');
+      paper.link.between(vinterpreter, model, '');
+      paper.link.between(model, vasserter, '');
+      paper.link.between(model, vcompiler, '');
+      paper.link.between(model, vdisassembly, '');
+  });
+  </script>
+
+  <p>Tout d'abord, la règle est interprétée par un interpréteur pour être
+  transformée en modèle objet. Ensuite, ce modèle objet est utilisé par
+  l'asserteur, ou peut être transformé en code PHP ou transformé en une règle.
+  Le modèle objet est le point central du langage, c'est sa forme la plus
+  avancée.</p>
+
+  <h3 id="Interpreter_language_to_object_model" for="main-toc">Interpréteur :
+  langage vers modèle objet</h3>
+
+  <p>Une règle est une chaîne de caractères. Pour la transformer en modèle
+  objet, nous utilisons <a href="@hack:chapter=Compiler">la bibliothèque
+  <code>Hoa\Compiler</code></a>.</p>
+
+  <div id="transformation_interpreter" class="schema"></div>
+  <script>
+  Hoa.Document.onReady(function ( ) {
+
+      var paper        = Hoa.Graph(Hoa.$('#transformation_interpreter'), 800, 300);
+      var grid         = paper.grid(0, 0, 800, 300, 5, 3);
+      var rule         = grid.push(paper.rect(0, 0, 110, 80, 3, 'règle'), 0, 1);
+      var vinterpreter = grid.push(paper.rect(0, 0, 110, 80, 3, 'interpréteur'), 1, 1);
+      var model        = grid.push(paper.rect(0, 0, 110, 80, 3, 'modèle'), 2, 1);
+      var vasserter    = grid.push(paper.rect(0, 0, 110, 80, 3, 'asserteur').attr({opacity: .3}), 4, 0);
+      var vcompiler    = grid.push(paper.rect(0, 0, 110, 80, 3, 'PHP code').attr({opacity: .3}), 4, 1);
+      var vdisassembly = grid.push(paper.rect(0, 0, 110, 80, 3, 'règle').attr({opacity: .3}), 4, 2);
+
+      paper.link.between(rule, vinterpreter, '');
+      paper.link.between(vinterpreter, model, '');
+      paper.link.between(model, vasserter, '');
+      paper.link.between(model, vcompiler, '');
+      paper.link.between(model, vdisassembly, '');
+  });
+  </script>
+
+  <p>Grâce à la grammaire des règles (définie dans 
+  <a href="@central_resource:path=Library/Ruler/Grammar.pp">le fichier
+  <code>hoa://Library/Ruler/Grammar.pp</code></a>), nous allons obtenir un AST :
+  un arbre abstrait. Par exemple, pour la règle <code>points > 30</code>, son
+  AST est :</p>
+  <pre><code class="language-shell">$ echo 'points > 30' | hoa compiler:pp hoa://Library/Ruler/Grammar.pp 0 --visitor dump
+>  #expression
+>  >  #operation
+>  >  >  token(identifier, points)
+>  >  >  token(identifier, >)
+>  >  >  token(integer, 30)</code></pre>
+  <p>Pour que cet arbre soit exploitable plus facilement, il va être transformé
+  en <strong>modèle objet</strong>. Cette transformation est assurée par la
+  classe <code>Hoa\Ruler\Visitor\Interpreter</code>. Ainsi, si nous devions le
+  faire manuellement :</p>
+  <pre><code class="language-php">$compiler    = Hoa\Compiler\Llk::load(
+    new Hoa\File\Read('hoa://Library/Ruler/Grammar.pp')
+);
+$ast         = $compiler->parse('points > 30');
+$interpreter = new Hoa\Ruler\Visitor\Interpreter();
+$model       = $interpreter->visit($ast);
+
+var_dump(
+    get_class($model)
+);
+
+/**
+ * Will output:
+ *     string(21) "Hoa\Ruler\Model\Model"
+ */</code></pre>
+  <p>Nous apprenons alors que le modèle est représenté par les classes
+  appartenant à l'espace de nom <code>Hoa\Ruler\Model</code>.</p>
+  <p>Toutes ces opérations sont remplacées par la méthode statique
+  <code>Hoa\Ruler\Ruler::interpret</code> :</p>
+  <pre><code class="language-php">$model = Hoa\Ruler\Ruler::interpret('points > 30');</code></pre>
+  <p>Nous pouvons obtenir le compilateur avec la méthode
+  <code>Hoa\Ruler\Ruler::getCompiler</code>.</p>
+  <p>Nous verrons comment cette étape peut être importante pour améliorer les
+  performances.</p>
+
+  <h3 id="Compiler_object_model_to_PHP" for="main-toc">Compilateur : modèle
+  objet vers PHP</h3>
+
+  <p>Le modèle objet peut être créé manuellement en instanciant tous les objets
+  de type <code>Hoa\Ruler\Model\<em>*</em></code> et en les combinant
+  ensemble.</p>
+
+  <div id="transformation_compiler" class="schema"></div>
+  <script>
+  Hoa.Document.onReady(function ( ) {
+
+      var paper        = Hoa.Graph(Hoa.$('#transformation_compiler'), 800, 300);
+      var grid         = paper.grid(0, 0, 800, 300, 5, 3);
+      var rule         = grid.push(paper.rect(0, 0, 110, 80, 3, 'règle').attr({opacity: .3}), 0, 1);
+      var vinterpreter = grid.push(paper.rect(0, 0, 110, 80, 3, 'interpréteur').attr({opacity: .3}), 1, 1);
+      var model        = grid.push(paper.rect(0, 0, 110, 80, 3, 'modèle'), 2, 1);
+      var vasserter    = grid.push(paper.rect(0, 0, 110, 80, 3, 'asserteur').attr({opacity: .3}), 4, 0);
+      var vcompiler    = grid.push(paper.rect(0, 0, 110, 80, 3, 'PHP code'), 4, 1);
+      var vdisassembly = grid.push(paper.rect(0, 0, 110, 80, 3, 'règle').attr({opacity: .3}), 4, 2);
+
+      paper.link.between(rule, vinterpreter, '');
+      paper.link.between(vinterpreter, model, '');
+      paper.link.between(model, vasserter, '');
+      paper.link.between(model, vcompiler, '');
+      paper.link.between(model, vdisassembly, '');
+  });
+  </script>
+
+  <p>Le code PHP nécessaire à cette opération peut être automatiquement généré
+  grâce à la classe <code>Hoa\Ruler\Visitor\Compiler</code>. Ainsi :</p>
+  <pre><code class="language-php">$compiler = new Hoa\Ruler\Visitor\Compiler();
+echo $compiler->visit($model);
+
+/**
+ * Will output:
+ *     $model = new \Hoa\Ruler\Model();
+ *     $model->expression =
+ *         $model->{'>'}(
+ *             $model->variable('points'),
+ *             30
+ *         );
+ */</code></pre>
+  <p>Le code généré est simplifié et optimisé pour être le plus court possible
+  tout en restant lisible par un être humain.</p>
+  <p>Nous verrons comment cette étape peut être importante pour améliorer les
+  performances.</p>
+
+  <h3 id="Disassembler_object_model_to_language" for="main-toc">Désassembleur :
+  modèle objet vers langage</h3>
+
+  <p>Jusqu'à maintenant, nous avons vu comment passer d'une règle vers son
+  modèle objet. Le désassembleur applique l'opération <strong>inverse</strong> :
+  il transforme un modèle objet vers une chaîne de caractères.</p>
+
+  <div id="transformation_disassembler" class="schema"></div>
+  <script>
+  Hoa.Document.onReady(function ( ) {
+
+      var paper        = Hoa.Graph(Hoa.$('#transformation_disassembler'), 800, 300);
+      var grid         = paper.grid(0, 0, 800, 300, 5, 3);
+      var rule         = grid.push(paper.rect(0, 0, 110, 80, 3, 'règle').attr({opacity: .3}), 0, 1);
+      var vinterpreter = grid.push(paper.rect(0, 0, 110, 80, 3, 'interpréteur').attr({opacity: .3}), 1, 1);
+      var model        = grid.push(paper.rect(0, 0, 110, 80, 3, 'modèle'), 2, 1);
+      var vasserter    = grid.push(paper.rect(0, 0, 110, 80, 3, 'asserteur').attr({opacity: .3}), 4, 0);
+      var vcompiler    = grid.push(paper.rect(0, 0, 110, 80, 3, 'PHP code').attr({opacity: .3}), 4, 1);
+      var vdisassembly = grid.push(paper.rect(0, 0, 110, 80, 3, 'règle'), 4, 2);
+
+      paper.link.between(rule, vinterpreter, '');
+      paper.link.between(vinterpreter, model, '');
+      paper.link.between(model, vasserter, '');
+      paper.link.between(model, vcompiler, '');
+      paper.link.between(model, vdisassembly, '');
+  });
+  </script>
+  <p>La règle générée peut différer un peu de la règle originale syntaxiquement
+  (parenthèses, guillemets, espacements…) mais jamais sémantiquement.
+  Ainsi :</p>
+  <pre><code class="language-php">$disassembly = new Hoa\Ruler\Visitor\Disassembly();
+echo $disassembly->visit($model);
+
+/**
+ * Will output:
+ *     (points > 30)
+ */</code></pre>
+
+  <h2 id="Performances" for="main-toc">Performances</h2>
+
+  <p>Transformer une règle vers un modèle objet est une opération coûteuse si
+  elle est appliquée des milliers de fois à la minute. Appliquer un asserteur
+  sur un modèle objet n'est pas coûteux. Nous allons donc présenter deux façons
+  d'éviter la transformation d'une règle vers un modèle objet.</p>
+
+  <h3 id="Serialize_the_object_model" for="main-toc">Sérialiser le modèle
+  objet</h3>
+
+  <p>Une fois le modèle objet obtenu, nous pouvons le sérialiser à l'aide de
+  <a href="http://php.net/serialize">la fonction PHP <code>serialize</code></a>.
+  Nous allons obtenir une chaîne de caractères représentant les instances des
+  objets constituant le modèle objet. Pour obtenir à nouveau le modèle objet et
+  être capable d'y appliquer un asserteur, nous utiliserons
+  <a href="http://php.net/unserialize">la fonction PHP
+  <code>unserialize</code></a>. Le résultat de la sérialisation peut être
+  stocké en base de données à la place des règles. Cela nécessite un peu plus
+  de place mais rappelons que nous pouvons transformer le modèle objet vers sa
+  règle facilement grâce à la classe
+  <code>Hoa\Ruler\Visitor\Disassembly</code>, cette information n'est donc pas
+  perdue. Ainsi :</p>
+  <pre><code class="language-php">$ruler             = new Hoa\Ruler\Ruler();
+$rule              = 'points > 30';
+$context           = new Hoa\Ruler\Context();
+$context['points'] = 42;
+
+// Nothing in the database.
+if(null === $serialized = $database->get($ruleId)) {
+
+    // We transform the rule into an object model.
+    $model = Hoa\Ruler\Ruler::interpret($rule);
+
+    // We serialize and save the object model.
+    $database->save($ruleId, serialize($model));
+}
+else {
+
+    // We have a serialization! We unserialize it to get the object model.
+    $model = unserialize($serialized);
+}
+
+// We can assert by using a model instead of a rule!
+var_dump(
+    $ruler->assert($model, $context)
+);
+
+/**
+ * Will output:
+ *     bool(true)
+ */</code></pre>
+  <p>De cette manière, la règle n'est transformée en modèle objet
+  qu'<strong>une seule fois</strong> !</p>
+
+  <h3 id="Save_and_execute_PHP_code" for="main-toc">Enregistrer et exécute du
+  code PHP</h3>
+
+  <p>Une autre façon d'éviter la transformation d'une règle en modèle objet est
+  d'enregistrer le code PHP permettant de construire le modèle objet grâce à la
+  classe <code>Hoa\Ruler\Visitor\Compiler</code>. Une fois ce code PHP
+  enregistré et exécuté, nous retrouverons notre modèle objet.</p>
+  <p>Toutefois, exécuter un tel code PHP s'avèrera légèrement plus lent et plus
+  difficile à mettre en œuvre que la technique précédente.</p>
+
+  <h2 id="Conclusion" for="main-toc">Conclusion</h2>
+
+  <p>La bibliothèque <code>Hoa\Ruler</code> définit un <strong>langage</strong>
+  de règles métiers <strong>simple</strong> et inspiré du langage SQL dans sa
+  syntaxe. Le langage peut être <strong>transformé</strong> de plusieurs
+  façons : vers un modèle objet pour qu'il puisse être exécuté, ou à partir de
+  ce modèle, vers du code PHP ou vers le langage d'origine. L'instanciation des
+  variables dans ce langage se fait à travers un <strong>contexte</strong>.
+  Toutes ces opérations sont cachées à travers une interface simple et
+  claire.</p>
+  <p>La question des <strong>performances</strong> a été abordée et deux
+  solutions sont proposées. Aujourd'hui utilisé dans l'industrie sur de gros
+  projets, <code>Hoa\Ruler</code> est capable de supporter de lourdes charges si
+  ces pratiques simples sont mises en œuvre.</p>
+
+</yield>
+</overlay>
