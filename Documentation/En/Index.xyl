@@ -3,8 +3,57 @@
 <overlay xmlns="http://hoa-project.net/xyl/xylophone">
 <yield id="chapter">
 
-  <p class="warning">This chapter is not yet translated. Contributions are
-  welcomed!</p>
+  <p><strong>Business rules</strong> (like “<q>all the customers that have
+  reached 100€ in one time receive a voucher of 10% on the next purchase</q>”)
+  are most of the time defined <strong>outside</strong> the application. They
+  are even often written in a <strong>different language</strong> that the used
+  programming language. The <code>Hoa\Ruler</code> library provides an engine
+  allowing to simply execute business rules while being
+  <strong>efficient</strong> and very <strong>extensible</strong>.</p>
+
+  <h2 id="Table_of_contents">Table of contents</h2>
+
+  <tableofcontents id="main-toc" />
+
+  <h2 id="Introduction" for="main-toc">Introduction</h2>
+
+  <p>The business logic is very different of the Computer logic. “<q>All the
+  customers that have reached 100€ in one time receive a voucher of 10% on the
+  next purchase</q>”. This rule allows to access to certain parts of the program
+  if <strong>valids</strong>. However, it can <strong>change</strong> at any
+  moment. Most of time, in a team, it is not the role of the developer to
+  implement this rule. It will probably come from a <strong>business rules
+  repository</strong>, which have been written by other persons, either
+  <strong>manually</strong> or thanks to a <strong>third program</strong>.
+  This implies that the language used to express a rule is not the languge used
+  to develop the program. An even more obvious example is the use of a rule to
+  filter elements: An element is accepted if “<q>its group is <em>customer</em>
+  or <em>guest</em> and its number of points is greater than 30</q>”. This rule
+  can be written by a user via a command line interface to filter results from a
+  database or logs.</p>
+  <p>This is important to understand that rules must be written in a
+  <strong>dedicated language</strong>. Nevertheless, the way we use rules is
+  very <strong>vast</strong> and <strong>unpredictable</strong>. This is why it
+  is primordial to have flexible and <strong>extensible</strong> rules in the
+  syntax. For instance, it should be allowed to add operators and functions:
+  “<q>All the customers from the hotel with a Gold pass will receive a voucher
+  of 10%”</q>. The “Gold pass” can be an operator or a function specific to the
+  current business.</p>
+  <p>The language the <code>Hoa\Ruler</code> library uses to describe rules
+  respects these constraints of extensibility. The rules will not be close to
+  the human language but they will stay <strong>natural</strong> when reading.
+  If we take the example of the “<q>its group is <em>customer</em> or
+  <em>guest</em> and its number of points is greater than 30</q>”, it will be
+  written: <code><em>group</em> in ["customer", "guest"] and <em>points</em> >
+  30</code>. The <code><em>group</em></code> and <code><em>points</em></code>
+  elements are variables of the rule. Their values will be defined in a
+  context.</p>
+  <p>From a more formal point of view, a rule is a predicate, it means that its
+  result is always a boolean: <code class="language-php">true</code> or
+  <code class="language-php">false</code>. Because these rules are likely to be
+  manipulated (modified) and executed, the <code>Hoa\Ruler</code> library
+  provides several tools to work efficiently with these constraints, presented
+  in the following sections.</p>
 
 </yield>
 </overlay>
