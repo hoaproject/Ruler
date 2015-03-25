@@ -55,5 +55,160 @@
   provides several tools to work efficiently with these constraints, presented
   in the following sections.</p>
 
+  <h2 id="Global_workflow" for="main-toc">Global workflow</h2>
+
+  <p>The global workflow of the <code>Hoa\Ruler</code> library follows
+  3 steps:</p>
+  <ol>
+    <li>Defining a <strong>rule</strong>,</li>
+    <li>Defining a <strong>context</strong>,</li>
+    <li>Use of an <strong>asserter</strong> for the execution.</li>
+  </ol>
+  <p>The <strong>rule</strong> is a string matching a specific syntax, which is
+  described by the grammar of the language defined by the <code>Hoa\Ruler</code>
+  library (detailed hereinafter). This rule contains variables whose values are
+  defined by the <strong>context</strong>. The context can contain scalar
+  values, arrays or even functions or objects. Finally, the
+  <strong>asserter</strong> associates the context to the rule in order to
+  execute it and to obtain a result. We remind you about the result which is
+  necessarily a boolean. This is therefore a predicate.</p>
+  <p>The context is represented by the <code>Hoa\Ruler\Context</code> class. The
+  asserter is represented by the <code>Hoa\Ruler\Visitor\Asserter</code> class.
+  We can use the <code>Hoa\Ruler\Ruler::assert</code> method to ease its usage.
+  Thus:</p>
+  <pre><code class="language-php">$ruler = new Hoa\Ruler\Ruler();
+
+// 1. Write a rule.
+$rule  = 'group in ["customer", "guest"] and points > 30';
+
+// 2. Create a context.
+$context           = new Hoa\Ruler\Context();
+$context['group']  = 'customer';
+$context['points'] = function ( ) {
+
+    return 42;
+};
+
+// 3. Assert!
+var_dump(
+    $ruler->assert($rule, $context)
+);
+
+/**
+ * Will output:
+ *     bool(true)
+ */</code></pre>
+  <p>The rule is defined in the <code class="language-php">$rule</code>
+  variable. The context, as far as it is concerned, is defined in the
+  <code class="language-php">$context</code> variable. It contains 2 variables:
+  <code>group</code> and <code>point</code>, respectively with the
+  <code class="language-php">'customer'</code> and
+  <code class="language-php">42</code> (returned by a function) values. Finally,
+  the last step uses the <code>Hoa\Ruler\Ruler::assert</code> method to execute
+  the <code class="language-php">$rule</code> rule with the
+  <code class="language-php">$context</code> context (this latter is optional).
+  The result is <code class="language-php">true</code> because
+  <code>group</code> belongs to the list <code>customer</code> or
+  <code>guest</code>, and <code>point</code> is greater than 30. Change the
+  values in the context or the rule to observe a different result.</p>
+  <p>The following sections detail the behavior of each step but the classical
+  usage remains as simple as that!</p>
+
+  <h3 id="Grammar" for="main-toc">Grammar (through examples)</h3>
+
+  <p>The grammar of the rules language is described in
+  <a href="@central_resource:path=Library/Ruler/Grammar.pp">the
+  <code>hoa://Library/Ruler/Grammar.pp</code> file</a>. This grammar is
+  expressed with the PP language. To get more information, please see
+  <a href="@hack:chapter=Compiler">the <code>Hoa\Compiler</code> library</a>.
+  We clarify that the language supports Unicode. We are not going to explain the
+  language whilst the grammar provides all the necessary
+  <strong>details</strong>. Nevertheless, we are going to give several syntax
+  examples.</p>
+
+  <table>
+    <caption>Language of <code>Hoa\Ruler</code> through examples.</caption>
+    <thead>
+      <tr>
+        <th>syntax</th>
+        <th>semantics</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>'foo'</code>, <code>"foo"</code>, <code>'f\'oo'</code></td>
+        <td>strings</td>
+      </tr>
+      <tr>
+        <td><code>true</code>, <code>false</code>, <code>null</code></td>
+        <td>pre-defined constants</td>
+      </tr>
+      <tr>
+        <td><code>4.2</code></td>
+        <td>a real</td>
+      </tr>
+      <tr>
+        <td><code>42</code></td>
+        <td>an integer</td>
+      </tr>
+      <tr>
+        <td><code>['foo', true, 4.2, 42]</code></td>
+        <td>an array (heterogeneous)</td>
+      </tr>
+      <tr>
+        <td><code>sum(1, 2, 3)</code></td>
+        <td>a call to the <code>sum</code> function with 3 arguments</td>
+      </tr>
+      <tr>
+        <td><code><em>points</em></code></td>
+        <td>a variable</td>
+      </tr>
+      <tr>
+        <td><code><em>points</em>['x']</code></td>
+        <td>an array access</td>
+      </tr>
+      <tr>
+        <td><code><em>line</em>.pointA</code></td>
+        <td>an object access (attribute)</td>
+      </tr>
+      <tr>
+        <td><code><em>line</em>.length()</code></td>
+        <td>a call to a method</td>
+      </tr>
+      <tr>
+        <td><code>and</code>, <code>or</code>, <code>xor</code>, <code>not</code></td>
+        <td>logical operators</td>
+      </tr>
+      <tr>
+        <td><code>=</code>, <code>!=</code>, <code>></code>, <code>&amp;lt;</code>,
+            <code>>=</code>, <code>&amp;lt;=</code></td>
+        <td>comparison operators</td>
+      </tr>
+      <tr>
+        <td><code>is</code>, <code>in</code></td>
+        <td>membership operators</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Of course, these examples represent atomic parts of the grammar that we can
+  combined. Thus:
+  <code><em>userA</em>.allows(<em>groups</em>[<em>groupId</em>][<em>userB</em>])</code>
+  is valid. Just like <code>f(<em>user</em>, <em>points</em> > 7 and
+  <em>points</em> &amp;lt; 42)</code> which is also valid.</p>
+  <p>In actual fact, functions, comparison operators and membership operators
+  are not defined by the grammar but by the asserter (detailed hereinafter).
+  <code>Hoa\Ruler</code> does not make any difference between an operator and a
+  function. <strong>Operators are considered as functions</strong>; an operator
+  only being a function with an arity of 1 or 2. Thus, we can write <code>2 =
+  2</code> or <code>=(2, 2)</code>, this will strictly produce the same result.
+  Just like the name of functions that is not defined in the grammar, the name
+  of operators is neither defined by the grammar, excepted for the logical
+  operators that have a particular processing (because of the operator
+  precedence). The immediate result is that we can <strong>create</strong> our
+  own operators or functions. We can imagine <code><em>a</em> ∈
+  <em>A</em></code>, <code>√(42)</code> or even <code><em>userA</em> allows
+  <em>userB</em></code> being valid expressions.</p>
+
 </yield>
 </overlay>
