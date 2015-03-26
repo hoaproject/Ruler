@@ -210,5 +210,118 @@ var_dump(
   <em>A</em></code>, <code>√(42)</code> or even <code><em>userA</em> allows
   <em>userB</em></code> being valid expressions.</p>
 
+  <h3 id="Context" for="main-toc">Context</h3>
+
+  <p>The context defines values of variables present in rules. These values can
+  be of kind:</p>
+  <ul>
+    <li><strong>Constants</strong>, like <code class="language-php">42</code> or
+    <code class="language-php">'foo'</code> which are scalars, or
+    <code class="language-php">[1, 1, 2, 3, 5]</code> or an object which are
+    structured types,</li>
+    <li><strong>Computed values</strong>, it means returned by a function or a
+    method.</li>
+  </ul>
+  <p>By default, the computed values are computed only once. Indeed, they are
+  stored in a cache for performance reasons. If we would like to recompute them
+  at each read, an encapsulation in an object of kind
+  <code>Hoa\Ruler\DynamicCallable</code> is required.</p>
+  <p>Before detailing this part, let's present the context. A context is an
+  instance of the <code>Hoa\Ruler\Context</code> class which implements
+  <a href="http://php.net/arrayaccess">the <code>ArrayAccess</code>
+  interface</a>. Thus, we use the context like an array:</p>
+  <pre><code class="language-php">$context        = new Hoa\Ruler\Context();
+$context['key'] = 'value';
+
+var_dump(
+    isset($context['key']),
+    $context['key']
+);
+
+/**
+ * Will output:
+ *     bool(true)
+ *     string(5) "value"
+ */</code></pre>
+  <p>To register computed values, we can use a function; thus:</p>
+  <pre><code class="language-php">$context['computed'] = function ( ) {
+
+    return 42;
+};
+
+var_dump($context['computed']);
+
+/**
+ * Will output:
+ *     int(42)
+ */</code></pre>
+  <p>We said computed values are stored in a <strong>cache</strong> on the first
+  read. To illustrate this we will use a function incrementing an integer at
+  each call:</p>
+  <pre><code class="language-php">$i              = 0;
+$context['int'] = function ( ) use ( &amp;amp;$i ) {
+
+    return ++$i;
+};
+
+var_dump(
+    $context['int'],
+    $context['int'],
+    $context['int'],
+    $i
+);
+
+/**
+ * Will output:
+ *     int(1)
+ *     int(1)
+ *     int(1)
+ *     int(1)
+ */</code></pre>
+  <p>The <code class="language-php">$i</code> variable has been incremented once
+  to go from 0 to 1, and then, has been stored in a cache. Now, if we
+  encapsulate this function in an instance of the
+  <code>Hoa\Ruler\DynamicCallable</code> class, let's observe what happens:</p>
+  <pre><code class="language-php">$i              = 0;
+$context['int'] = new Hoa\Ruler\DynamicCallable(
+    function ( ) use ( &amp;amp;$i ) {
+
+        return ++$i;
+    }
+);
+
+var_dump(
+    $context['int'],
+    $context['int'],
+    $context['int'],
+    $i
+);
+
+/**
+ * Will output:
+ *     int(1)
+ *     int(2)
+ *     int(3)
+ *     int(3)
+ */</code></pre>
+  <p>The result is no longer stored in a cache.</p>
+  <p>We can also use a declared function thanks to its name. Attention, it is
+  not possible to call native PHP functions for security reasons. The context
+  has not such a <strong>scope</strong>. Thus:</p>
+  <pre><code class="language-php">function answer ( ) {
+
+    return 42;
+}
+
+$context['the_answer'] = 'answer';
+
+var_dump($context['the_answer']);
+
+/**
+ * Will output:
+ *     int(42)
+ */</code></pre>
+  <p>Nothing more to know about the context. It is not that complicated!</p>
+
 </yield>
 </overlay>
