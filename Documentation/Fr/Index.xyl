@@ -112,12 +112,12 @@ var_dump(
   dernière étape utilise la méthode <code>Hoa\Ruler\Ruler::assert</code> pour
   exécuter la règle <code class="language-php">$rule</code> avec le contexte
   <code class="language-php">$context</code> (ce dernier est optionnel). Le
-  résultat est <code>true</code> car <code>group</code> est bien dans la liste
-  <code>customer</code> ou <code>guest</code>, et <code>point</code> est bien
-  supérieur à 30. Changez les valeurs dans le contexte ou la règle pour observer
-  un résultat différent.</p> <p>Les sections suivantes détaillent le
-  fonctionnement de chaque partie mais l'usage classique reste aussi simple que
-  ça !</p>
+  résultat est <code class="language-php">true</code> car <code>group</code> est
+  bien dans la liste <code>customer</code> ou <code>guest</code>, et
+  <code>point</code> est bien supérieur à 30. Changez les valeurs dans le
+  contexte ou la règle pour observer un résultat différent.</p>
+  <p>Les sections suivantes détaillent le fonctionnement de chaque partie mais
+  l'usage classique reste aussi simple que ça !</p>
 
   <h3 id="Grammar" for="main-toc">Grammaire (par l'exemple)</h3>
 
@@ -221,9 +221,11 @@ var_dump(
   <p>Le contexte définit les valeurs des variables présentes dans des
   règles. Ces valeurs peuvent être :</p>
   <ul>
-    <li>des <strong>constantes</strong>, comme <code>42</code> ou
-    <code>'foo'</code> qui sont des scalaires, ou <code>[1, 1, 2, 3, 5]</code>
-    ou un objet qui sont des types structurés ;</li>
+    <li>des <strong>constantes</strong>, comme
+    <code class="language-php">42</code> ou
+    <code class="language-php">'foo'</code> qui sont des scalaires, ou
+    <code class="language-php">[1, 1, 2, 3, 5]</code> ou un objet qui sont des
+    types structurés ;</li>
     <li>des <strong>valeurs calculées</strong>, c'est à dire retournée par une
     fonction ou une méthode.</li>
   </ul>
