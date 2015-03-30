@@ -424,7 +424,6 @@ var_dump(
  * Will output:
  *     bool(true)
  */</code></pre>
-
   <p>La classe <code>Hoa\Ruler\Ruler</code> ne contient que des méthodes pour
   travailler plus vite et cacher le mécanisme sous-jacent (détaillé ci-après).
   Elle contient entre autre la méthode statique <code>getDefaultAsserter</code>
