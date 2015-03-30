@@ -323,5 +323,128 @@ var_dump($context['the_answer']);
  */</code></pre>
   <p>Nothing more to know about the context. It is not that complicated!</p>
 
+  <h3 id="Asserter" for="main-toc">Asserter</h3>
+
+  <p>Given a rule and a context, the asserter is responsible to compute the
+  result of a rule, including the values of variables which are in the
+  context.</p>
+  <p>The rule can have two different forms:</p>
+  <ul>
+    <li>a <strong>string</strong> or</li>
+    <li>an <strong>object</strong> model.</li>
+  </ul>
+  <p>If it is a string, it will be transformed into an object model
+  automatically by the <code>Hoa\Ruler\Ruler::assert</code> method. This object
+  model implements the interfaces of <a href="@hack:chapter=Visitor">the
+  <code>Hoa\Visitor</code> library</a> and thus can be visited. This is why the
+  <code>Hoa\Ruler\Visitor\Asserter</code> asserter is a
+  <strong>visitor</strong>. Finally, the context is defined on the asserter with
+  the <code>Hoa\Ruler\Visitor\Asserter::setContext</code> method. Thus:</p>
+  <pre><code class="language-php">$ruler             = new Hoa\Ruler\Ruler();
+$rule              = 'points > 30';
+$context           = new Hoa\Ruler\Context();
+$context['points'] = 42;
+
+// Define an asserter.
+$asserter          = new Hoa\Ruler\Visitor\Asserter();
+
+// Set this asserter on the ruler.
+$ruler->setAsserter($asserter);
+
+// Assert!
+var_dump(
+    $ruler->assert($rule, $context)
+);
+
+/**
+ * Will output:
+ *     bool(true)
+ */</code></pre>
+  <p>The <code>Hoa\Ruler\Ruler::assert</code> method will automatically define
+  the context on the asserter.</p>
+
+  <h4 id="Add_functions" for="main-toc">Add functions</h4>
+
+  <p>We said the names of the operators and of the functions in the rules are
+  <strong>free</strong>. Therefore, we supposed the ability to define our own
+  operators and functions. Let's add the <code>logged</code> function that tests
+  if an object of kind <code>User</code> is connected. Here is this object:</p>
+  <pre><code class="language-php">class User {
+
+    const DISCONNECTED = 0;
+    const CONNECTED    = 1;
+    protected $_status = 1;
+
+    public function getStatus ( ) {
+
+        return $this->_status;
+    }
+}</code></pre>
+  <p>The implementation of the <code>logged</code> function might be the
+  following:</p>
+  <pre><code class="language-php">$logged = function ( User $user ) {
+
+    return $user::CONNECTED === $user->getStatus();
+};</code></pre>
+  <p>Finally, to declare this function, we will use the
+  <code>Hoa\Ruler\Visitor\Asserter::setOperator</code> method. We can also cite
+  the <code>operatorExists</code>, <code>getOperator</code> and
+  <code>getOperators</code> methods which respectively allow to test if an
+  operator exists, to get a previously declared operator and to get all the
+  declared operators. Thus:</p>
+  <pre><code class="language-php">$ruler             = new Hoa\Ruler\Ruler();
+$rule              = 'logged(user) and points > 30';
+$context           = new Hoa\Ruler\Context();
+$context['user']   = new User();
+$context['points'] = 42;
+
+// Declare the `logged` function.
+$asserter = new Hoa\Ruler\Visitor\Asserter();
+$asserter->setOperator('logged', $logged);
+
+$ruler->setAsserter($asserter);
+
+// Assert!
+var_dump(
+    $ruler->assert($rule, $context)
+);
+
+/**
+ * Will output:
+ *     bool(true)
+ */</code></pre>
+  <p>The <code>Hoa\Ruler\Ruler</code> class only contains methods to work faster
+  and to hide the underlying mechanism (detailed hereinafter). One of them is
+  the <code>getDefaultAsserter</code> static method which returns a unique
+  instance of the <code>Hoa\Ruler\Visitor\Asserter</code> class. We can use this
+  unique instance to define new operators for <strong>all</strong> the rules.
+  Its usage is very similar to what we saw previously:</p>
+  <pre><code class="language-php">$ruler             = new Hoa\Ruler\Ruler();
+$rule              = 'logged(user) and points > 30';
+$context           = new Hoa\Ruler\Context();
+$context['user']   = new User();
+$context['points'] = 42;
+
+// Declare the `logged` function.
+$ruler->getDefaultAsserter()->setOperator('logged', $logged);
+
+// Assert!
+var_dump(
+    $ruler->assert($rule, $context)
+);
+
+/**
+ * Will output:
+ *     bool(true)
+ */</code></pre>
+  <p>The <code>Hoa\Ruler\Visitor\Asserter::setOperator</code> method accepts any
+  valid callable.</p>
+  <p>The <code>and</code>, <code>or</code>, <code>xor</code>, <code>not</code>,
+  <code>=</code>, <code>!=</code> and <code>sum</code> etc. operators are
+  defined in
+  <a href="@central_resource:path=Library/Ruler/Visitor/Asserter.php">the
+  <code>Hoa\Ruler\Visitor\Asserter</code> class</a>. Feel free to read it to
+  get inspired!</p>
+
 </yield>
 </overlay>
