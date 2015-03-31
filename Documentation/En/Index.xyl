@@ -692,5 +692,19 @@ var_dump(
   <p>However, executing such a PHP code will prove to be slightly slower and
   more difficult to deploy than the previous technique.</p>
 
+  <h2 id="Conclusion" for="main-toc">Conclusion</h2>
+
+  <p>The <code>Hoa\Ruler</code> library defines a <strong>language</strong> of
+  <strong>simple</strong> business rules inspired by the SQL language for the
+  syntax. The language can be <strong>transformed</strong> in many ways: To an
+  object model in order to be executed, or from this object model, into PHP code
+  or into the original language. The instanciation of the variables present in
+  the language relies on a <strong>context</strong>. All these operations are
+  hidden through a simple and clear interface.</p>
+  <p>The <strong>performance</strong> aspect has been addressed and two
+  solutions have been proposed. Today used by the industry on important
+  projects, <code>Hoa\Ruler</code> is able to support heavy loads if these
+  simple methodologies are applied.</p>
+
 </yield>
 </overlay>
