@@ -476,7 +476,7 @@ var_dump(
       var vinterpreter = grid.push(paper.rect(0, 0, 110, 80, 3, 'interpréteur'), 1, 1);
       var model        = grid.push(paper.rect(0, 0, 110, 80, 3, 'modèle'), 2, 1);
       var vasserter    = grid.push(paper.rect(0, 0, 110, 80, 3, 'asserteur'), 4, 0);
-      var vcompiler    = grid.push(paper.rect(0, 0, 110, 80, 3, 'PHP code'), 4, 1);
+      var vcompiler    = grid.push(paper.rect(0, 0, 110, 80, 3, 'code PHP'), 4, 1);
       var vdisassembly = grid.push(paper.rect(0, 0, 110, 80, 3, 'règle'), 4, 2);
 
       paper.link.between(rule, vinterpreter, '');
@@ -510,7 +510,7 @@ var_dump(
       var vinterpreter = grid.push(paper.rect(0, 0, 110, 80, 3, 'interpréteur'), 1, 1);
       var model        = grid.push(paper.rect(0, 0, 110, 80, 3, 'modèle'), 2, 1);
       var vasserter    = grid.push(paper.rect(0, 0, 110, 80, 3, 'asserteur').attr({opacity: .3}), 4, 0);
-      var vcompiler    = grid.push(paper.rect(0, 0, 110, 80, 3, 'PHP code').attr({opacity: .3}), 4, 1);
+      var vcompiler    = grid.push(paper.rect(0, 0, 110, 80, 3, 'code PHP').attr({opacity: .3}), 4, 1);
       var vdisassembly = grid.push(paper.rect(0, 0, 110, 80, 3, 'règle').attr({opacity: .3}), 4, 2);
 
       paper.link.between(rule, vinterpreter, '');
@@ -578,7 +578,7 @@ var_dump(
       var vinterpreter = grid.push(paper.rect(0, 0, 110, 80, 3, 'interpréteur').attr({opacity: .3}), 1, 1);
       var model        = grid.push(paper.rect(0, 0, 110, 80, 3, 'modèle'), 2, 1);
       var vasserter    = grid.push(paper.rect(0, 0, 110, 80, 3, 'asserteur').attr({opacity: .3}), 4, 0);
-      var vcompiler    = grid.push(paper.rect(0, 0, 110, 80, 3, 'PHP code'), 4, 1);
+      var vcompiler    = grid.push(paper.rect(0, 0, 110, 80, 3, 'code PHP'), 4, 1);
       var vdisassembly = grid.push(paper.rect(0, 0, 110, 80, 3, 'règle').attr({opacity: .3}), 4, 2);
 
       paper.link.between(rule, vinterpreter, '');
@@ -625,7 +625,7 @@ echo $compiler->visit($model);
       var vinterpreter = grid.push(paper.rect(0, 0, 110, 80, 3, 'interpréteur').attr({opacity: .3}), 1, 1);
       var model        = grid.push(paper.rect(0, 0, 110, 80, 3, 'modèle'), 2, 1);
       var vasserter    = grid.push(paper.rect(0, 0, 110, 80, 3, 'asserteur').attr({opacity: .3}), 4, 0);
-      var vcompiler    = grid.push(paper.rect(0, 0, 110, 80, 3, 'PHP code').attr({opacity: .3}), 4, 1);
+      var vcompiler    = grid.push(paper.rect(0, 0, 110, 80, 3, 'code PHP').attr({opacity: .3}), 4, 1);
       var vdisassembly = grid.push(paper.rect(0, 0, 110, 80, 3, 'règle'), 4, 2);
 
       paper.link.between(rule, vinterpreter, '');
@@ -635,6 +635,7 @@ echo $compiler->visit($model);
       paper.link.between(model, vdisassembly, '');
   });
   </script>
+
   <p>La règle générée peut différer un peu de la règle originale syntaxiquement
   (parenthèses, guillemets, espacements…) mais jamais sémantiquement.
   Ainsi :</p>
