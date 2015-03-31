@@ -630,5 +630,67 @@ echo $disassembly->visit($model);
  *     (points > 30)
  */</code></pre>
 
+  <h2 id="Performances" for="main-toc">Performances</h2>
+
+  <p>Transforming a rule into an object model is not a low-cost operation if
+  applied thousand times per minute. Applying an asserter on an object model is
+  a low-cost operation. We will present two ways to avoid the transformation of
+  a rule into an object model.</p>
+
+  <h3 id="Serialize_the_object_model" for="main-toc">Serialize the object
+  model</h3>
+
+  <p>Once the object model is present, we can serialize it with the help of
+  <a href="http://php.net/serialize">the <code>serialize</code> PHP
+  function</a>. We will get a string representing instances of objects forming
+  the object model. To get back to the object model and being able to apply an
+  asserter, we will use <a href="http://php.net/unserialize">the
+  <code>unserialize</code> PHP function</a>. The result of this serialization
+  can be stored in a database instead of rules. This requires a little bit more
+  space but let's remind that we can transform an object model to its rule
+  easily thanks to the <code>Hoa\Ruler\Visitor\Disassembly</code> class,
+  consequently this information is not lost. Thus:</p>
+  <pre><code class="language-php">$ruler             = new Hoa\Ruler\Ruler();
+$rule              = 'points > 30';
+$context           = new Hoa\Ruler\Context();
+$context['points'] = 42;
+
+// Nothing in the database.
+if(null === $serialized = $database->get($ruleId)) {
+
+    // We transform the rule into an object model.
+    $model = Hoa\Ruler\Ruler::interpret($rule);
+
+    // We serialize and save the object model.
+    $database->save($ruleId, serialize($model));
+}
+else {
+
+    // We have a serialization! We unserialize it to get the object model.
+    $model = unserialize($serialized);
+}
+
+// We can assert by using a model instead of a rule!
+var_dump(
+    $ruler->assert($model, $context)
+);
+
+/**
+ * Will output:
+ *     bool(true)
+ */</code></pre>
+  <p>This way, the rule is transformed into an object model <strong>only
+  once</strong>!</p>
+
+  <h3 id="Save_and_execute_PHP_code" for="main-toc">Save and execute PHP
+  code</h3>
+
+  <p>Another way to avoid the transformation of a rule into its object model is
+  to save the PHP code allowing to build the object model thanks to the
+  <code>Hoa\Ruler\Visitor\Compiler</code> class. Once this PHP code stored and
+  executed, we get back our object model.</p>
+  <p>However, executing such a PHP code will prove to be slightly slower and
+  more difficult to deploy than the previous technique.</p>
+
 </yield>
 </overlay>
