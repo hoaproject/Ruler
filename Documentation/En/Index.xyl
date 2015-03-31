@@ -446,5 +446,189 @@ var_dump(
   <code>Hoa\Ruler\Visitor\Asserter</code> class</a>. Feel free to read it to
   get inspired!</p>
 
+  <h2 id="Language_transformation" for="main-toc">Language transformation</h2>
+
+  <p>The underlying mechanism hidden by the <code>Hoa\Ruler\Ruler</code> class
+  is simple and very <strong>modular</strong>. The following sections detail the
+  possible <strong>transformations</strong>, and associated usage, of the
+  language.</p>
+
+  <div id="transformation" class="schema"></div>
+  <script>
+  Hoa.Document.onReady(function ( ) {
+
+      var paper        = Hoa.Graph(Hoa.$('#transformation'), 800, 300);
+      var grid         = paper.grid(0, 0, 800, 300, 5, 3);
+      var rule         = grid.push(paper.rect(0, 0, 110, 80, 3, 'rule'), 0, 1);
+      var vinterpreter = grid.push(paper.rect(0, 0, 110, 80, 3, 'interpreter'), 1, 1);
+      var model        = grid.push(paper.rect(0, 0, 110, 80, 3, 'model'), 2, 1);
+      var vasserter    = grid.push(paper.rect(0, 0, 110, 80, 3, 'asserter'), 4, 0);
+      var vcompiler    = grid.push(paper.rect(0, 0, 110, 80, 3, 'PHP code'), 4, 1);
+      var vdisassembly = grid.push(paper.rect(0, 0, 110, 80, 3, 'rule'), 4, 2);
+
+      paper.link.between(rule, vinterpreter, '');
+      paper.link.between(vinterpreter, model, '');
+      paper.link.between(model, vasserter, '');
+      paper.link.between(model, vcompiler, '');
+      paper.link.between(model, vdisassembly, '');
+  });
+  </script>
+
+  <p>First of all, the rule is interpreted by an interpreter to be transformed
+  into an object model. Then, this object model is used by the asserter, or can
+  be transformed into PHP code or transformed into a rule. This object model is
+  the central point of the language, this is its most advanced form.</p>
+
+  <h3 id="Interpreter_language_to_object_model" for="main-toc">Interpreter:
+  Language to object model</h3>
+
+  <p>A rule is a string. To transform it into an object model, we will use
+  <a href="@hack:chapter=Compiler">the <code>Hoa\Compiler</code>
+  library</a>.</p>
+
+  <div id="transformation_interpreter" class="schema"></div>
+  <script>
+  Hoa.Document.onReady(function ( ) {
+
+      var paper        = Hoa.Graph(Hoa.$('#transformation_interpreter'), 800, 300);
+      var grid         = paper.grid(0, 0, 800, 300, 5, 3);
+      var rule         = grid.push(paper.rect(0, 0, 110, 80, 3, 'rule'), 0, 1);
+      var vinterpreter = grid.push(paper.rect(0, 0, 110, 80, 3, 'interpreter'), 1, 1);
+      var model        = grid.push(paper.rect(0, 0, 110, 80, 3, 'model'), 2, 1);
+      var vasserter    = grid.push(paper.rect(0, 0, 110, 80, 3, 'asserter').attr({opacity: .3}), 4, 0);
+      var vcompiler    = grid.push(paper.rect(0, 0, 110, 80, 3, 'PHP code').attr({opacity: .3}), 4, 1);
+      var vdisassembly = grid.push(paper.rect(0, 0, 110, 80, 3, 'rule').attr({opacity: .3}), 4, 2);
+
+      paper.link.between(rule, vinterpreter, '');
+      paper.link.between(vinterpreter, model, '');
+      paper.link.between(model, vasserter, '');
+      paper.link.between(model, vcompiler, '');
+      paper.link.between(model, vdisassembly, '');
+  });
+  </script>
+
+  <p>Thanks to the grammar of rules (defined in
+  <a href="@central_resource:path=Library/Ruler/Grammar.pp">the
+  <code>hoa://Library/Ruler/Grammar.pp</code> file</a>), we will get an AST: An
+  abstract syntax tree. For instance, for the rule <code>points > 30</code>, its
+  AST is:</p>
+  <pre><code class="language-shell">$ echo 'points > 30' | hoa compiler:pp hoa://Library/Ruler/Grammar.pp 0 --visitor dump
+>  #expression
+>  >  #operation
+>  >  >  token(identifier, points)
+>  >  >  token(identifier, >)
+>  >  >  token(integer, 30)</code></pre>
+  <p>In order this tree to be exploitable easier, it will be transformed into an
+  <strong>object model</strong>. This transformation is ensured by the
+  <code>Hoa\Ruler\Visitor\Interpreter</code> visitor. Thus, if we should apply
+  it manually:</p>
+  <pre><code class="language-php">$compiler    = Hoa\Compiler\Llk::load(
+    new Hoa\File\Read('hoa://Library/Ruler/Grammar.pp')
+);
+$ast         = $compiler->parse('points > 30');
+$interpreter = new Hoa\Ruler\Visitor\Interpreter();
+$model       = $interpreter->visit($ast);
+
+var_dump(
+    get_class($model)
+);
+
+/**
+ * Will output:
+ *     string(21) "Hoa\Ruler\Model\Model"
+ */</code></pre>
+  <p>We learn that the model is represented by classes belonging to the
+  <code>Hoa\Ruler\Model</code> namespace.</p>
+  <p>All these operations are replaced by the
+  <code>Hoa\Ruler\Ruler::interpret</code> static method.</p>
+  <pre><code class="language-php">$model = Hoa\Ruler\Ruler::interpret('points > 30');</code></pre>
+  <p>We can get the compiler with the <code>Hoa\Ruler\Ruler::getCompiler</code>
+  method.</p>
+  <p>We will see how this step can be important to get better performances.</p>
+
+  <h3 id="Compiler_object_model_to_PHP" for="main-toc">Compiler: Object model to
+  PHP</h3>
+
+  <p>The object model can be created manually by instanciating all the objects
+  of kind <code>Hoa\Ruler\Model\<em>*</em></code> and by combining them
+  together.</p>
+
+  <div id="transformation_compiler" class="schema"></div>
+  <script>
+  Hoa.Document.onReady(function ( ) {
+
+      var paper        = Hoa.Graph(Hoa.$('#transformation_compiler'), 800, 300);
+      var grid         = paper.grid(0, 0, 800, 300, 5, 3);
+      var rule         = grid.push(paper.rect(0, 0, 110, 80, 3, 'rule').attr({opacity: .3}), 0, 1);
+      var vinterpreter = grid.push(paper.rect(0, 0, 110, 80, 3, 'interpreter').attr({opacity: .3}), 1, 1);
+      var model        = grid.push(paper.rect(0, 0, 110, 80, 3, 'model'), 2, 1);
+      var vasserter    = grid.push(paper.rect(0, 0, 110, 80, 3, 'asserter').attr({opacity: .3}), 4, 0);
+      var vcompiler    = grid.push(paper.rect(0, 0, 110, 80, 3, 'PHP code'), 4, 1);
+      var vdisassembly = grid.push(paper.rect(0, 0, 110, 80, 3, 'rule').attr({opacity: .3}), 4, 2);
+
+      paper.link.between(rule, vinterpreter, '');
+      paper.link.between(vinterpreter, model, '');
+      paper.link.between(model, vasserter, '');
+      paper.link.between(model, vcompiler, '');
+      paper.link.between(model, vdisassembly, '');
+  });
+  </script>
+
+  <p>The PHP code required for this operation can be automatically generated
+  thanks to the <code>Hoa\Ruler\Visitor\Compiler</code> class. Thus:</p>
+  <pre><code class="language-php">$compiler = new Hoa\Ruler\Visitor\Compiler();
+echo $compiler->visit($model);
+
+/**
+ * Will output:
+ *     $model = new \Hoa\Ruler\Model();
+ *     $model->expression =
+ *         $model->{'>'}(
+ *             $model->variable('points'),
+ *             30
+ *         );
+ */</code></pre>
+  <p>The generated code is simplified and optimized to be as short as possible
+  whilst staying readable for a human.</p>
+  <p>We will see how this step can be important to get better performances.</p>
+
+  <h3 id="Disassembler_object_model_to_language" for="main-toc">Disassembler:
+  Object model to language</h3>
+
+  <p>So far, we have seen how to jump from a rule to its object model. The
+  disassembler applies the <strong>opposite</strong> operation: It transforms an
+  object model into a string.</p>
+
+  <div id="transformation_disassembler" class="schema"></div>
+  <script>
+  Hoa.Document.onReady(function ( ) {
+
+      var paper        = Hoa.Graph(Hoa.$('#transformation_disassembler'), 800, 300);
+      var grid         = paper.grid(0, 0, 800, 300, 5, 3);
+      var rule         = grid.push(paper.rect(0, 0, 110, 80, 3, 'rule').attr({opacity: .3}), 0, 1);
+      var vinterpreter = grid.push(paper.rect(0, 0, 110, 80, 3, 'interpreter').attr({opacity: .3}), 1, 1);
+      var model        = grid.push(paper.rect(0, 0, 110, 80, 3, 'model'), 2, 1);
+      var vasserter    = grid.push(paper.rect(0, 0, 110, 80, 3, 'asserter').attr({opacity: .3}), 4, 0);
+      var vcompiler    = grid.push(paper.rect(0, 0, 110, 80, 3, 'PHP code').attr({opacity: .3}), 4, 1);
+      var vdisassembly = grid.push(paper.rect(0, 0, 110, 80, 3, 'rule'), 4, 2);
+
+      paper.link.between(rule, vinterpreter, '');
+      paper.link.between(vinterpreter, model, '');
+      paper.link.between(model, vasserter, '');
+      paper.link.between(model, vcompiler, '');
+      paper.link.between(model, vdisassembly, '');
+  });
+  </script>
+
+  <p>The generated rule can differ a little bit from the original one in term of
+  syntax (parenthesis, quotes, spacing…) but never in term of semantics. Thus:</p>
+  <pre><code class="language-php">$disassembly = new Hoa\Ruler\Visitor\Disassembly();
+echo $disassembly->visit($model);
+
+/**
+ * Will output:
+ *     (points > 30)
+ */</code></pre>
+
 </yield>
 </overlay>
