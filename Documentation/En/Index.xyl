@@ -6,7 +6,7 @@
   <p><strong>Business rules</strong> (like “<q>all the customers that have
   reached 100€ in one time receive a voucher of 10% on the next purchase</q>”)
   are most of the time defined <strong>outside</strong> the application. They
-  are even often written in a <strong>different language</strong> that the used
+  are even often written in a <strong>different language</strong> than the used
   programming language. The <code>Hoa\Ruler</code> library provides an engine
   allowing to simply execute business rules while being
   <strong>efficient</strong> and very <strong>extensible</strong>.</p>
