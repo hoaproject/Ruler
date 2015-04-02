@@ -4,6 +4,7 @@ Hoa is a **modular**, **extensible** and **structured** set of PHP libraries.
 Moreover, Hoa aims at being a bridge between industrial and research worlds.
 
 # Hoa\Ruler ![state](http://central.hoa-project.net/State/Ruler)
+The documentation can be found on the [documentation website](http://hoa-project.net/En/Literature/Hack/Ruler.html).
 
 This library allows to manipulate a rule engine. Rules can be written by using a
 dedicated language, very close to SQL. Therefore, they can be written by a user
