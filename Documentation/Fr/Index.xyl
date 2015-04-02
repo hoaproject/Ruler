@@ -649,10 +649,11 @@ echo $disassembly->visit($model);
 
   <h2 id="Performances" for="main-toc">Performances</h2>
 
-  <p>Transformer une règle vers un modèle objet est une opération coûteuse si
-  elle est appliquée des milliers de fois à la minute. Appliquer un asserteur
-  sur un modèle objet n'est pas coûteux. Nous allons donc présenter deux façons
-  d'éviter la transformation d'une règle vers un modèle objet.</p>
+  <p>Transformer une règle vers un modèle objet a un coût. Ce coût devient
+  significatif si l'opération est appliquée des milliers de fois à la minute.
+  En revanche, appliquer un asserteur sur un modèle objet n'est pas coûteux.
+  Nous allons donc présenter deux façons d'éviter la transformation d'une règle
+  vers un modèle objet.</p>
 
   <h3 id="Serialize_the_object_model" for="main-toc">Sérialiser le modèle
   objet</h3>

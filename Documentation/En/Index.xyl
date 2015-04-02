@@ -632,10 +632,11 @@ echo $disassembly->visit($model);
 
   <h2 id="Performances" for="main-toc">Performances</h2>
 
-  <p>Transforming a rule into an object model is not a low-cost operation if
-  applied thousand times per minute. Applying an asserter on an object model is
-  a low-cost operation. We will present two ways to avoid the transformation of
-  a rule into an object model.</p>
+  <p>Transforming a rule into an object model is not a low-cost operation. It
+  becomes significant when applied thousand times per minute. Nevertheless,
+  applying an asserter on an object model is a low-cost operation. We will
+  present two ways to avoid the transformation of a rule into an object
+  model.</p>
 
   <h3 id="Serialize_the_object_model" for="main-toc">Serialize the object
   model</h3>
