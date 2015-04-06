@@ -67,6 +67,13 @@ class Asserter implements Visitor\Visit {
      */
     protected $_operators = [];
 
+    /**
+     * List of errors.
+     *
+     * @var \Hoa\Ruler\Visitor\Asserter array
+     */
+    protected $errors = [];
+
 
 
     /**
@@ -158,6 +165,10 @@ class Asserter implements Visitor\Visit {
 
             $value       = $argument->accept($this, $handle, $eldnah);
             $arguments[] = $value;
+
+            // Add operators name and their values in errors lists
+            if (false === $value)
+                $this->errors[$element->getName()] = $element->getArguments();
 
             if($element::LAZY_BREAK === $element->shouldBreakLazyEvaluation($value))
                 break;
@@ -486,5 +497,38 @@ class Asserter implements Visitor\Visit {
                 $operator = xcallable($operator);
 
         return $this->_operators;
+    }
+
+    /**
+     * Get all errors.
+     *
+     * @access  public
+     * @return  array
+     */
+    public function getErrors ( ) {
+
+        return $this->errors;
+    }
+
+    /**
+     * The evaluation of operators has it raised errors.
+     *
+     * @access  public
+     * @return  boolean
+     */
+    public function hasError ( ) {
+
+        return !empty($this->errors);
+    }
+
+    /**
+     * Reset all errors raised
+     *
+     * @access  public
+     * @return  void
+     */
+    public function resetErrors ( ) {
+
+        $this->errors = [];
     }
 }
