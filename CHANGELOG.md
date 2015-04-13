@@ -1,3 +1,12 @@
+# 1.15.04.13
+
+  * Add the English documentation. (Ivan Enderlin, 2015-03-19T10:32:47+01:00)
+  * Add the French documentation. (Ivan Enderlin, 2015-03-19T10:29:59+01:00)
+  * Add the `CHANGELOG.md` file. (Ivan Enderlin, 2015-02-16T14:08:39+01:00)
+  * Fix CS and API documentation. (Ivan Enderlin, 2015-02-06T10:37:23+01:00)
+  * Add lazy operator support. (Alexis von Glasow, 2014-12-15T23:42:34+01:00)
+  * Add tests for the dynamic callable. (Ivan Enderlin, 2015-02-05T17:13:12+01:00)
+
 # 1.15.02.05
 
   * Sandbox function calls in the context. (Ivan Enderlin, 2015-02-05T16:50:13+01:00)
