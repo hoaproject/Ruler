@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Ivan Enderlin. All rights reserved.
+ * Copyright © 2007-2015, Hoa community. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -41,18 +41,15 @@ namespace Hoa\Ruler\Model\Bag;
  *
  * Bag for a scalar.
  *
- * @author     Stéphane Py <stephane.py@hoa-project.net>
- * @author     Ivan Enderlin <ivan.enderlin@hoa-project.net>
- * @copyright  Copyright © 2007-2015 Stéphane Py, Ivan Enderlin.
+ * @copyright  Copyright © 2007-2015 Hoa community
  * @license    New BSD License
  */
-
-class Scalar extends Bag {
-
+class Scalar extends Bag
+{
     /**
      * Value.
      *
-     * @var \Hoa\Ruler\Model\Bag\Scalar string
+     * @var string
      */
     protected $_value = null;
 
@@ -61,12 +58,11 @@ class Scalar extends Bag {
     /**
      * Constructor.
      *
-     * @access  public
      * @param   string  $value    Value.
      * @return  void
      */
-    public function __construct ( $value ) {
-
+    public function __construct($value)
+    {
         $this->_value = $value;
 
         return;
@@ -75,11 +71,10 @@ class Scalar extends Bag {
     /**
      * Get content of the bag.
      *
-     * @access  public
      * @return  mixed
      */
-    public function getValue ( ) {
-
+    public function getValue()
+    {
         return $this->_value;
     }
 }

@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Ivan Enderlin. All rights reserved.
+ * Copyright © 2007-2015, Hoa community. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -36,23 +36,21 @@
 
 namespace Hoa\Ruler\Test\Unit\Model;
 
-use Hoa\Test;
 use Hoa\Ruler as LUT;
+use Hoa\Test;
 
 /**
  * Class \Hoa\Ruler\Test\Unit\Model\Operator.
  *
  * Test suite of the operator object of the model.
  *
- * @author     Alexis von Glasow <alexis.von-glasow@hoa-project.net>
- * @copyright  Copyright © 2007-2015 Alexis von Glasow.
+ * @copyright  Copyright © 2007-2015 Hoa community
  * @license    New BSD License
  */
-
-class Operator extends Test\Unit\Suite {
-
-    public function case_lazy_and ( ) {
-
+class Operator extends Test\Unit\Suite
+{
+    public function case_lazy_and()
+    {
         $this
             ->given(
                 $ruler     = new LUT(),
@@ -61,8 +59,7 @@ class Operator extends Test\Unit\Suite {
                 $asserter  = $ruler->getDefaultAsserter(),
                 $asserter->setOperator(
                     'f',
-                    function ( $a = false ) use ( &$fExecuted ) {
-
+                    function ($a = false) use (&$fExecuted) {
                         $fExecuted = true;
 
                         return $a;
@@ -70,8 +67,7 @@ class Operator extends Test\Unit\Suite {
                 ),
                 $asserter->setOperator(
                     'g',
-                    function ( $b = false ) use ( &$gExecuted ) {
-
+                    function ($b = false) use (&$gExecuted) {
                         $gExecuted = true;
 
                         return $b;
@@ -131,8 +127,8 @@ class Operator extends Test\Unit\Suite {
                     ->isFalse();
     }
 
-    public function case_lazy_or ( ) {
-
+    public function case_lazy_or()
+    {
         $this
             ->given(
                 $ruler     = new LUT(),
@@ -141,8 +137,7 @@ class Operator extends Test\Unit\Suite {
                 $asserter  = $ruler->getDefaultAsserter(),
                 $asserter->setOperator(
                     'f',
-                    function ( $a ) use ( &$fExecuted ) {
-
+                    function ($a) use (&$fExecuted) {
                         $fExecuted = true;
 
                         return $a;
@@ -150,8 +145,7 @@ class Operator extends Test\Unit\Suite {
                 ),
                 $asserter->setOperator(
                     'g',
-                    function ( $b ) use ( &$gExecuted ) {
-
+                    function ($b) use (&$gExecuted) {
                         $gExecuted = true;
 
                         return $b;

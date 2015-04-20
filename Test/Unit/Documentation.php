@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Ivan Enderlin. All rights reserved.
+ * Copyright © 2007-2015, Hoa community. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -36,23 +36,21 @@
 
 namespace Hoa\Ruler\Test\Unit;
 
-use Hoa\Test;
 use Hoa\Ruler as LUT;
+use Hoa\Test;
 
 /**
  * Class \Hoa\Ruler\Test\Unit\Documentation.
  *
  * Test suite of the examples in the documentation.
  *
- * @author     Ivan Enderlin <ivan.enderlin@hoa-project.net>
- * @copyright  Copyright © 2007-2015 Ivan Enderlin.
+ * @copyright  Copyright © 2007-2015 Hoa community
  * @license    New BSD License
  */
-
-class Documentation extends Test\Unit\Suite {
-
-    public function case_classical ( ) {
-
+class Documentation extends Test\Unit\Suite
+{
+    public function case_classical()
+    {
         $this
             ->given(
                 $ruler = new LUT(),
@@ -62,16 +60,15 @@ class Documentation extends Test\Unit\Suite {
         $this->next_case_classical($ruler, $rule);
     }
 
-    public function next_case_classical ( $ruler, $rule ) {
-
+    public function next_case_classical($ruler, $rule)
+    {
         $this
             ->given(
                 $context           = new LUT\Context(),
                 $context['group']  = $this->sample(
                     $this->realdom->regex('/customer|guest/')
                 ),
-                $context['points'] = function ( ) {
-
+                $context['points'] = function () {
                     return 42;
                 }
             )
@@ -87,8 +84,8 @@ class Documentation extends Test\Unit\Suite {
                     ->isFalse();
     }
 
-    public function case_new_operators ( ) {
-
+    public function case_new_operators()
+    {
         $this
             ->given(
                 $user            = new \Mock\StdClass(),
@@ -98,8 +95,7 @@ class Documentation extends Test\Unit\Suite {
                 $ruler           = new LUT(),
                 $rule            = 'logged(user) and group in ["customer", "guest"] and points > 30',
                 $context         = new LUT\Context(),
-                $context['user'] = function ( ) use ( $user, $context ) {
-
+                $context['user'] = function () use ($user, $context) {
                     $context['group']  = $user->group;
                     $context['points'] = $user->points;
 
@@ -107,8 +103,7 @@ class Documentation extends Test\Unit\Suite {
                 }
             )
             ->when(
-                $ruler->getDefaultAsserter()->setOperator('logged', function ( $user ) {
-
+                $ruler->getDefaultAsserter()->setOperator('logged', function ($user) {
                     return $user->status;
                 }),
                 $result = $ruler->assert($rule, $context)
@@ -124,8 +119,8 @@ class Documentation extends Test\Unit\Suite {
                     ->isFalse();
     }
 
-    public function case_interpret ( ) {
-
+    public function case_interpret()
+    {
         $this
             ->given(
                 $model = LUT::interpret('group in ["customer", "guest"] and points > 30')
@@ -138,8 +133,8 @@ class Documentation extends Test\Unit\Suite {
         $this->next_case_classical(new LUT(), $model);
     }
 
-    public function case_compile ( ) {
-
+    public function case_compile()
+    {
         $expectedResult = <<<'RESULT'
 $model = new \Hoa\Ruler\Model();
 $model->expression =

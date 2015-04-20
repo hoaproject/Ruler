@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Ivan Enderlin. All rights reserved.
+ * Copyright © 2007-2015, Hoa community. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -46,39 +46,36 @@ use Hoa\Visitor as HVisitor;
  *
  * Ruler helpers.
  *
- * @author     Stéphane Py <stephane.py@hoa-project.net>
- * @author     Ivan Enderlin <ivan.enderlin@hoa-project.net>
- * @copyright  Copyright © 2007-2015 Stéphane Py, Ivan Enderlin.
+ * @copyright  Copyright © 2007-2015 Hoa community
  * @license    New BSD License
  */
-
-class Ruler {
-
+class Ruler
+{
     /**
      * Compiler.
      *
-     * @var \Hoa\Compiler\Llk\Parser object
+     * @var \Hoa\Compiler\Llk\Parser
      */
     protected static $_compiler        = null;
 
     /**
      * Interpreter.
      *
-     * @var \Hoa\Ruler\Visitor\Interpreter object
+     * @var \Hoa\Ruler\Visitor\Interpreter
      */
     protected static $_interpreter     = null;
 
     /**
      * Default asserter.
      *
-     * @var \Hoa\Visitor\Visit object
+     * @var \Hoa\Visitor\Visit
      */
     protected $_asserter               = null;
 
     /**
      * Default asserter.
      *
-     * @var \Hoa\Ruler\Visitor\Asserter object
+     * @var \Hoa\Ruler\Visitor\Asserter
      */
     protected static $_defaultAsserter = null;
 
@@ -87,19 +84,20 @@ class Ruler {
     /**
      * Assert.
      *
-     * @access  public
      * @param   mixed                 $rule       Rule (string or model)
      * @param   \Hoa\Ruler\Context    $context    Context.
      * @return  bool
-     * @throw   \Hoa\Ruler\Exception
+     * @throws  \Hoa\Ruler\Exception
      */
-    public function assert ( $rule, Context $context = null ) {
-
-        if(is_string($rule))
+    public function assert($rule, Context $context = null)
+    {
+        if (is_string($rule)) {
             $rule = static::interprete($rule);
+        }
 
-        if(null === $context)
+        if (null === $context) {
             $context = new Context();
+        }
 
         return $this->getAsserter($context)->visit($rule);
     }
@@ -107,13 +105,12 @@ class Ruler {
     /**
      * Alias to the self::interprete method.
      *
-     * @access  public
      * @param   string  $rule    Rule.
      * @return  \Hoa\Ruler\Model
-     * @throw   \Hoa\Ruler\Exception
+     * @throws  \Hoa\Ruler\Exception
      */
-    public static function interpret ( $rule ) {
-
+    public static function interpret($rule)
+    {
         return static::getInterpreter()->visit(
             static::getCompiler()->parse($rule)
         );
@@ -122,27 +119,26 @@ class Ruler {
     /**
      * Short interpreter.
      *
-     * @access      public
      * @param       string  $rule    Rule.
      * @return      \Hoa\Ruler\Model
-     * @throw       \Hoa\Ruler\Exception
+     * @throws      \Hoa\Ruler\Exception
      * @deprecated  Will be removed in 2.x.
      */
-    public static function interprete ( $rule ) {
-
+    public static function interprete($rule)
+    {
         return static::interpret($rule);
     }
 
     /**
      * Get interpreter.
      *
-     * @access  public
      * @return  \Hoa\Ruler\Visitor\Interpreter
      */
-    public static function getInterpreter ( ) {
-
-        if(null === static::$_interpreter)
+    public static function getInterpreter()
+    {
+        if (null === static::$_interpreter) {
             static::$_interpreter = new Visitor\Interpreter();
+        }
 
         return static::$_interpreter;
     }
@@ -150,12 +146,11 @@ class Ruler {
     /**
      * Set current asserter.
      *
-     * @access  public
      * @param   \Hoa\Visitor\Visit  $visitor    Visitor.
      * @return  \Hoa\Visitor\Visit
      */
-    public function setAsserter ( HVisitor\Visit $visitor ) {
-
+    public function setAsserter(HVisitor\Visit $visitor)
+    {
         $old             = $this->_asserter;
         $this->_asserter = $visitor;
 
@@ -165,17 +160,18 @@ class Ruler {
     /**
      * Get asserter.
      *
-     * @access  public
      * @param   \Hoa\Ruler\Context  $context    Context.
      * @return  \Hoa\Visitor\Visit
      */
-    public function getAsserter ( Context $context = null ) {
-
-        if(null === $asserter = $this->_asserter)
+    public function getAsserter(Context $context = null)
+    {
+        if (null === $asserter = $this->_asserter) {
             return static::getDefaultAsserter($context);
+        }
 
-        if(null !== $context)
+        if (null !== $context) {
             $asserter->setContext($context);
+        }
 
         return $asserter;
     }
@@ -183,17 +179,18 @@ class Ruler {
     /**
      * Get default asserter.
      *
-     * @access  public
      * @param   \Hoa\Ruler\Context    $context    Context.
      * @return  \Hoa\Ruler\Visitor\Asserter
      */
-    public static function getDefaultAsserter ( Context $context = null ) {
-
-        if(null === static::$_defaultAsserter)
+    public static function getDefaultAsserter(Context $context = null)
+    {
+        if (null === static::$_defaultAsserter) {
             static::$_defaultAsserter = new Visitor\Asserter($context);
+        }
 
-        if(null !== $context)
+        if (null !== $context) {
             static::$_defaultAsserter->setContext($context);
+        }
 
         return static::$_defaultAsserter;
     }
@@ -201,15 +198,15 @@ class Ruler {
     /**
      * Get compiler.
      *
-     * @access  public
      * @return  \Hoa\Compiler\Llk\Parser
      */
-    public static function getCompiler ( ) {
-
-        if(null === static::$_compiler)
+    public static function getCompiler()
+    {
+        if (null === static::$_compiler) {
             static::$_compiler = Compiler\Llk::load(
                 new File\Read('hoa://Library/Ruler/Grammar.pp')
             );
+        }
 
         return static::$_compiler;
     }

@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Ivan Enderlin. All rights reserved.
+ * Copyright © 2007-2015, Hoa community. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -44,26 +44,24 @@ use Hoa\Visitor;
  *
  * Generic bag.
  *
- * @author     Stéphane Py <stephane.py@hoa-project.net>
- * @author     Ivan Enderlin <ivan.enderlin@hoa-project.net>
- * @copyright  Copyright © 2007-2015 Stéphane Py, Ivan Enderlin.
+ * @copyright  Copyright © 2007-2015 Hoa community
  * @license    New BSD License
  */
-
-abstract class Bag implements Visitor\Element {
-
+abstract class Bag implements Visitor\Element
+{
     /**
      * Accept a visitor.
      *
-     * @access  public
      * @param   \Hoa\Visitor\Visit  $visitor    Visitor.
      * @param   mixed               &$handle    Handle (reference).
      * @param   mixed               $eldnah     Handle (no reference).
      * @return  mixed
      */
-    public function accept ( Visitor\Visit $visitor,
-                             &$handle = null, $eldnah = null ) {
-
+    public function accept(
+        Visitor\Visit $visitor,
+        &$handle = null,
+        $eldnah = null
+    ) {
         return $visitor->visit($this, $handle, $eldnah);
     }
 }

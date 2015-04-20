@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Ivan Enderlin. All rights reserved.
+ * Copyright © 2007-2015, Hoa community. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -41,10 +41,9 @@ namespace Hoa\Ruler\Exception;
  *
  * Extending the \Hoa\Ruler\Exception class.
  *
- * @author     Ivan Enderlin <ivan.enderlin@hoa-project.net>
- * @author     Stéphane Py <stephane.py@hoa-project.net>
- * @copyright  Copyright © 2007-2015 Ivan Enderlin, Stéphane Py.
+ * @copyright  Copyright © 2007-2015 Hoa community
  * @license    New BSD License
  */
-
-class Interpreter extends Exception { }
+class Interpreter extends Exception
+{
+}

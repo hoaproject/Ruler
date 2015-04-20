@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Ivan Enderlin. All rights reserved.
+ * Copyright © 2007-2015, Hoa community. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -41,18 +41,15 @@ namespace Hoa\Ruler\Model\Bag;
  *
  * Bag for an array.
  *
- * @author     Stéphane Py <stephane.py@hoa-project.net>
- * @author     Ivan Enderlin <ivan.enderlin@hoa-project.net>
- * @copyright  Copyright © 2007-2015 Stéphane Py, Ivan Enderlin.
+ * @copyright  Copyright © 2007-2015 Hoa community
  * @license    New BSD License
  */
-
-class RulerArray extends Bag {
-
+class RulerArray extends Bag
+{
     /**
      * Array.
      *
-     * @var \Hoa\Ruler\Model\Bag\RulerArray array
+     * @var array
      */
     protected $_array = null;
 
@@ -61,21 +58,21 @@ class RulerArray extends Bag {
     /**
      * Constructor.
      *
-     * @access  public
      * @param   array  $data    Data.
      * @return  void
      */
-    public function __construct ( Array $data ) {
-
-        foreach($data as &$datum) {
-
-            if($datum instanceof Bag)
+    public function __construct(Array $data)
+    {
+        foreach ($data as &$datum) {
+            if ($datum instanceof Bag) {
                 continue;
+            }
 
-            if(is_scalar($datum) || null === $datum)
+            if (is_scalar($datum) || null === $datum) {
                 $datum = new Scalar($datum);
-            elseif(is_array($datum))
+            } elseif (is_array($datum)) {
                 $datum = new static($datum);
+            }
         }
 
         $this->_array = $data;
@@ -86,11 +83,10 @@ class RulerArray extends Bag {
     /**
      * Get array.
      *
-     * @access  public
      * @return  array
      */
-    public function getArray ( ) {
-
+    public function getArray()
+    {
         return $this->_array;
     }
 }

@@ -60,8 +60,7 @@ $rule  = 'group in ["customer", "guest"] and points > 30';
 // 2. Create a context.
 $context           = new Hoa\Ruler\Context();
 $context['group']  = 'customer';
-$context['points'] = function ( ) {
-
+$context['points'] = function () {
     return 42;
 };
 
@@ -91,8 +90,8 @@ given in the following example. Thus:
 
 ```php
 // The User object.
-class User {
-
+class User
+{
     const DISCONNECTED = 0;
     const CONNECTED    = 1;
 
@@ -100,8 +99,8 @@ class User {
     public $points     = 42;
     protected $_status = 1;
 
-    public function getStatus ( ) {
-
+    public function getStatus()
+    {
         return $this->_status;
     }
 }
@@ -113,8 +112,7 @@ $rule  = 'logged(user) and group in ["customer", "guest"] and points > 30';
 
 // New context.
 $context         = new Hoa\Ruler\Context();
-$context['user'] = function ( ) use ( $context ) {
-
+$context['user'] = function () use ($context) {
     $user              = new User();
     $context['group']  = $user->group;
     $context['points'] = $user->points;
@@ -123,8 +121,7 @@ $context['user'] = function ( ) use ( $context ) {
 };
 
 // We add the logged() operator.
-$ruler->getDefaultAsserter()->setOperator('logged', function ( User $user ) {
-
+$ruler->getDefaultAsserter()->setOperator('logged', function (User $user) {
     return $user::CONNECTED === $user->getStatus();
 });
 

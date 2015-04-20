@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Ivan Enderlin. All rights reserved.
+ * Copyright © 2007-2015, Hoa community. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -44,25 +44,22 @@ use Hoa\Visitor;
  *
  * Interpreter: rule to model.
  *
- * @author     Stéphane Py <stephane.py@hoa-project.net>
- * @author     Ivan Enderlin <ivan.enderlin@hoa-project.net>
- * @copyright  Copyright © 2007-2015 Stéphane Py, Ivan Enderlin.
+ * @copyright  Copyright © 2007-2015 Hoa community
  * @license    New BSD License
  */
-
-class Interpreter implements Visitor\Visit {
-
+class Interpreter implements Visitor\Visit
+{
     /**
      * Root.
      *
-     * @var \Hoa\Ruler\Model object
+     * @var \Hoa\Ruler\Model
      */
     protected $_root    = null;
 
     /**
      * Current node.
      *
-     * @var \Hoa\Ruler\Visitor\Interpreter object
+     * @var \Hoa\Ruler\Visitor\Interpreter
      */
     protected $_current = null;
 
@@ -71,20 +68,18 @@ class Interpreter implements Visitor\Visit {
     /**
      * Visit an element.
      *
-     * @access  public
      * @param   \Hoa\Visitor\Element  $element    Element to visit.
      * @param   mixed                 &$handle    Handle (reference).
      * @param   mixed                 $eldnah     Handle (not reference).
      * @return  mixed
-     * @throw   \Hoa\Ruler\Exception\Interpreter
+     * @throws  \Hoa\Ruler\Exception\Interpreter
      */
-    public function visit ( Visitor\Element $element, &$handle = null, $eldnah = null ) {
-
+    public function visit(Visitor\Element $element, &$handle = null, $eldnah = null)
+    {
         $id       = $element->getId();
         $variable = false !== $eldnah;
 
-        switch($id) {
-
+        switch ($id) {
             case '#expression':
                 $this->_root             = new Ruler\Model();
                 $this->_root->expression = $element->getChild(0)->accept(
@@ -94,7 +89,6 @@ class Interpreter implements Visitor\Visit {
                 );
 
                 return $this->_root;
-              break;
 
             case '#operation':
                 $children = $element->getChildren();
@@ -104,76 +98,72 @@ class Interpreter implements Visitor\Visit {
 
                 return $this->_root->_operator(
                     $name,
-                    array($left, $right),
+                    [$left, $right],
                     false
                 );
-              break;
 
             case '#variable_access':
                 $children = $element->getChildren();
                 $name     = $children[0]->accept($this, $handle, $eldnah);
                 array_shift($children);
 
-                foreach($children as $child) {
-
+                foreach ($children as $child) {
                     $_child = $child->accept($this, $handle, $eldnah);
 
-                    switch($child->getId()) {
-
+                    switch ($child->getId()) {
                         case '#array_access':
                             $name->index($_child);
-                          break;
+
+                            break;
 
                         case '#attribute_access':
                             $name->attribute($_child);
-                          break;
+
+                            break;
 
                         case '#method_access':
                             $name->call($_child);
-                          break;
+
+                            break;
                     }
                 }
 
                 return $name;
-              break;
 
             case '#array_access':
                 return $element->getChild(0)->accept($this, $handle, $eldnah);
-              break;
 
             case '#attribute_access':
                 return $element->getChild(0)->accept($this, $handle, false);
-              break;
 
             case '#method_access':
                 return $element->getChild(0)->accept($this, $handle, $eldnah);
-              break;
 
             case '#array_declaration':
-                $out = array();
+                $out = [];
 
-                foreach($element->getChildren() as $child)
+                foreach ($element->getChildren() as $child) {
                     $out[] = $child->accept($this, $handle, $eldnah);
+                }
 
                 return $out;
-              break;
 
             case '#function_call':
                 $children = $element->getChildren();
                 $name     = $children[0]->accept($this, $handle, false);
                 array_shift($children);
 
-                $arguments = array();
+                $arguments = [];
 
-                foreach($children as $child)
+                foreach ($children as $child) {
                     $arguments[] = $child->accept($this, $handle, $eldnah);
+                }
 
                 return $this->_root->_operator(
                     $name,
                     $arguments,
                     true
                 );
-              break;
 
             case '#and':
             case '#or':
@@ -185,25 +175,25 @@ class Interpreter implements Visitor\Visit {
 
                 return $this->_root->operation(
                     $name,
-                    array($left, $right)
+                    [$left, $right]
                 );
 
             case '#not':
                 return $this->_root->operation(
                     'not',
-                    array($element->getChild(0)->accept($this, $handle, $eldnah))
+                    [$element->getChild(0)->accept($this, $handle, $eldnah)]
                 );
 
             case 'token':
                 $token = $element->getValueToken();
                 $value = $element->getValueValue();
 
-                switch($token) {
-
+                switch ($token) {
                     case 'identifier':
-                        return true === $variable
-                                   ? $this->_root->variable($value)
-                                   : $value;
+                        return
+                            true === $variable
+                                ? $this->_root->variable($value)
+                                : $value;
 
                     case 'true':
                         return true;
@@ -229,13 +219,20 @@ class Interpreter implements Visitor\Visit {
 
                     default:
                         throw new Ruler\Exception\Interpreter(
-                            'Token %s is unknown.', 0, $token);
+                            'Token %s is unknown.',
+                            0,
+                            $token
+                        );
                 }
-              break;
+
+                break;
 
             default:
                 throw new Ruler\Exception\Interpreter(
-                    'Element %s is unknown.', 1, $id);
+                    'Element %s is unknown.',
+                    1,
+                    $id
+                );
         }
 
         return;
@@ -244,11 +241,10 @@ class Interpreter implements Visitor\Visit {
     /**
      * Get root.
      *
-     * @access  public
      * @return  \Hoa\Ruler\Model
      */
-    public function getRoot ( ) {
-
+    public function getRoot()
+    {
         return $this->_root;
     }
 }

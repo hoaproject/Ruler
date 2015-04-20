@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Ivan Enderlin. All rights reserved.
+ * Copyright © 2007-2015, Hoa community. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -44,102 +44,94 @@ use Hoa\Visitor;
  *
  * Disassembly: rule model to rule as a regular string.
  *
- * @author     Ivan Enderlin <ivan.enderlin@hoa-project.net>
- * @author     Stéphane Py <stephane.py@hoa-project.net>
- * @copyright  Copyright © 2007-2015 Ivan Enderlin, Stéphane Py
+ * @copyright  Copyright © 2007-2015 Hoa community
  * @license    New BSD License
  */
-
-class Disassembly implements Visitor\Visit {
-
+class Disassembly implements Visitor\Visit
+{
     /**
      * Visit an element.
      *
-     * @access  public
      * @param   \Hoa\Visitor\Element  $element    Element to visit.
      * @param   mixed                 &$handle    Handle (reference).
      * @param   mixed                 $eldnah     Handle (not reference).
      * @return  mixed
      */
-    public function visit ( Visitor\Element $element, &$handle = null, $eldnah = null ) {
-
+    public function visit(Visitor\Element $element, &$handle = null, $eldnah = null)
+    {
         $out = null;
 
-        if($element instanceof Ruler\Model)
+        if ($element instanceof Ruler\Model) {
             $out .= $element->getExpression()->accept($this, $handle, $eldnah);
-        elseif($element instanceof Ruler\Model\Operator) {
-
+        } elseif ($element instanceof Ruler\Model\Operator) {
             $name      = $element->getName();
-            $arguments = array();
+            $arguments = [];
 
-            foreach($element->getArguments() as $argument)
+            foreach ($element->getArguments() as $argument) {
                 $arguments[] = $argument->accept($this, $handle, $eldnah);
+            }
 
-            if(true === $element->isFunction())
+            if (true === $element->isFunction()) {
                 $out .= $name . '(' . implode(', ', $arguments) . ')';
-            else {
-
-                if(!isset($arguments[1]))
+            } else {
+                if (!isset($arguments[1])) {
                     $_out = $name . ' ' . $arguments[0];
-                else
+                } else {
                     $_out = $arguments[0] . ' ' . $name . ' ' . $arguments[1];
+                }
 
-                if(false === Ruler\Model\Operator::isToken($name))
+                if (false === Ruler\Model\Operator::isToken($name)) {
                     $_out = '(' . $_out . ')';
+                }
 
                 $out .= $_out;
             }
-
-        }
-        elseif($element instanceof Ruler\Model\Bag\Scalar) {
-
+        } elseif ($element instanceof Ruler\Model\Bag\Scalar) {
             $value = $element->getValue();
 
-            if(true === $value)
+            if (true === $value) {
                 $out .= 'true';
-            elseif(false === $value)
+            } elseif (false === $value) {
                 $out .= 'false';
-            elseif(null === $value)
+            } elseif (null === $value) {
                 $out .= 'null';
-            elseif(is_numeric($value))
+            } elseif (is_numeric($value)) {
                 $out .= (string) $value;
-            else
-                $out .= '\'' .
-                       str_replace('\\', '\\\'', $value) .
-                       '\'';
-        }
-        elseif($element instanceof Ruler\Model\Bag\RulerArray) {
+            } else {
+                $out .= '\'' . str_replace('\\', '\\\'', $value) . '\'';
+            }
+        } elseif ($element instanceof Ruler\Model\Bag\RulerArray) {
+            $values = [];
 
-            $values = array();
-
-            foreach($element->getArray() as $value)
+            foreach ($element->getArray() as $value) {
                 $values[] = $value->accept($this, $handle, $eldnah);
+            }
 
             $out .= '[' . implode(', ', $values) . ']';
-        }
-        elseif($element instanceof Ruler\Model\Bag\Context) {
-
+        } elseif ($element instanceof Ruler\Model\Bag\Context) {
             $out .= $element->getId();
 
-            foreach($element->getDimensions() as $dimension) {
-
+            foreach ($element->getDimensions() as $dimension) {
                 $value = $dimension[Ruler\Model\Bag\Context::ACCESS_VALUE];
 
-                switch($dimension[Ruler\Model\Bag\Context::ACCESS_TYPE]) {
-
+                switch ($dimension[Ruler\Model\Bag\Context::ACCESS_TYPE]) {
                     case Ruler\Model\Bag\Context::ARRAY_ACCESS:
-                        $out .= '[' .
-                                $value->accept($this, $handle, $eldnah) .
-                                ']';
-                      break;
+                        $out .=
+                            '[' .
+                            $value->accept($this, $handle, $eldnah) .
+                            ']';
+
+                        break;
 
                     case Ruler\Model\Bag\Context::ATTRIBUTE_ACCESS:
                         $out .= '.' . $value;
-                      break;
+
+                        break;
 
                     case Ruler\Model\Bag\Context::METHOD_ACCESS:
                         $out .= '.' . $value->accept($this, $handle, $eldnah);
-                      break;
+
+                        break;
                 }
             }
         }

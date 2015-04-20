@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Ivan Enderlin. All rights reserved.
+ * Copyright © 2007-2015, Hoa community. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -36,24 +36,22 @@
 
 namespace Hoa\Ruler\Test\Unit;
 
-use Hoa\Test;
 use Hoa\Ruler as LUT;
 use Hoa\Ruler\Context as CUT;
+use Hoa\Test;
 
 /**
  * Class \Hoa\Ruler\Test\Unit\Context.
  *
  * Test suite of the context.
  *
- * @author     Ivan Enderlin <ivan.enderlin@hoa-project.net>
- * @copyright  Copyright © 2007-2015 Ivan Enderlin.
+ * @copyright  Copyright © 2007-2015 Hoa community
  * @license    New BSD License
  */
-
-class Context extends Test\Unit\Suite {
-
-    public function case_array_access ( ) {
-
+class Context extends Test\Unit\Suite
+{
+    public function case_array_access()
+    {
         $this
             ->when($context = new CUT())
             ->then
@@ -61,8 +59,8 @@ class Context extends Test\Unit\Suite {
                     ->isInstanceOf('ArrayAccess');
     }
 
-    public function case_exists_set_get ( ) {
-
+    public function case_exists_set_get()
+    {
         $this
             ->given(
                 $key     = 'foo',
@@ -81,19 +79,18 @@ class Context extends Test\Unit\Suite {
                     ->isEqualTo($value);
     }
 
-    public function case_exception_when_getting_unspecified_key ( ) {
-
+    public function case_exception_when_getting_unspecified_key()
+    {
         $this
             ->given($context = new CUT())
-            ->exception(function ( ) use ( $context ) {
-
+            ->exception(function () use ($context) {
                 $context['foo'];
             })
                 ->isInstanceOf('Hoa\Ruler\Exception');
     }
 
-    public function case_unset ( ) {
-
+    public function case_unset()
+    {
         $this
             ->given(
                 $key     = 'foo',
@@ -109,8 +106,7 @@ class Context extends Test\Unit\Suite {
                 ->boolean(isset($context[$key]))
                     ->isTrue()
 
-            ->when(function ( ) use ( $context, $key ) {
-
+            ->when(function () use ($context, $key) {
                 unset($context[$key]);
             })
             ->then
@@ -118,13 +114,12 @@ class Context extends Test\Unit\Suite {
                     ->isFalse();
     }
 
-    public function case_callable_closure ( ) {
-
+    public function case_callable_closure()
+    {
         $this
             ->given(
                 $context        = new CUT(),
-                $context['foo'] = function ( ) {
-
+                $context['foo'] = function () {
                     return fakeCallable();
                 }
             )
@@ -134,8 +129,8 @@ class Context extends Test\Unit\Suite {
                     ->isTrue();
     }
 
-    public function case_callable_user_function ( ) {
-
+    public function case_callable_user_function()
+    {
         $this
             ->given(
                 $context        = new CUT(),
@@ -147,8 +142,8 @@ class Context extends Test\Unit\Suite {
                     ->isTrue();
     }
 
-    public function case_callable_internal_function ( ) {
-
+    public function case_callable_internal_function()
+    {
         $this
             ->given(
                 $context        = new CUT(),
@@ -160,8 +155,8 @@ class Context extends Test\Unit\Suite {
                     ->isEqualTo('var_dump');
     }
 
-    public function case_callable_method ( ) {
-
+    public function case_callable_method()
+    {
         $this
             ->given(
                 $context        = new CUT(),
@@ -173,8 +168,8 @@ class Context extends Test\Unit\Suite {
                     ->isTrue();
     }
 
-    public function case_callable_xcallable ( ) {
-
+    public function case_callable_xcallable()
+    {
         $this
             ->given(
                 $context        = new CUT(),
@@ -186,13 +181,12 @@ class Context extends Test\Unit\Suite {
                     ->isTrue();
     }
 
-    public function case_callable_cache ( ) {
-
+    public function case_callable_cache()
+    {
         $this
             ->given(
                 $context        = new CUT(),
-                $context['foo'] = function ( ) {
-
+                $context['foo'] = function () {
                     static $i = 0;
 
                     return $i++;
@@ -209,13 +203,12 @@ class Context extends Test\Unit\Suite {
                     ->isEqualTo(0);
     }
 
-    public function case_callable_no_cache ( ) {
-
+    public function case_callable_no_cache()
+    {
         $this
             ->given(
                 $context        = new CUT(),
-                $context['foo'] = new LUT\DynamicCallable(function ( ) {
-
+                $context['foo'] = new LUT\DynamicCallable(function () {
                     static $i = 0;
 
                     return $i++;
@@ -232,14 +225,13 @@ class Context extends Test\Unit\Suite {
                     ->isEqualTo(1);
     }
 
-    public function case_callable_argument ( ) {
-
+    public function case_callable_argument()
+    {
         $this
             ->given(
                 $self           = $this,
                 $context        = new CUT(),
-                $context['foo'] = function ( ) use ( $self, $context ) {
-
+                $context['foo'] = function () use ($self, $context) {
                     $arguments = func_get_args();
 
                     $self
@@ -252,13 +244,13 @@ class Context extends Test\Unit\Suite {
             ->when($result = $context['foo']);
     }
 
-    public function fakeCallable ( ) {
-
+    public function fakeCallable()
+    {
         return fakeCallable();
     }
 }
 
-function fakeCallable ( ) {
-
+function fakeCallable()
+{
     return true;
 }

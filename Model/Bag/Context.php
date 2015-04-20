@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Ivan Enderlin. All rights reserved.
+ * Copyright © 2007-2015, Hoa community. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -43,14 +43,11 @@ use Hoa\Ruler;
  *
  * Bag for context, i.e. a variable.
  *
- * @author     Stéphane Py <stephane.py@hoa-project.net>
- * @author     Ivan Enderlin <ivan.enderlin@hoa-project.net>
- * @copyright  Copyright © 2007-2015 Stéphane Py, Ivan Enderlin.
+ * @copyright  Copyright © 2007-2015 Hoa community
  * @license    New BSD License
  */
-
-class Context extends Bag {
-
+class Context extends Bag
+{
     /**
      * Access type.
      *
@@ -89,14 +86,14 @@ class Context extends Bag {
     /**
      * ID.
      *
-     * @var \Hoa\Ruler\Bag\Context string
+     * @var string
      */
     protected $_id         = null;
 
     /**
      * Index and object accesses.
      *
-     * @var \Hoa\Ruler\Bag\Context array
+     * @var array
      */
     protected $_dimensions = [];
 
@@ -105,12 +102,11 @@ class Context extends Bag {
     /**
      * Constructor.
      *
-     * @access  public
      * @param   string  $id    ID.
      * @return  void
      */
-    public function __construct ( $id ) {
-
+    public function __construct($id)
+    {
         $this->_id = $id;
 
         return;
@@ -119,16 +115,16 @@ class Context extends Bag {
     /**
      * Call an index (variable[indexA][indexB][indexC]).
      *
-     * @access  public
      * @param   mixed  $index    Index (a bag or an operator).
      * @return  \Hoa\Ruler\Model\Bag\Context
      */
-    public function index ( $index ) {
-
-        if(is_scalar($index) || null === $index)
+    public function index($index)
+    {
+        if (is_scalar($index) || null === $index) {
             $index = new Scalar($index);
-        elseif(is_array($index))
+        } elseif (is_array($index)) {
             $index = new RulerArray($index);
+        }
 
         $this->_dimensions[] = [
             static::ACCESS_TYPE  => static::ARRAY_ACCESS,
@@ -141,12 +137,11 @@ class Context extends Bag {
     /**
      * Call an attribute (variable.attrA.attrB).
      *
-     * @access  public
      * @param   string  $attribute    Attribute name.
      * @return  \Hoa\Ruler\Model\Bag\Context
      */
-    public function attribute ( $attribute ) {
-
+    public function attribute($attribute)
+    {
         $this->_dimensions[] = [
             static::ACCESS_TYPE  => static::ATTRIBUTE_ACCESS,
             static::ACCESS_VALUE => $attribute
@@ -158,12 +153,11 @@ class Context extends Bag {
     /**
      * Call a method (variable.foo().bar().baz()).
      *
-     * @access  public
      * @param   \Hoa\Ruler\Model\Operator  $method    Method to call.
      * @return  \Hoa\Ruler\Model\Bag\Context
      */
-    public function call ( Ruler\Model\Operator $method ) {
-
+    public function call(Ruler\Model\Operator $method)
+    {
         $this->_dimensions[] = [
             static::ACCESS_TYPE  => static::METHOD_ACCESS,
             static::ACCESS_VALUE => $method
@@ -175,22 +169,20 @@ class Context extends Bag {
     /**
      * Get all dimensions.
      *
-     * @access  public
      * @return  array
      */
-    public function getDimensions ( ) {
-
+    public function getDimensions()
+    {
         return $this->_dimensions;
     }
 
     /**
      * Get ID.
      *
-     * @access  public
      * @return  string
      */
-    public function getId ( ) {
-
+    public function getId()
+    {
         return $this->_id;
     }
 }

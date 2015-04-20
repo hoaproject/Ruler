@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Ivan Enderlin. All rights reserved.
+ * Copyright © 2007-2015, Hoa community. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -45,25 +45,22 @@ use Hoa\Visitor;
  *
  * Asserter: evaluate a model representing a rule.
  *
- * @author     Stéphane Py <stephane.py@hoa-project.net>
- * @author     Ivan Enderlin <ivan.enderlin@hoa-project.net>
- * @copyright  Copyright © 2007-2015 Stéphane Py, Ivan Enderlin.
+ * @copyright  Copyright © 2007-2015 Hoa community
  * @license    New BSD License
  */
-
-class Asserter implements Visitor\Visit {
-
+class Asserter implements Visitor\Visit
+{
     /**
      * Context.
      *
-     * @var \Hoa\Ruler\Context object
+     * @var \Hoa\Ruler\Context
      */
     protected $_context   = null;
 
     /**
      * List of operators.
      *
-     * @var \Hoa\Ruler\Visitor\Asserter array
+     * @var array
      */
     protected $_operators = [];
 
@@ -72,28 +69,28 @@ class Asserter implements Visitor\Visit {
     /**
      * Constructor.
      *
-     * @access  public
      * @param   \Hoa\Ruler\Context  $context    Context.
      * @return  void
      */
-    public function __construct ( Ruler\Context $context = null ) {
-
-        if(null !== $context)
+    public function __construct(Ruler\Context $context = null)
+    {
+        if (null !== $context) {
             $this->setContext($context);
+        }
 
-        $this->setOperator('and', function ( $a = false, $b = false ) { return $a && $b; });
-        $this->setOperator('or',  function ( $a = false, $b = false ) { return $a || $b; });
-        $this->setOperator('xor', function ( $a, $b ) { return (bool) ($a ^ $b); });
-        $this->setOperator('not', function ( $a )     { return !$a; });
-        $this->setOperator('=',   function ( $a, $b ) { return $a == $b; });
+        $this->setOperator('and', function ($a = false, $b = false) { return $a && $b; });
+        $this->setOperator('or',  function ($a = false, $b = false) { return $a || $b; });
+        $this->setOperator('xor', function ($a, $b) { return (bool) ($a ^ $b); });
+        $this->setOperator('not', function ($a) { return !$a; });
+        $this->setOperator('=',   function ($a, $b) { return $a == $b; });
         $this->setOperator('is',  $this->getOperator('='));
-        $this->setOperator('!=',  function ( $a, $b ) { return $a != $b; });
-        $this->setOperator('>',   function ( $a, $b ) { return $a >  $b; });
-        $this->setOperator('>=',  function ( $a, $b ) { return $a >= $b; });
-        $this->setOperator('<',   function ( $a, $b ) { return $a <  $b; });
-        $this->setOperator('<=',  function ( $a, $b ) { return $a <= $b; });
-        $this->setOperator('in',  function ( $a, Array $b ) { return in_array($a, $b); });
-        $this->setOperator('sum', function ( ) { return array_sum(func_get_args()); });
+        $this->setOperator('!=',  function ($a, $b) { return $a != $b; });
+        $this->setOperator('>',   function ($a, $b) { return $a >  $b; });
+        $this->setOperator('>=',  function ($a, $b) { return $a >= $b; });
+        $this->setOperator('<',   function ($a, $b) { return $a <  $b; });
+        $this->setOperator('<=',  function ($a, $b) { return $a <= $b; });
+        $this->setOperator('in',  function ($a, Array $b) { return in_array($a, $b); });
+        $this->setOperator('sum', function () { return array_sum(func_get_args()); });
 
         return;
     }
@@ -101,71 +98,77 @@ class Asserter implements Visitor\Visit {
     /**
      * Visit an element.
      *
-     * @access  public
      * @param   \Hoa\Visitor\Element  $element    Element to visit.
      * @param   mixed                 &$handle    Handle (reference).
      * @param   mixed                 $eldnah     Handle (not reference).
      * @return  mixed
-     * @throw   \Hoa\Ruler\Exception\Asserter
+     * @throws  \Hoa\Ruler\Exception\Asserter
      */
-    public function visit ( Visitor\Element $element, &$handle = null, $eldnah = null ) {
-
-        if($element instanceof Ruler\Model)
+    public function visit(Visitor\Element $element, &$handle = null, $eldnah = null)
+    {
+        if ($element instanceof Ruler\Model) {
             return $this->visitModel($element, $handle, $eldnah);
+        }
 
-        if($element instanceof Ruler\Model\Operator)
+        if ($element instanceof Ruler\Model\Operator) {
             return $this->visitOperator($element, $handle, $eldnah);
+        }
 
-        if($element instanceof Ruler\Model\Bag\Scalar)
+        if ($element instanceof Ruler\Model\Bag\Scalar) {
             return $this->visitScalar($element, $handle, $eldnah);
+        }
 
-        if($element instanceof Ruler\Model\Bag\RulerArray)
+        if ($element instanceof Ruler\Model\Bag\RulerArray) {
             return $this->visitArray($element, $handle, $eldnah);
+        }
 
-        if($element instanceof Ruler\Model\Bag\Context)
+        if ($element instanceof Ruler\Model\Bag\Context) {
             return $this->visitContext($element, $handle, $eldnah);
+        }
     }
 
     /**
      * Visit a model
      *
-     * @access  protected
      * @param   \Hoa\Visitor\Element  $element    Element to visit.
      * @param   mixed                 &$handle    Handle (reference).
      * @param   mixed                 $eldnah     Handle (not reference).
      * @return  mixed
      */
-    public function visitModel ( Ruler\Model $element, &$handle = null, $eldnah = null ) {
-
+    public function visitModel(Ruler\Model $element, &$handle = null, $eldnah = null)
+    {
         return (bool) $element->getExpression()->accept($this, $handle, $eldnah);
     }
 
     /**
      * Visit an operator
      *
-     * @access  protected
      * @param   \Hoa\Visitor\Element  $element    Element to visit.
      * @param   mixed                 &$handle    Handle (reference).
      * @param   mixed                 $eldnah     Handle (not reference).
      * @return  mixed
      */
-    protected function visitOperator ( Ruler\Model\Operator $element, &$handle = null, $eldnah = null ) {
-
+    protected function visitOperator(Ruler\Model\Operator $element, &$handle = null, $eldnah = null)
+    {
         $name      = $element->getName();
         $arguments = [];
 
-        foreach($element->getArguments() as $argument) {
-
+        foreach ($element->getArguments() as $argument) {
             $value       = $argument->accept($this, $handle, $eldnah);
             $arguments[] = $value;
 
-            if($element::LAZY_BREAK === $element->shouldBreakLazyEvaluation($value))
+            if ($element::LAZY_BREAK === $element->shouldBreakLazyEvaluation($value)) {
                 break;
+            }
         }
 
-        if(false === $this->operatorExists($name))
+        if (false === $this->operatorExists($name)) {
             throw new Ruler\Exception\Asserter(
-                'Operator %s does not exist.', 1, $name);
+                'Operator %s does not exist.',
+                0,
+                $name
+            );
+        }
 
         return $this->getOperator($name)->distributeArguments($arguments);
     }
@@ -173,32 +176,31 @@ class Asserter implements Visitor\Visit {
     /**
      * Visit a scalar
      *
-     * @access  protected
      * @param   \Hoa\Visitor\Element  $element    Element to visit.
      * @param   mixed                 &$handle    Handle (reference).
      * @param   mixed                 $eldnah     Handle (not reference).
      * @return  mixed
      */
-    protected function visitScalar ( Ruler\Model\Bag\Scalar $element, &$handle = null, $eldnah = null ) {
-
+    protected function visitScalar(Ruler\Model\Bag\Scalar $element, &$handle = null, $eldnah = null)
+    {
         return $element->getValue();
     }
 
     /**
      * Visit an array
      *
-     * @access  protected
      * @param   \Hoa\Visitor\Element  $element    Element to visit.
      * @param   mixed                 &$handle    Handle (reference).
      * @param   mixed                 $eldnah     Handle (not reference).
      * @return  array
      */
-    protected function visitArray ( Ruler\Model\Bag\RulerArray $element, &$handle = null, $eldnah = null ) {
-
+    protected function visitArray(Ruler\Model\Bag\RulerArray $element, &$handle = null, $eldnah = null)
+    {
         $out = [];
 
-        foreach($element->getArray() as $key => $data)
+        foreach ($element->getArray() as $key => $data) {
             $out[$key] = $data->accept($this, $handle, $eldnah);
+        }
 
         return $out;
     }
@@ -206,34 +208,38 @@ class Asserter implements Visitor\Visit {
     /**
      * Visit a context
      *
-     * @access  protected
      * @param   \Hoa\Visitor\Element  $element    Element to visit.
      * @param   mixed                 &$handle    Handle (reference).
      * @param   mixed                 $eldnah     Handle (not reference).
      * @return  mixed
      */
-    protected function visitContext ( Ruler\Model\Bag\Context $element, &$handle = null, $eldnah = null ) {
-
+    protected function visitContext(Ruler\Model\Bag\Context $element, &$handle = null, $eldnah = null)
+    {
         $context = $this->getContext();
 
-        if(null === $context)
+        if (null === $context) {
             throw new Ruler\Exeption\Asserter(
-                'Assert needs a context to work properly.', 0);
+                'Assert needs a context to work properly.',
+                1
+            );
+        }
 
         $id = $element->getId();
 
-        if(!isset($context[$id]))
+        if (!isset($context[$id])) {
             throw new Ruler\Exception\Asserter(
-                'Context reference %s does not exists.', 1, $id);
+                'Context reference %s does not exists.',
+                2,
+                $id
+            );
+        }
 
         $contextPointer = $context[$id];
 
-        foreach($element->getDimensions() as $dimensionNumber => $dimension) {
-
+        foreach ($element->getDimensions() as $dimensionNumber => $dimension) {
             ++$dimensionNumber;
 
-            switch($dimension[Ruler\Model\Bag\Context::ACCESS_TYPE]) {
-
+            switch ($dimension[Ruler\Model\Bag\Context::ACCESS_TYPE]) {
                 case Ruler\Model\Bag\Context::ARRAY_ACCESS:
                     $this->visitContextArray(
                         $contextPointer,
@@ -243,7 +249,8 @@ class Asserter implements Visitor\Visit {
                         $handle,
                         $eldnah
                     );
-                  break;
+
+                    break;
 
                 case Ruler\Model\Bag\Context::ATTRIBUTE_ACCESS:
                     $this->visitContextAttribute(
@@ -254,7 +261,8 @@ class Asserter implements Visitor\Visit {
                         $handle,
                         $eldnah
                     );
-                  break;
+
+                    break;
 
                 case Ruler\Model\Bag\Context::METHOD_ACCESS:
                     $this->visitContextMethod(
@@ -265,7 +273,8 @@ class Asserter implements Visitor\Visit {
                         $handle,
                         $eldnah
                     );
-                  break;
+
+                    break;
             }
         }
 
@@ -275,7 +284,6 @@ class Asserter implements Visitor\Visit {
     /**
      * Visit a context array
      *
-     * @access  protected
      * @param   mixed   &$contextPointer    Pointer to the current context.
      * @param   array   $dimension          Dimension bucket.
      * @param   int     $dimensionNumber    Dimension number.
@@ -284,28 +292,35 @@ class Asserter implements Visitor\Visit {
      * @param   mixed   $eldnah             Handle (not reference).
      * @return  void
      */
-    protected function visitContextArray ( &$contextPointer,
-                                           Array $dimension,
-                                           $dimensionNumber,
-                                           $elementId,
-                                           &$handle = null,
-                                           $eldnah = null ) {
-
+    protected function visitContextArray(
+        &$contextPointer,
+        Array $dimension,
+        $dimensionNumber,
+        $elementId,
+        &$handle = null,
+        $eldnah  = null
+    ) {
         $value = $dimension[Ruler\Model\Bag\Context::ACCESS_VALUE];
         $key   = $value->accept($this, $handle, $eldnah);
 
-        if(!is_array($contextPointer))
+        if (!is_array($contextPointer)) {
             throw new Ruler\Exception\Asserter(
                 'Try to access to an undefined index: %s ' .
                 '(dimension number %d of %s), because it is ' .
                 'not an array.',
-                1, [$key, $dimensionNumber, $elementId]);
+                3,
+                [$key, $dimensionNumber, $elementId]
+            );
+        }
 
-        if(!isset($contextPointer[$key]))
+        if (!isset($contextPointer[$key])) {
             throw new Ruler\Exception\Asserter(
                 'Try to access to an undefined index: %s ' .
                 '(dimension number %d of %s).',
-                1, [$key, $dimensionNumber, $elementId]);
+                4,
+                [$key, $dimensionNumber, $elementId]
+            );
+        }
 
         $contextPointer = $contextPointer[$key];
 
@@ -316,7 +331,6 @@ class Asserter implements Visitor\Visit {
     /**
      * Visit a context attribute
      *
-     * @access  protected
      * @param   mixed   &$contextPointer    Pointer to the current context.
      * @param   array   $dimension          Dimension bucket.
      * @param   int     $dimensionNumber    Dimension number.
@@ -325,27 +339,34 @@ class Asserter implements Visitor\Visit {
      * @param   mixed   $eldnah             Handle (not reference).
      * @return  void
      */
-    protected function visitContextAttribute ( &$contextPointer,
-                                               Array $dimension,
-                                               $dimensionNumber,
-                                               $elementId,
-                                               &$handle = null,
-                                               $eldnah = null ) {
-
+    protected function visitContextAttribute(
+        &$contextPointer,
+        Array $dimension,
+        $dimensionNumber,
+        $elementId,
+        &$handle = null,
+        $eldnah  = null)
+    {
         $attribute = $dimension[Ruler\Model\Bag\Context::ACCESS_VALUE];
 
-        if(!is_object($contextPointer))
+        if (!is_object($contextPointer)) {
             throw new Ruler\Exception\Asserter(
                 'Try to read an undefined attribute: %s ' .
                 '(dimension number %d of %s), because it is ' .
                 'not an object.',
-                2, [$attribute, $dimensionNumber, $elementId]);
+                5,
+                [$attribute, $dimensionNumber, $elementId]
+            );
+        }
 
-        if(!property_exists($contextPointer, $attribute))
+        if (!property_exists($contextPointer, $attribute)) {
             throw new Ruler\Exception\Asserter(
                 'Try to read an undefined attribute: %s ' .
                 '(dimension number %d of %s).',
-                3, [$attribute, $dimensionNumber, $elementId]);
+                6,
+                [$attribute, $dimensionNumber, $elementId]
+            );
+        }
 
         $contextPointer = $contextPointer->$attribute;
 
@@ -355,7 +376,6 @@ class Asserter implements Visitor\Visit {
     /**
      * Visit a context method
      *
-     * @access  protected
      * @param   mixed   &$contextPointer    Pointer to the current context.
      * @param   array   $dimension          Dimension bucket.
      * @param   int     $dimensionNumber    Dimension number.
@@ -364,33 +384,41 @@ class Asserter implements Visitor\Visit {
      * @param   mixed   $eldnah             Handle (not reference).
      * @return  void
      */
-    protected function visitContextMethod ( &$contextPointer,
-                                            Array $dimension,
-                                            $dimensionNumber,
-                                            $elementId,
-                                            &$handle = null,
-                                            $eldnah = null ) {
-
+    protected function visitContextMethod(
+        &$contextPointer,
+        Array $dimension,
+        $dimensionNumber,
+        $elementId,
+        &$handle = null,
+        $eldnah  = null
+    ) {
         $value  = $dimension[Ruler\Model\Bag\Context::ACCESS_VALUE];
         $method = $value->getName();
 
-        if(!is_object($contextPointer))
+        if (!is_object($contextPointer)) {
             throw new Ruler\Exception\Asserter(
                 'Try to call an undefined method: %s ' .
                 '(dimension number %d of %s), because it is ' .
                 'not an object.',
-                4, [$method, $dimensionNumber, $elementId]);
+                7,
+                [$method, $dimensionNumber, $elementId]
+            );
+        }
 
-        if(!method_exists($contextPointer, $method))
+        if (!method_exists($contextPointer, $method)) {
             throw new Ruler\Exception\Asserter(
                 'Try to call an undefined method: %s ' .
                 '(dimension number %d of %s).',
-                5, [$method, $dimensionNumber, $elementId]);
+                8,
+                [$method, $dimensionNumber, $elementId]
+            );
+        }
 
         $arguments = [];
 
-        foreach($value->getArguments() as $argument)
+        foreach ($value->getArguments() as $argument) {
             $arguments[] = $argument->accept($this, $handle, $eldnah);
+        }
 
         $contextPointer = call_user_func_array(
             [$contextPointer, $method],
@@ -403,12 +431,11 @@ class Asserter implements Visitor\Visit {
     /**
      * Set context.
      *
-     * @access  public
      * @param   \Hoa\Ruler\Context  $context    Context.
      * @return  \Hoa\Ruler\Context
      */
-    public function setContext ( Ruler\Context $context ) {
-
+    public function setContext(Ruler\Context $context)
+    {
         $old            = $this->_context;
         $this->_context = $context;
 
@@ -418,24 +445,22 @@ class Asserter implements Visitor\Visit {
     /**
      * Get context.
      *
-     * @access  public
      * @return  \Hoa\Ruler\Context
      */
-    public function getContext ( ) {
-
+    public function getContext()
+    {
         return $this->_context;
     }
 
     /**
      * Set an operator.
      *
-     * @access  public
      * @param   string    $operator    Operator.
      * @param   callable  $callable    Callable.
      * @return  Ruler\Visitor\Asserter
      */
-    public function setOperator ( $operator, $callable ) {
-
+    public function setOperator($operator, $callable)
+    {
         $this->_operators[$operator] = $callable;
 
         return $this;
@@ -444,31 +469,31 @@ class Asserter implements Visitor\Visit {
     /**
      * Check if an operator exists.
      *
-     * @access  public
      * @param   string  $operator    Operator.
      * @return  bool
      */
-    public function operatorExists ( $operator ) {
-
+    public function operatorExists($operator)
+    {
         return true === array_key_exists($operator, $this->_operators);
     }
 
     /**
      * Get an operator.
      *
-     * @access  public
      * @param   string  $operator    Operator.
      * @return  string
      */
-    public function getOperator ( $operator ) {
-
-        if(false === $this->operatorExists($operator))
+    public function getOperator($operator)
+    {
+        if (false === $this->operatorExists($operator)) {
             return null;
+        }
 
         $handle = &$this->_operators[$operator];
 
-        if(!($handle instanceof Core\Consistency\Xcallable))
+        if (!($handle instanceof Core\Consistency\Xcallable)) {
             $handle = xcallable($handle);
+        }
 
         return $this->_operators[$operator];
     }
@@ -476,14 +501,15 @@ class Asserter implements Visitor\Visit {
     /**
      * Get all operators.
      *
-     * @access  public
      * @return  array
      */
-    public function getOperators ( ) {
-
-        foreach($this->_operators as &$operator)
-            if(!($operator instanceof Core\Consistency\Xcallable))
+    public function getOperators()
+    {
+        foreach ($this->_operators as &$operator) {
+            if (!($operator instanceof Core\Consistency\Xcallable)) {
                 $operator = xcallable($operator);
+            }
+        }
 
         return $this->_operators;
     }

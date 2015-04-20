@@ -84,8 +84,7 @@ $rule  = 'group in ["customer", "guest"] and points > 30';
 // 2. Create a context.
 $context           = new Hoa\Ruler\Context();
 $context['group']  = 'customer';
-$context['points'] = function ( ) {
-
+$context['points'] = function () {
     return 42;
 };
 
@@ -244,8 +243,7 @@ var_dump(
  *     string(5) "value"
  */</code></pre>
   <p>To register computed values, we can use a function; thus:</p>
-  <pre><code class="language-php">$context['computed'] = function ( ) {
-
+  <pre><code class="language-php">$context['computed'] = function () {
     return 42;
 };
 
@@ -259,8 +257,7 @@ var_dump($context['computed']);
   read. To illustrate this we will use a function incrementing an integer at
   each call:</p>
   <pre><code class="language-php">$i              = 0;
-$context['int'] = function ( ) use ( &amp;amp;$i ) {
-
+$context['int'] = function () use (&amp;amp;$i) {
     return ++$i;
 };
 
@@ -284,8 +281,7 @@ var_dump(
   <code>Hoa\Ruler\DynamicCallable</code> class, let's observe what happens:</p>
   <pre><code class="language-php">$i              = 0;
 $context['int'] = new Hoa\Ruler\DynamicCallable(
-    function ( ) use ( &amp;amp;$i ) {
-
+    function () use (&amp;amp;$i) {
         return ++$i;
     }
 );
@@ -308,8 +304,8 @@ var_dump(
   <p>We can also use a declared function thanks to its name. Attention, it is
   not possible to call native PHP functions for security reasons. The context
   has not such a <strong>scope</strong>. Thus:</p>
-  <pre><code class="language-php">function answer ( ) {
-
+  <pre><code class="language-php">function answer()
+{
     return 42;
 }
 
@@ -369,21 +365,20 @@ var_dump(
   <strong>free</strong>. Therefore, we supposed the ability to define our own
   operators and functions. Let's add the <code>logged</code> function that tests
   if an object of kind <code>User</code> is connected. Here is this object:</p>
-  <pre><code class="language-php">class User {
-
+  <pre><code class="language-php">class User
+{
     const DISCONNECTED = 0;
     const CONNECTED    = 1;
     protected $_status = 1;
 
-    public function getStatus ( ) {
-
+    public function getStatus()
+    {
         return $this->_status;
     }
 }</code></pre>
   <p>The implementation of the <code>logged</code> function might be the
   following:</p>
-  <pre><code class="language-php">$logged = function ( User $user ) {
-
+  <pre><code class="language-php">$logged = function (User $user) {
     return $user::CONNECTED === $user->getStatus();
 };</code></pre>
   <p>Finally, to declare this function, we will use the
@@ -657,16 +652,13 @@ $context           = new Hoa\Ruler\Context();
 $context['points'] = 42;
 
 // Nothing in the database.
-if(null === $serialized = $database->get($ruleId)) {
-
+if (null === $serialized = $database->get($ruleId)) {
     // We transform the rule into an object model.
     $model = Hoa\Ruler\Ruler::interpret($rule);
 
     // We serialize and save the object model.
     $database->save($ruleId, serialize($model));
-}
-else {
-
+} else {
     // We have a serialization! We unserialize it to get the object model.
     $model = unserialize($serialized);
 }

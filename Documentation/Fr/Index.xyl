@@ -89,8 +89,7 @@ $rule  = 'group in ["customer", "guest"] and points > 30';
 // 2. Create a context.
 $context           = new Hoa\Ruler\Context();
 $context['group']  = 'customer';
-$context['points'] = function ( ) {
-
+$context['points'] = function () {
     return 42;
 };
 
@@ -252,8 +251,7 @@ var_dump(
  */</code></pre>
   <p>Pour y déposer des valeurs calculées, nous pouvons le faire via une
   fonction ; ainsi :</p>
-  <pre><code class="language-php">$context['computed'] = function ( ) {
-
+  <pre><code class="language-php">$context['computed'] = function () {
     return 42;
 };
 
@@ -267,8 +265,7 @@ var_dump($context['computed']);
   <strong>cache</strong> dès la première lecture. Pour l'illustrer, nous allons
   utiliser une fonction qui incrémente un entier à chaque appel :</p>
   <pre><code class="language-php">$i              = 0;
-$context['int'] = function ( ) use ( &amp;amp;$i ) {
-
+$context['int'] = function () use (&amp;amp;$i) {
     return ++$i;
 };
 
@@ -292,8 +289,7 @@ var_dump(
   <code>Hoa\Ruler\DynamicCallable</code>, observons ce qu'il se passe :</p>
   <pre><code class="language-php">$i              = 0;
 $context['int'] = new Hoa\Ruler\DynamicCallable(
-    function ( ) use ( &amp;amp;$i ) {
-
+    function () use (&amp;amp;$i) {
         return ++$i;
     }
 );
@@ -317,8 +313,8 @@ var_dump(
   Attention toutefois, il sera impossible d'appeler les fonctions natives de PHP
   pour des raisons de sécurité. Le contexte n'a pas une telle
   <strong>portée</strong>. Ainsi :</p>
-  <pre><code class="language-php">function answer ( ) {
-
+  <pre><code class="language-php">function answer()
+{
     return 42;
 }
 
@@ -381,20 +377,19 @@ var_dump(
   de définir nos propres opérateurs et fonctions. Ajoutons la fonction
   <code>logged</code> qui teste si un objet de type <code>User</code> est
   connecté. Voici cet objet :</p>
-  <pre><code class="language-php">class User {
-
+  <pre><code class="language-php">class User
+{
     const DISCONNECTED = 0;
     const CONNECTED    = 1;
     protected $_status = 1;
 
-    public function getStatus ( ) {
-
+    public function getStatus()
+    {
         return $this->_status;
     }
 }</code></pre>
   <p>L'implémentation de la fonction <code>logged</code> serait alors :</p>
-  <pre><code class="language-php">$logged = function ( User $user ) {
-
+  <pre><code class="language-php">$logged = function (User $user) {
     return $user::CONNECTED === $user->getStatus();
 };</code></pre>
   <p>Enfin, pour déclarer cette fonction, nous allons utiliser la méthode
@@ -676,16 +671,13 @@ $context           = new Hoa\Ruler\Context();
 $context['points'] = 42;
 
 // Nothing in the database.
-if(null === $serialized = $database->get($ruleId)) {
-
+if (null === $serialized = $database->get($ruleId)) {
     // We transform the rule into an object model.
     $model = Hoa\Ruler\Ruler::interpret($rule);
 
     // We serialize and save the object model.
     $database->save($ruleId, serialize($model));
-}
-else {
-
+} else {
     // We have a serialization! We unserialize it to get the object model.
     $model = unserialize($serialized);
 }

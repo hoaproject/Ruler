@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Ivan Enderlin. All rights reserved.
+ * Copyright © 2007-2015, Hoa community. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -45,18 +45,15 @@ use Hoa\Visitor;
  *
  * Compiler: rule model to PHP.
  *
- * @author     Stéphane Py <stephane.py@hoa-project.net>
- * @author     Ivan Enderlin <ivan.enderlin@hoa-project.net>
- * @copyright  Copyright © 2007-2015 Stéphane Py, Ivan Enderlin.
+ * @copyright  Copyright © 2007-2015 Hoa community
  * @license    New BSD License
  */
-
-class Compiler implements Visitor\Visit {
-
+class Compiler implements Visitor\Visit
+{
     /**
      * Indentation level.
      *
-     * @var \Hoa\Ruler\Visitor\Compiler int
+     * @var int
      */
     protected $_indentation = 0;
 
@@ -65,115 +62,107 @@ class Compiler implements Visitor\Visit {
     /**
      * Visit an element.
      *
-     * @access  public
      * @param   \Hoa\Visitor\Element  $element    Element to visit.
      * @param   mixed                 &$handle    Handle (reference).
      * @param   mixed                 $eldnah     Handle (not reference).
      * @return  mixed
      */
-    public function visit ( Visitor\Element $element, &$handle = null, $eldnah = null ) {
-
+    public function visit(Visitor\Element $element, &$handle = null, $eldnah = null)
+    {
         $out = null;
         $_   = str_repeat('    ', $this->_indentation);
 
-        if($element instanceof Ruler\Model) {
-
+        if ($element instanceof Ruler\Model) {
             $this->_indentation = 1;
-
-            $out = '$model = new \Hoa\Ruler\Model();' . "\n" .
-                   '$model->expression =' . "\n" .
-                   $element->getExpression()->accept($this, $handle, $eldnah) .
-                   ';';
-        }
-        elseif($element instanceof Ruler\Model\Operator) {
-
+            $out =
+                '$model = new \Hoa\Ruler\Model();' . "\n" .
+                '$model->expression =' . "\n" .
+                $element->getExpression()->accept($this, $handle, $eldnah) .
+                ';';
+        } elseif ($element instanceof Ruler\Model\Operator) {
             $out     = $_ . '$model->';
             $name    = $element->getName();
             $_handle = [];
 
-            if(false === $element->isFunction()) {
-
-                if(true === Core\Consistency::isIdentifier($name))
+            if (false === $element->isFunction()) {
+                if (true === Core\Consistency::isIdentifier($name)) {
                     $out .= $name;
-                else
+                } else {
                     $out .= '{\'' . $name . '\'}';
+                }
 
                 $out .= '(' . "\n";
-            }
-            else {
-
+            } else {
                 $out       .= 'func(' . "\n" . $_ . '    ';
                 $_handle[]  = '\'' . $name . '\'';
             }
 
             ++$this->_indentation;
 
-            foreach($element->getArguments() as $argument)
+            foreach ($element->getArguments() as $argument) {
                 $_handle[] = $argument->accept($this, $handle, $eldnah);
+            }
 
             --$this->_indentation;
 
             $out .= implode(',' . "\n", $_handle) . "\n" . $_ . ')';
-        }
-        elseif($element instanceof Ruler\Model\Bag\Scalar) {
-
+        } elseif ($element instanceof Ruler\Model\Bag\Scalar) {
             $value = $element->getValue();
             $out   = $_;
 
-            if(true === $value)
+            if (true === $value) {
                 $out .= 'true';
-            elseif(false === $value)
+            } elseif (false === $value) {
                 $out .= 'false';
-            elseif(null === $value)
+            } elseif (null === $value) {
                 $out .= 'null';
-            elseif(is_numeric($value))
+            } elseif (is_numeric($value)) {
                 $out .= (string) $value;
-            else
-                $out .= '\'' .
-                       str_replace('\\', '\\\'', $value) .
-                       '\'';
-        }
-        elseif($element instanceof Ruler\Model\Bag\RulerArray) {
-
+            } else {
+                $out .= '\'' . str_replace('\\', '\\\'', $value) . '\'';
+            }
+        } elseif ($element instanceof Ruler\Model\Bag\RulerArray) {
             $values = [];
             ++$this->_indentation;
 
-            foreach($element->getArray() as $value)
+            foreach ($element->getArray() as $value) {
                 $values[] = $value->accept($this, $handle, $eldnah);
+            }
 
             --$this->_indentation;
-
-            $out = $_ . '[' . "\n" .
-                   implode(',' . "\n", $values) . "\n" .
-                   $_ . ']';
-        }
-        elseif($element instanceof Ruler\Model\Bag\Context) {
-
+            $out =
+                $_ . '[' . "\n" .
+                implode(',' . "\n", $values) . "\n" .
+                $_ . ']';
+        } elseif ($element instanceof Ruler\Model\Bag\Context) {
             $out = $_ . '$model->variable(\'' . $element->getId() . '\')';
             $this->_indentation += 2;
 
-            foreach($element->getDimensions() as $dimension) {
-
+            foreach ($element->getDimensions() as $dimension) {
                 $value  = $dimension[Ruler\Model\Bag\Context::ACCESS_VALUE];
                 $out   .= "\n" . $_ . '    ->';
 
-                switch($dimension[Ruler\Model\Bag\Context::ACCESS_TYPE]) {
-
+                switch ($dimension[Ruler\Model\Bag\Context::ACCESS_TYPE]) {
                     case Ruler\Model\Bag\Context::ARRAY_ACCESS:
-                        $out .= 'index(' . "\n" .
-                                $value->accept($this, $handle, $eldnah) . "\n" .
-                                $_ . '    )';
-                      break;
+                        $out .=
+                            'index(' . "\n" .
+                            $value->accept($this, $handle, $eldnah) . "\n" .
+                            $_ . '    )';
+
+                        break;
 
                     case Ruler\Model\Bag\Context::ATTRIBUTE_ACCESS:
                         $out .= 'attribute(\'' . $value . '\')';
-                      break;
+
+                        break;
 
                     case Ruler\Model\Bag\Context::METHOD_ACCESS:
-                        $out .= 'call(' . "\n" .
-                                $value->accept($this, $handle, $eldnah) . "\n" .
-                                $_ . '    )';
-                      break;
+                        $out .=
+                            'call(' . "\n" .
+                            $value->accept($this, $handle, $eldnah) . "\n" .
+                            $_ . '    )';
+
+                        break;
                 }
             }
 

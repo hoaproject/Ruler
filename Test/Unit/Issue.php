@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Ivan Enderlin. All rights reserved.
+ * Copyright © 2007-2015, Hoa community. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -36,23 +36,21 @@
 
 namespace Hoa\Ruler\Test\Unit\Bug;
 
-use Hoa\Test;
 use Hoa\Ruler as LUT;
+use Hoa\Test;
 
 /**
- * Class \Hoa\Ruler\Test\Unit\Bug\Github50.
+ * Class \Hoa\Ruler\Test\Unit\Issue.
  *
- * See https://github.com/hoaproject/Ruler/issues/50.
+ * Test suite of detected issues.
  *
- * @author     Ivan Enderlin <ivan.enderlin@hoa-project.net>
- * @copyright  Copyright © 2007-2015 Ivan Enderlin.
+ * @copyright  Copyright © 2007-2015 Hoa community
  * @license    New BSD License
  */
-
-class Github50 extends Test\Unit\Suite {
-
-    public function case_bug ( ) {
-
+class Issue extends Test\Unit\Suite
+{
+    public function case_github_50()
+    {
         $this
             ->given(
                 $ruler               = new LUT(),
@@ -60,8 +58,7 @@ class Github50 extends Test\Unit\Suite {
                 $context             = new LUT\Context(),
                 $context['variable'] = 'file'
             )
-            ->when(function ( ) use ( $ruler, $rule, $context ) {
-
+            ->when(function () use ($ruler, $rule, $context) {
                 $ruler->assert($rule, $context);
             })
                 ->error()

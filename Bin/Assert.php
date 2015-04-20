@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Ivan Enderlin. All rights reserved.
+ * Copyright © 2007-2015, Hoa community. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -44,17 +44,15 @@ use Hoa\Ruler;
  *
  * Assert rules.
  *
- * @author     Ivan Enderlin <ivan.enderlin@hoa-project.net>
- * @copyright  Copyright © 2007-2015 Ivan Enderlin.
+ * @copyright  Copyright © 2007-2015 Hoa community
  * @license    New BSD License
  */
-
-class Assert extends Console\Dispatcher\Kit {
-
+class Assert extends Console\Dispatcher\Kit
+{
     /**
      * Options description.
      *
-     * @var \Hoa\Ruler\Bin\Shell array
+     * @var array
      */
     protected $options = [
         ['help', Console\GetOption::NO_ARGUMENT, 'h'],
@@ -66,29 +64,31 @@ class Assert extends Console\Dispatcher\Kit {
     /**
      * The entry method.
      *
-     * @access  public
      * @return  int
      */
-    public function main ( ) {
-
+    public function main()
+    {
         $ruler   = new Ruler();
         $context = new Ruler\Context();
 
-        while(false !== $c = $this->getOption($v)) switch($c) {
+        while (false !== $c = $this->getOption($v)) {
+            switch ($c) {
+                case '__ambiguous':
+                    $context[$v['option']] = $v['value'];
 
-            case 'h':
-            case '?':
-                return $this->usage();
-              break;
+                    break;
 
-            case '__ambiguous':
-                $context[$v['option']] = $v['value'];
+                case 'h':
+                case '?':
+                    return $this->usage();
+            }
         }
 
         $this->parser->listInputs($rule);
 
-        if(empty($rule))
+        if (empty($rule)) {
             return $this->usage();
+        }
 
         return (int) (!$ruler->assert($rule, $context));
     }
@@ -96,18 +96,18 @@ class Assert extends Console\Dispatcher\Kit {
     /**
      * The command usage.
      *
-     * @access  public
      * @return  int
      */
-    public function usage ( ) {
-
-        echo 'Usage   : ruler:assert <options> rule', "\n",
-             'Options :', "\n",
-             $this->makeUsageOptionsList([
-                 'help' => 'This help.'
-             ]), "\n",
-             'Example : -x=2 -y=6 \'x in [1, 2, 4] and x < y\'.', "\n",
-             'See $? to see the result (0 for true, > 0 for false).', "\n";
+    public function usage()
+    {
+        echo
+            'Usage   : ruler:assert <options> rule', "\n",
+            'Options :', "\n",
+            $this->makeUsageOptionsList([
+                'help' => 'This help.'
+            ]), "\n",
+            'Example : -x=2 -y=6 \'x in [1, 2, 4] and x < y\'.', "\n",
+            'See $? to see the result (0 for true, > 0 for false).', "\n";
 
         return;
     }

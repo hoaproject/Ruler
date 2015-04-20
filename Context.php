@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Ivan Enderlin. All rights reserved.
+ * Copyright © 2007-2015, Hoa community. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -41,25 +41,22 @@ namespace Hoa\Ruler;
  *
  * Context of a rule, it contains data to instanciate the rule.
  *
- * @author     Stéphane Py <stephane.py@hoa-project.net>
- * @author     Ivan Enderlin <ivan.enderlin@hoa-project.net>
- * @copyright  Copyright © 2007-2015 Stéphane Py, Ivan Enderlin.
+ * @copyright  Copyright © 2007-2015 Hoa community
  * @license    New BSD License
  */
-
-class Context implements \ArrayAccess {
-
+class Context implements \ArrayAccess
+{
     /**
      * Ruler.
      *
-     * @var \Hoa\Ruler object
+     * @var \Hoa\Ruler
      */
     protected $_ruler = null;
 
     /**
      * Data.
      *
-     * @var \Hoa\Ruler\Context array
+     * @var array
      */
     protected $_data  = [];
 
@@ -68,12 +65,11 @@ class Context implements \ArrayAccess {
     /**
      * Constructor.
      *
-     * @access  public
      * @param   array  $data    Initial data.
      * @return  void
      */
-    public function __construct ( Array $data = [] ) {
-
+    public function __construct(Array $data = [])
+    {
         $this->_data = $data;
 
         return;
@@ -82,13 +78,12 @@ class Context implements \ArrayAccess {
     /**
      * Set a data.
      *
-     * @access  public
      * @param   string  $id       ID.
      * @param   mixed   $value    Value.
      * @return  void
      */
-    public function offsetSet ( $id, $value ) {
-
+    public function offsetSet($id, $value)
+    {
         $this->_data[$id] = $value;
 
         return;
@@ -97,27 +92,31 @@ class Context implements \ArrayAccess {
     /**
      * Get a data.
      *
-     * @access  public
      * @param   string  $id    ID.
      * @return  mixed
-     * @throw   \Hoa\Ruler\Exception
+     * @throws  \Hoa\Ruler\Exception
      */
-    public function offsetGet ( $id ) {
-
-        if(false === array_key_exists($id, $this->_data))
+    public function offsetGet($id)
+    {
+        if (false === array_key_exists($id, $this->_data)) {
             throw new Exception(
-                'Identifier %s does not exist in the context.', 0, $id);
+                'Identifier %s does not exist in the context.',
+                0,
+                $id
+            );
+        }
 
         $value = $this->_data[$id];
 
-        if($value instanceof DynamicCallable)
+        if ($value instanceof DynamicCallable) {
             return $value($this);
+        }
 
-        if(true === is_callable($value)) {
-
-            if(   true  === is_string($value)
-               && false === in_array(strtolower($value), get_defined_functions()['user']))
+        if (true === is_callable($value)) {
+            if (true  === is_string($value) &&
+                false === in_array(strtolower($value), get_defined_functions()['user'])) {
                 return $value;
+            }
 
             $value = $this->_data[$id] = $value($this);
         }
@@ -128,23 +127,21 @@ class Context implements \ArrayAccess {
     /**
      * Check if a data exists.
      *
-     * @access  public
      * @return  bool
      */
-    public function offsetExists ( $id ) {
-
+    public function offsetExists($id)
+    {
         return true === array_key_exists($id, $this->_data);
     }
 
     /**
      * Unset a data.
      *
-     * @access  public
      * @param   string  $id    ID.
      * @return  void
      */
-    public function offsetUnset ( $id ) {
-
+    public function offsetUnset($id)
+    {
         unset($this->_data[$id]);
 
         return;

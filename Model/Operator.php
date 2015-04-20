@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Ivan Enderlin. All rights reserved.
+ * Copyright © 2007-2015, Hoa community. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -43,14 +43,11 @@ use Hoa\Visitor;
  *
  * Represent an operator or a function (in prefixed notation).
  *
- * @author     Stéphane Py <stephane.py@hoa-project.net>
- * @author     Ivan Enderlin <ivan.enderlin@hoa-project.net>
- * @copyright  Copyright © 2007-2015 Stéphane Py, Ivan Enderlin.
+ * @copyright  Copyright © 2007-2015 Hoa community
  * @license    New BSD License
  */
-
-class Operator implements Visitor\Element {
-
+class Operator implements Visitor\Element
+{
     /**
      * Lazy evaluation should break.
      *
@@ -68,43 +65,44 @@ class Operator implements Visitor\Element {
     /**
      * Name.
      *
-     * @var \Hoa\Ruler\Model\Operator string
+     * @var string
      */
     protected $_name      = null;
 
     /**
      * Arguments.
      *
-     * @var \Hoa\Ruler\Model\Operator array
+     * @var array
      */
     protected $_arguments = null;
 
     /**
      * Whether the operator is a function.
      *
-     * @var \Hoa\Ruler\Model\Operator bool
+     * @var bool
      */
     protected $_function  = true;
 
     /**
      * Whether the operator is lazy or not.
      *
-     * @var \Hoa\Ruler\Model\Operator bool
+     * @var bool
      */
     protected $_laziness = false;
 
     /**
      * Constructor.
      *
-     * @access  public
      * @param   string  $name          Name.
      * @param   array   $arguments     Arguments.
      * @param   bool    $isFunction    Whether it is a function.
      * @return  void
      */
-    public function __construct ( $name, Array $arguments = [],
-                                  $isFunction = true ) {
-
+    public function __construct(
+        $name,
+        Array $arguments = [],
+        $isFunction      = true
+    ) {
         $this->setName($name);
         $this->setLaziness('and' === $name || 'or' === $name);
         $this->setArguments($arguments);
@@ -116,12 +114,11 @@ class Operator implements Visitor\Element {
     /**
      * Set name.
      *
-     * @access  protected
      * @param   string  $name    Name.
      * @return  string
      */
-    protected function setName ( $name ) {
-
+    protected function setName($name)
+    {
         $old         = $this->_name;
         $this->_name = $name;
 
@@ -131,28 +128,28 @@ class Operator implements Visitor\Element {
     /**
      * Get name.
      *
-     * @access  public
      * @return  string
      */
-    public function getName ( ) {
-
+    public function getName()
+    {
         return $this->_name;
     }
 
     /**
      * Set arguments.
      *
-     * @access  protected
      * @param   array  $arguments    Arguments.
      * @return  array
      */
-    protected function setArguments ( Array $arguments ) {
-
-        foreach($arguments as &$argument)
-            if(is_scalar($argument) || null === $argument)
+    protected function setArguments(Array $arguments)
+    {
+        foreach ($arguments as &$argument) {
+            if (is_scalar($argument) || null === $argument) {
                 $argument = new Bag\Scalar($argument);
-            elseif(is_array($argument))
+            } elseif (is_array($argument)) {
                 $argument = new Bag\RulerArray($argument);
+            }
+        }
 
         $old              = $this->_arguments;
         $this->_arguments = $arguments;
@@ -163,23 +160,21 @@ class Operator implements Visitor\Element {
     /**
      * Get arguments.
      *
-     * @access  public
      * @return  array
      */
-    public function getArguments ( ) {
-
+    public function getArguments()
+    {
         return $this->_arguments;
     }
 
     /**
      * Set whether the operator is a function or not.
      *
-     * @access  public
      * @param   bool  $isFunction    Is a function or not.
      * @return  bool
      */
-    protected function setFunction ( $isFunction ) {
-
+    protected function setFunction($isFunction)
+    {
         $old             = $this->_function;
         $this->_function = $isFunction;
 
@@ -189,23 +184,21 @@ class Operator implements Visitor\Element {
     /**
      * Check if the operator is a function or not.
      *
-     * @access  public
      * @return  bool
      */
-    public function isFunction ( ) {
-
+    public function isFunction()
+    {
         return $this->_function;
     }
 
     /**
      * Set whether the operator is lazy or not.
      *
-     * @access  protected
      * @param   bool  $isLazy    Is a lazy operator or not.
      * @return  bool
      */
-    protected function setLaziness ( $isLazy ) {
-
+    protected function setLaziness($isLazy)
+    {
         $old             = $this->_laziness;
         $this->_laziness = $isLazy;
 
@@ -215,34 +208,35 @@ class Operator implements Visitor\Element {
     /**
      * Check if the operator is lazy or not.
      *
-     * @access  public
      * @return  bool
      */
-    public function isLazy ( ) {
-
+    public function isLazy()
+    {
         return $this->_laziness;
     }
 
     /**
      * Check whether we should break the lazy evaluation or not.
      *
-     * @access public
      * @param  mixed  $value    Value to check.
      * @return bool
      */
-    public function shouldBreakLazyEvaluation ( $value ) {
-
-        switch($this->_name) {
-
+    public function shouldBreakLazyEvaluation($value)
+    {
+        switch ($this->_name) {
             case 'and':
-                if(false === $value)
+                if (false === $value) {
                     return self::LAZY_BREAK;
-              break;
+                }
+
+                break;
 
             case 'or':
-                if(true === $value)
+                if (true === $value) {
                     return self::LAZY_BREAK;
-              break;
+                }
+
+                break;
         }
 
         return self::LAZY_CONTINUE;
@@ -251,12 +245,11 @@ class Operator implements Visitor\Element {
     /**
      * Check if the operator is a token of the grammar or not.
      *
-     * @access  public
      * @param   string  $operator    Operator.
      * @return  bool
      */
-    public static function isToken ( $operator ) {
-
+    public static function isToken($operator)
+    {
         static $_tokens = ['not', 'and', 'or', 'xor'];
 
         return true === in_array($operator, $_tokens);
@@ -265,15 +258,16 @@ class Operator implements Visitor\Element {
     /**
      * Accept a visitor.
      *
-     * @access  public
      * @param   \Hoa\Visitor\Visit  $visitor    Visitor.
      * @param   mixed               &$handle    Handle (reference).
      * @param   mixed               $eldnah     Handle (no reference).
      * @return  mixed
      */
-    public function accept ( Visitor\Visit $visitor,
-                             &$handle = null, $eldnah = null ) {
-
+    public function accept(
+        Visitor\Visit $visitor,
+        &$handle = null,
+        $eldnah  = null
+    ) {
         return $visitor->visit($this, $handle, $eldnah);
     }
 }
