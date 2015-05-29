@@ -1,3 +1,7 @@
+# 1.15.05.29
+
+  * Move to PSR-1 and PSR-2. (Ivan Enderlin, 2015-04-20T10:21:13+02:00)
+
 # 1.15.04.13
 
   * Add the English documentation. (Ivan Enderlin, 2015-03-19T10:32:47+01:00)
