@@ -25,7 +25,7 @@
   implement this rule. It will probably come from a <strong>business rules
   repository</strong>, which have been written by other persons, either
   <strong>manually</strong> or thanks to a <strong>third-party program</strong>.
-  This implies that the language used to express a rule is not the languge used
+  This implies that the language used to express a rule is not the language used
   to develop the program. An even more obvious example is the use of a rule to
   filter elements: An element is accepted if “<q>its group is <em>customer</em>
   or <em>guest</em> and its number of points is greater than 30</q>”. This rule
