@@ -79,6 +79,12 @@ class Model implements Visitor\Element
             return $this->$name = $value;
         }
 
+        if (is_scalar($value)) {
+            $value = new Bag\Scalar($value);
+        } elseif (is_array($value)) {
+            $value = new Bag\RulerArray($value);
+        }
+
         $this->_root = $value;
 
         return;
