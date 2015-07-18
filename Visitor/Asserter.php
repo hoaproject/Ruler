@@ -91,6 +91,11 @@ class Asserter implements Visitor\Visit
         $this->setOperator('<=',  function ($a, $b) { return $a <= $b; });
         $this->setOperator('in',  function ($a, Array $b) { return in_array($a, $b); });
         $this->setOperator('sum', function () { return array_sum(func_get_args()); });
+        $this->setOperator('matches', function ($subject, $pattern) {
+            $escapedPattern = preg_replace('/(?<!\\\)`/', '\`', $pattern);
+
+            return 0 !== preg_match('`' . $escapedPattern . '`', $subject);
+        });
 
         return;
     }
