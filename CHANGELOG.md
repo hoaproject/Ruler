@@ -1,3 +1,8 @@
+# 1.15.07.28
+
+  * Auto-box the expression to its bag representation. (Ivan Enderlin, 2015-07-13T11:37:00+02:00)
+  * Fix a typo. (Ivan Enderlin, 2015-06-27T16:08:06+02:00)
+
 # 1.15.05.29
 
   * Move to PSR-1 and PSR-2. (Ivan Enderlin, 2015-04-20T10:21:13+02:00)
