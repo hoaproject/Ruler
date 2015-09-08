@@ -1,3 +1,8 @@
+# 1.15.09.08
+
+  * Add a `.gitignore` file. (Stéphane HULARD, 2015-08-03T11:45:52+02:00)
+  * Add the `matches` operator. (Kévin Gomez, 2015-07-18T19:44:24+02:00)
+
 # 1.15.07.28
 
   * Auto-box the expression to its bag representation. (Ivan Enderlin, 2015-07-13T11:37:00+02:00)
