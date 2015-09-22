@@ -1,3 +1,7 @@
+# 1.15.09.22
+
+  * Fix bad evaluation of `null` as an array key in the asserter. (Grummfy, 2015-09-22T15:47:23+02:00)
+
 # 1.15.09.08
 
   * Add a `.gitignore` file. (Stéphane HULARD, 2015-08-03T11:45:52+02:00)
