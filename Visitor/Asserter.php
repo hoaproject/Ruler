@@ -318,7 +318,7 @@ class Asserter implements Visitor\Visit
             );
         }
 
-        if (!isset($contextPointer[$key])) {
+        if (false === array_key_exists($key, $contextPointer)) {
             throw new Ruler\Exception\Asserter(
                 'Try to access to an undefined index: %s ' .
                 '(dimension number %d of %s).',
