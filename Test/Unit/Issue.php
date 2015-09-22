@@ -64,4 +64,19 @@ class Issue extends Test\Unit\Suite
                 ->error()
                     ->notExists();
     }
+    
+    public function case_github_70()
+    {
+        $this
+            ->given(
+                $ruler               = new LUT(),
+                $rule                = 'variable["foo"] is null',
+                $context             = new LUT\Context(),
+                $context['variable'] = ['foo' => null]
+            )
+            ->when($result = $ruler->assert($rule, $context))
+            ->then
+                ->boolean($result)
+                    ->isTrue();
+    }
 }
