@@ -76,10 +76,9 @@ class Issue extends Test\Unit\Suite
 					'foo'	=> null
                 ]
             )
-            ->when(function () use ($ruler, $rule, $context) {
-                $this->boolean($ruler->assert($rule, $context))->isTrue();
-            })
-                ->error()
-                    ->notExists();
+            ->when($result = $ruler->assert($rule, $context))
+            ->then
+                ->boolean($result)
+                    ->isTrue();
     }
 }
