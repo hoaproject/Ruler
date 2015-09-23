@@ -64,7 +64,7 @@ class Issue extends Test\Unit\Suite
                 ->error()
                     ->notExists();
     }
-    
+
     public function case_github_70()
     {
         $this

@@ -74,6 +74,7 @@ class Compiler implements Visitor\Visit
 
         if ($element instanceof Ruler\Model) {
             $this->_indentation = 1;
+
             $out =
                 '$model = new \Hoa\Ruler\Model();' . "\n" .
                 '$model->expression =' . "\n" .
