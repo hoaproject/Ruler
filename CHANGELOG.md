@@ -1,3 +1,7 @@
+# 1.15.11.09
+
+  * Fix CS. (Ivan Enderlin, 2015-09-23T11:31:44+02:00)
+
 # 1.15.09.22
 
   * Fix bad evaluation of `null` as an array key in the asserter. (Grummfy, 2015-09-22T15:47:23+02:00)
