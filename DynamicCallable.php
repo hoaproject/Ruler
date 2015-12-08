@@ -36,7 +36,7 @@
 
 namespace Hoa\Ruler;
 
-use Hoa\Core;
+use Hoa\Consistency;
 
 /**
  * Class \Hoa\Ruler\DynamicCallable.
@@ -46,6 +46,6 @@ use Hoa\Core;
  * @copyright  Copyright © 2007-2015 Hoa community
  * @license    New BSD License
  */
-class DynamicCallable extends Core\Consistency\Xcallable
+class DynamicCallable extends Consistency\Xcallable
 {
 }

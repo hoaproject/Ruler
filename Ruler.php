@@ -37,7 +37,7 @@
 namespace Hoa\Ruler;
 
 use Hoa\Compiler;
-use Hoa\Core;
+use Hoa\Consistency;
 use Hoa\File;
 use Hoa\Visitor as HVisitor;
 
@@ -215,4 +215,4 @@ class Ruler
 /**
  * Flex entity.
  */
-Core\Consistency::flexEntity('Hoa\Ruler\Ruler');
+Consistency::flexEntity('Hoa\Ruler\Ruler');

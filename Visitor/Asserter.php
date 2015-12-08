@@ -36,7 +36,7 @@
 
 namespace Hoa\Ruler\Visitor;
 
-use Hoa\Core;
+use Hoa\Consistency;
 use Hoa\Ruler;
 use Hoa\Visitor;
 
@@ -496,7 +496,7 @@ class Asserter implements Visitor\Visit
 
         $handle = &$this->_operators[$operator];
 
-        if (!($handle instanceof Core\Consistency\Xcallable)) {
+        if (!($handle instanceof Consistency\Xcallable)) {
             $handle = xcallable($handle);
         }
 
@@ -511,7 +511,7 @@ class Asserter implements Visitor\Visit
     public function getOperators()
     {
         foreach ($this->_operators as &$operator) {
-            if (!($operator instanceof Core\Consistency\Xcallable)) {
+            if (!($operator instanceof Consistency\Xcallable)) {
                 $operator = xcallable($operator);
             }
         }

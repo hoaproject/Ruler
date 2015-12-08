@@ -55,6 +55,6 @@ class DynamicCallable extends Test\Unit\Suite
             ->when($dynamicCallable = new CUT(function () {}))
             ->then
                 ->object($dynamicCallable)
-                    ->isInstanceOf('Hoa\Core\Consistency\Xcallable');
+                    ->isInstanceOf('Hoa\Consistency\Xcallable');
     }
 }

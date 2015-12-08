@@ -36,7 +36,7 @@
 
 namespace Hoa\Ruler\Visitor;
 
-use Hoa\Core;
+use Hoa\Consistency;
 use Hoa\Ruler;
 use Hoa\Visitor;
 
@@ -86,7 +86,7 @@ class Compiler implements Visitor\Visit
             $_handle = [];
 
             if (false === $element->isFunction()) {
-                if (true === Core\Consistency::isIdentifier($name)) {
+                if (true === Consistency::isIdentifier($name)) {
                     $out .= $name;
                 } else {
                     $out .= '{\'' . $name . '\'}';

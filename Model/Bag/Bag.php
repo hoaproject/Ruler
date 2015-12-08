@@ -36,7 +36,7 @@
 
 namespace Hoa\Ruler\Model\Bag;
 
-use Hoa\Core;
+use Hoa\Consistency;
 use Hoa\Visitor;
 
 /**
@@ -69,4 +69,4 @@ abstract class Bag implements Visitor\Element
 /**
  * Flex entity.
  */
-Core\Consistency::flexEntity('Hoa\Ruler\Model\Bag\Bag');
+Consistency::flexEntity('Hoa\Ruler\Model\Bag\Bag');

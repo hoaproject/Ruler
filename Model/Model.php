@@ -36,7 +36,7 @@
 
 namespace Hoa\Ruler\Model;
 
-use Hoa\Core;
+use Hoa\Consistency;
 use Hoa\Ruler;
 use Hoa\Visitor;
 
@@ -197,4 +197,4 @@ class Model implements Visitor\Element
 /**
  * Flex entity.
  */
-Core\Consistency::flexEntity('Hoa\Ruler\Model\Model');
+Consistency::flexEntity('Hoa\Ruler\Model\Model');
