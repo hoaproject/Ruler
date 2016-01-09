@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Hoa community. All rights reserved.
+ * Copyright © 2007-2016, Hoa community. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -45,7 +45,7 @@ use Hoa\Visitor;
  *
  * Root of the model, allow to declare everything.
  *
- * @copyright  Copyright © 2007-2015 Hoa community
+ * @copyright  Copyright © 2007-2016 Hoa community
  * @license    New BSD License
  */
 class Model implements Visitor\Element
@@ -122,7 +122,7 @@ class Model implements Visitor\Element
      * @param   array   $arguments    Arguments.
      * @return  \Hoa\Ruler\Model\Operator
      */
-    public function operation($name, Array $arguments)
+    public function operation($name, array $arguments)
     {
         return $this->_operator($name, $arguments, false);
     }
@@ -135,7 +135,7 @@ class Model implements Visitor\Element
      * @param   bool    $isFunction    Whether it is a function or not.
      * @return  \Hoa\Ruler\Model\Operator
      */
-    public function _operator($name, Array $arguments, $isFunction)
+    public function _operator($name, array $arguments, $isFunction)
     {
         return new Operator(mb_strtolower($name), $arguments, $isFunction);
     }
@@ -147,7 +147,7 @@ class Model implements Visitor\Element
      * @param   array   $arguments    Arguments.
      * @return  \Hoa\Ruler\Model\Operator
      */
-    public function __call($name, Array $arguments)
+    public function __call($name, array $arguments)
     {
         return $this->operation($name, $arguments);
     }

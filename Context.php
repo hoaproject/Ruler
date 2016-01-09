@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Hoa community. All rights reserved.
+ * Copyright © 2007-2016, Hoa community. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -41,7 +41,7 @@ namespace Hoa\Ruler;
  *
  * Context of a rule, it contains data to instanciate the rule.
  *
- * @copyright  Copyright © 2007-2015 Hoa community
+ * @copyright  Copyright © 2007-2016 Hoa community
  * @license    New BSD License
  */
 class Context implements \ArrayAccess
@@ -68,7 +68,7 @@ class Context implements \ArrayAccess
      * @param   array  $data    Initial data.
      * @return  void
      */
-    public function __construct(Array $data = [])
+    public function __construct(array $data = [])
     {
         $this->_data = $data;
 

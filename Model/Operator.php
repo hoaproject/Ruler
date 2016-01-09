@@ -8,7 +8,7 @@
  *
  * New BSD License
  *
- * Copyright © 2007-2015, Hoa community. All rights reserved.
+ * Copyright © 2007-2016, Hoa community. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -43,7 +43,7 @@ use Hoa\Visitor;
  *
  * Represent an operator or a function (in prefixed notation).
  *
- * @copyright  Copyright © 2007-2015 Hoa community
+ * @copyright  Copyright © 2007-2016 Hoa community
  * @license    New BSD License
  */
 class Operator implements Visitor\Element
@@ -100,7 +100,7 @@ class Operator implements Visitor\Element
      */
     public function __construct(
         $name,
-        Array $arguments = [],
+        array $arguments = [],
         $isFunction      = true
     ) {
         $this->setName($name);
@@ -141,7 +141,7 @@ class Operator implements Visitor\Element
      * @param   array  $arguments    Arguments.
      * @return  array
      */
-    protected function setArguments(Array $arguments)
+    protected function setArguments(array $arguments)
     {
         foreach ($arguments as &$argument) {
             if (is_scalar($argument) || null === $argument) {
