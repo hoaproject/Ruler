@@ -21,14 +21,14 @@
         "source": "http://git.hoa-project.net/"
     },
     "require": {
-        "hoa/consistency": "~0.0",
-        "hoa/compiler"   : "~2.0",
-        "hoa/exception"  : "~0.0",
+        "hoa/consistency": "~1.0",
+        "hoa/compiler"   : "~3.0",
+        "hoa/exception"  : "~1.0",
         "hoa/file"       : "~0.0",
-        "hoa/visitor"    : "~1.0"
+        "hoa/visitor"    : "~2.0"
     },
     "require-dev": {
-        "hoa/test": "~1.0"
+        "hoa/test": "~2.0"
     },
     "autoload": {
         "psr-4": {
@@ -37,7 +37,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.x-dev"
+            "dev-master": "2.x-dev"
         }
     }
 }

@@ -31,7 +31,7 @@ dependencies, you need to require
 ```json
 {
     "require": {
-        "hoa/ruler": "~1.0"
+        "hoa/ruler": "~2.0"
     }
 }
 ```
