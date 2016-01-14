@@ -24,8 +24,9 @@
         "hoa/consistency": "~1.0",
         "hoa/compiler"   : "~3.0",
         "hoa/exception"  : "~1.0",
-        "hoa/file"       : "~0.0",
-        "hoa/visitor"    : "~2.0"
+        "hoa/file"       : "~1.0",
+        "hoa/visitor"    : "~2.0",
+        "hoa/cli": "2.16.01.14"
     },
     "require-dev": {
         "hoa/test": "~2.0"
