@@ -1,3 +1,7 @@
+# 2.16.01.15
+
+  * Composer: Remove a useless dependency. (Ivan Enderlin, 2016-01-14T22:42:15+01:00)
+
 # 2.16.01.14
 
   * Composer: New stable libraries. (Ivan Enderlin, 2016-01-14T22:13:39+01:00)
