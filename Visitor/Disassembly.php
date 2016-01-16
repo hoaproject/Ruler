@@ -77,11 +77,7 @@ class Disassembly implements Visitor\Visit
                 if (!isset($arguments[1])) {
                     $_out = $name . ' ' . $arguments[0];
                 } else {
-                    $_out = $arguments[0] . ' ' . $name . ' ' . $arguments[1];
-                }
-
-                if (false === Ruler\Model\Operator::isToken($name)) {
-                    $_out = '(' . $_out . ')';
+                    $_out = '(' . $arguments[0] . ' ' . $name . ' ' . $arguments[1] . ')';
                 }
 
                 $out .= $_out;
