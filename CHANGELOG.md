@@ -1,3 +1,8 @@
+# 2.16.03.15
+
+  * Composer: `hoa/protocol` is explicitly required. (Ivan Enderlin, 2016-01-18T22:14:18+01:00)
+  * Grammar: Update copyright. (Ivan Enderlin, 2016-01-17T14:22:07+01:00)
+
 # 2.16.01.15
 
   * Composer: Remove a useless dependency. (Ivan Enderlin, 2016-01-14T22:42:15+01:00)
