@@ -1,3 +1,7 @@
+# 2.16.04.06
+
+  * Asserter: Fix a wrong namespace access. (jroenf, 2016-04-06T09:09:43+02:00)
+
 # 2.16.03.15
 
   * Composer: `hoa/protocol` is explicitly required. (Ivan Enderlin, 2016-01-18T22:14:18+01:00)
