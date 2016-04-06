@@ -223,7 +223,7 @@ class Asserter implements Visitor\Visit
         $context = $this->getContext();
 
         if (null === $context) {
-            throw new Ruler\Exeption\Asserter(
+            throw new Ruler\Exception\Asserter(
                 'Assert needs a context to work properly.',
                 1
             );
