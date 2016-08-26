@@ -1,17 +1,35 @@
-![Hoa](http://static.hoa-project.net/Image/Hoa_small.png)
+<p align="center">
+  <img src="https://static.hoa-project.net/Image/Hoa.svg" alt="Hoa" width="250px" />
+</p>
 
-Hoa is a **modular**, **extensible** and **structured** set of PHP libraries.
-Moreover, Hoa aims at being a bridge between industrial and research worlds.
+---
 
-# Hoa\Ruler ![state](http://central.hoa-project.net/State/Ruler)
+<p align="center">
+  <a href="https://travis-ci.org/hoaproject/ruler"><img src="https://img.shields.io/travis/hoaproject/ruler/master.svg" alt="Build status" /></a>
+  <a href="https://coveralls.io/github/hoaproject/ruler?branch=master"><img src="https://img.shields.io/coveralls/hoaproject/ruler/master.svg" alt="Code coverage" /></a>
+  <a href="https://packagist.org/packages/hoa/ruler"><img src="https://img.shields.io/packagist/dt/hoa/ruler.svg" alt="Packagist" /></a>
+  <a href="https://hoa-project.net/LICENSE"><img src="https://img.shields.io/packagist/l/hoa/ruler.svg" alt="License" /></a>
+</p>
+<p align="center">
+  Hoa is a <strong>modular</strong>, <strong>extensible</strong> and
+  <strong>structured</strong> set of PHP libraries.<br />
+  Moreover, Hoa aims at being a bridge between industrial and research worlds.
+</p>
 
-This library allows to manipulate a rule engine. Rules can be written by using a
-dedicated language, very close to SQL. Therefore, they can be written by a user
-and saved in a database.
+# Hoa\Ruler
 
-Such rules are useful, for example, for commercial solutions that need to
-manipulate promotion or special offer rules written by a user. To quote
-[Wikipedia](http://en.wikipedia.org/wiki/Business_rules_engine):
+[![Help on IRC](https://img.shields.io/badge/help-%23hoaproject-ff0066.svg)](https://webchat.freenode.net/?channels=#hoaproject)
+[![Help on Gitter](https://img.shields.io/badge/help-gitter-ff0066.svg)](https://gitter.im/hoaproject/central)
+[![Documentation](https://img.shields.io/badge/documentation-hack_book-ff0066.svg)](https://central.hoa-project.net/Documentation/Library/Ruler)
+[![Board](https://img.shields.io/badge/organisation-board-ff0066.svg)](https://waffle.io/hoaproject/ruler)
+
+This library allows to manipulate a rule engine. Rules can be written
+by using a dedicated language, very close to SQL. Therefore, they can
+be written by a user and saved in a database.
+
+Such rules are useful, for example, for commercial solutions that need
+to manipulate promotion or special offer rules written by a user. To
+quote [Wikipedia](https://en.wikipedia.org/wiki/Business_rules_engine):
 
 > A business rules engine is a software system that executes one or more
 > business rules in a runtime production environment. The rules might come from
@@ -22,22 +40,37 @@ manipulate promotion or special offer rules written by a user. To quote
 > decisions to be defined, tested, executed and maintained separately from
 > application code.
 
+[Learn more](https://central.hoa-project.net/Documentation/Library/Ruler).
+
 ## Installation
 
-With [Composer](http://getcomposer.org/), to include this library into your
-dependencies, you need to require
-[`hoa/ruler`](https://packagist.org/packages/hoa/ruler):
+With [Composer](https://getcomposer.org/), to include this library into
+your dependencies, you need to
+require [`hoa/ruler`](https://packagist.org/packages/hoa/ruler):
 
-```json
-{
-    "require": {
-        "hoa/ruler": "~2.0"
-    }
-}
+```sh
+$ composer require hoa/ruler '~2.0'
 ```
 
-Please, read the website to [get more informations about how to
-install](http://hoa-project.net/Source.html).
+For more installation procedures, please read [the Source
+page](https://hoa-project.net/Source.html).
+
+## Testing
+
+Before running the test suites, the development dependencies must be installed:
+
+```sh
+$ composer install
+```
+
+Then, to run all the test suites:
+
+```sh
+$ vendor/bin/hoa test:run
+```
+
+For more information, please read the [contributor
+guide](https://hoa-project.net/Literature/Contributor/Guide.html).
 
 ## Quick usage
 
@@ -214,10 +247,46 @@ Have fun!
 
 ## Documentation
 
-Different documentations can be found on the website:
-[http://hoa-project.net/](http://hoa-project.net/).
+The
+[hack book of `Hoa\Ruler`](https://central.hoa-project.net/Documentation/Library/Ruler) contains
+detailed information about how to use this library and how it works.
+
+To generate the documentation locally, execute the following commands:
+
+```sh
+$ composer require --dev hoa/devtools
+$ vendor/bin/hoa devtools:documentation --open
+```
+
+More documentation can be found on the project's website:
+[hoa-project.net](https://hoa-project.net/).
+
+## Getting help
+
+There are mainly two ways to get help:
+
+  * On the [`#hoaproject`](https://webchat.freenode.net/?channels=#hoaproject)
+    IRC channel,
+  * On the forum at [users.hoa-project.net](https://users.hoa-project.net).
+
+## Contribution
+
+Do you want to contribute? Thanks! A detailed [contributor
+guide](https://hoa-project.net/Literature/Contributor/Guide.html) explains
+everything you need to know.
 
 ## License
 
-Hoa is under the New BSD License (BSD-3-Clause). Please, see
-[`LICENSE`](http://hoa-project.net/LICENSE).
+Hoa is under the New BSD License (BSD-3-Clause). Please, see
+[`LICENSE`](https://hoa-project.net/LICENSE) for details.
+
+## Related projects
+
+The following projects are using this library:
+
+  * [RulerZ](https://github.com/K-Phoen/rulerz), Powerful implementation of the
+    Specification pattern in PHP,
+  * [ownCloud](https://owncloud.org/), A safe home for all your data,
+  * [PhpMetrics](http://www.phpmetrics.org/), Static analysis tool for PHP,
+  * [`atoum/ruler-extension`](https://github.com/atoum/ruler-extension), This
+    extension allows to filter test results in [atoum](http://atoum.org/).
