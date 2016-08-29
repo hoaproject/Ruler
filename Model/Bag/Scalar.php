@@ -49,7 +49,7 @@ class Scalar extends Bag
     /**
      * Value.
      *
-     * @var string
+     * @var scalar
      */
     protected $_value = null;
 
@@ -71,7 +71,7 @@ class Scalar extends Bag
     /**
      * Get content of the bag.
      *
-     * @return  mixed
+     * @return  scalar
      */
     public function getValue()
     {
