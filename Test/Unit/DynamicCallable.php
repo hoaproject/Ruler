@@ -36,6 +36,7 @@
 
 namespace Hoa\Ruler\Test\Unit;
 
+use Hoa\Consistency;
 use Hoa\Ruler\DynamicCallable as CUT;
 use Hoa\Test;
 
@@ -55,6 +56,6 @@ class DynamicCallable extends Test\Unit\Suite
             ->when($dynamicCallable = new CUT(function () {}))
             ->then
                 ->object($dynamicCallable)
-                    ->isInstanceOf('Hoa\Consistency\Xcallable');
+                    ->isInstanceOf(Consistency\Xcallable::class);
     }
 }
