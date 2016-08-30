@@ -39,7 +39,6 @@ namespace Hoa\Ruler\Test\Unit\Model\Bag;
 use Hoa\Ruler as LUT;
 use Hoa\Ruler\Model\Bag\Scalar as SUT;
 use Hoa\Test;
-use Hoa\Visitor;
 
 /**
  * Class \Hoa\Ruler\Test\Unit\Model\Bag\Scalar.
