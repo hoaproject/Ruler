@@ -224,7 +224,7 @@ class Operator implements Visitor\Element
      */
     public function shouldBreakLazyEvaluation($value)
     {
-        switch ($this->_name) {
+        switch ($this->getName()) {
             case 'and':
                 if (false === $value) {
                     return self::LAZY_BREAK;
