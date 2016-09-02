@@ -34,20 +34,20 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Hoa\Ruler\Test\Unit\Model;
+namespace Hoa\Ruler\Test\Integration\Model;
 
 use Hoa\Ruler as LUT;
 use Hoa\Test;
 
 /**
- * Class \Hoa\Ruler\Test\Unit\Model\Operator.
+ * Class \Hoa\Ruler\Test\Integration\Model\Operator.
  *
  * Test suite of the operator object of the model.
  *
  * @copyright  Copyright © 2007-2016 Hoa community
  * @license    New BSD License
  */
-class Operator extends Test\Unit\Suite
+class Operator extends Test\Integration\Suite
 {
     public function case_lazy_and()
     {
