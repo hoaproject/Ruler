@@ -73,13 +73,19 @@ class Compiler implements Visitor\Visit
         $_   = str_repeat('    ', $this->_indentation);
 
         if ($element instanceof Ruler\Model) {
-            $this->_indentation = 1;
+            $expression = $element->getExpression();
 
-            $out =
-                '$model = new \Hoa\Ruler\Model();' . "\n" .
-                '$model->expression =' . "\n" .
-                $element->getExpression()->accept($this, $handle, $eldnah) .
-                ';';
+            if (null === $expression) {
+                $out = '';
+            } else {
+                $this->_indentation = 1;
+
+                $out =
+                    '$model = new \Hoa\Ruler\Model();' . "\n" .
+                    '$model->expression =' . "\n" .
+                    $expression->accept($this, $handle, $eldnah) .
+                    ';';
+            }
         } elseif ($element instanceof Ruler\Model\Operator) {
             $out     = $_ . '$model->';
             $name    = $element->getName();
