@@ -104,7 +104,6 @@ class Operator implements Visitor\Element
         $isFunction      = true
     ) {
         $this->setName($name);
-        $this->setLaziness('and' === $name || 'or' === $name);
         $this->setArguments($arguments);
         $this->setFunction($isFunction);
 
@@ -121,6 +120,8 @@ class Operator implements Visitor\Element
     {
         $old         = $this->_name;
         $this->_name = $name;
+
+        $this->setLaziness('and' === $name || 'or' === $name);
 
         return $old;
     }
