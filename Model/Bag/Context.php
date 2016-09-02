@@ -115,7 +115,7 @@ class Context extends Bag
     /**
      * Call an index (variable[indexA][indexB][indexC]).
      *
-     * @param   mixed  $index    Index (a bag or an operator).
+     * @param   mixed  $index    Index (a bag, a scalar or an array).
      * @return  \Hoa\Ruler\Model\Bag\Context
      */
     public function index($index)
