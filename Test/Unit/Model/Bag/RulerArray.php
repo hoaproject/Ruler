@@ -70,7 +70,7 @@ class RulerArray extends Test\Unit\Suite
                     ->hasSize(count($data))
                     ->isEqualTo([
                         new LUT\Model\Bag\Scalar('foo'),
-                        new SUT(['bar']),
+                        new SUT([new LUT\Model\Bag\Scalar('bar')]),
                         new LUT\Model\Bag\Scalar('baz')
                     ]);
     }
