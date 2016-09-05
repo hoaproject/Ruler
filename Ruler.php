@@ -92,7 +92,7 @@ class Ruler
     public function assert($rule, Context $context = null)
     {
         if (is_string($rule)) {
-            $rule = static::interprete($rule);
+            $rule = static::interpret($rule);
         }
 
         if (null === $context) {
@@ -103,7 +103,7 @@ class Ruler
     }
 
     /**
-     * Alias to the self::interprete method.
+     * Short interpreter.
      *
      * @param   string  $rule    Rule.
      * @return  \Hoa\Ruler\Model
@@ -114,19 +114,6 @@ class Ruler
         return static::getInterpreter()->visit(
             static::getCompiler()->parse($rule)
         );
-    }
-
-    /**
-     * Short interpreter.
-     *
-     * @param       string  $rule    Rule.
-     * @return      \Hoa\Ruler\Model
-     * @throws      \Hoa\Ruler\Exception
-     * @deprecated  Will be removed in 2.x.
-     */
-    public static function interprete($rule)
-    {
-        return static::interpret($rule);
     }
 
     /**
