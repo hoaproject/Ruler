@@ -34,7 +34,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Hoa\Ruler\Test\Unit\Bug;
+namespace Hoa\Ruler\Test\Unit;
 
 use Hoa\Ruler as LUT;
 use Hoa\Test;
