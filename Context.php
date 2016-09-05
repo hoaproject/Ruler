@@ -66,7 +66,6 @@ class Context implements \ArrayAccess
      * Constructor.
      *
      * @param   array  $data    Initial data.
-     * @return  void
      */
     public function __construct(array $data = [])
     {

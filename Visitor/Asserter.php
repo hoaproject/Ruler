@@ -70,7 +70,6 @@ class Asserter implements Visitor\Visit
      * Constructor.
      *
      * @param   \Hoa\Ruler\Context  $context    Context.
-     * @return  void
      */
     public function __construct(Ruler\Context $context = null)
     {

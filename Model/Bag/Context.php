@@ -103,7 +103,6 @@ class Context extends Bag
      * Constructor.
      *
      * @param   string  $id    ID.
-     * @return  void
      */
     public function __construct($id)
     {

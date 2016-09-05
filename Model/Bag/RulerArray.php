@@ -59,7 +59,6 @@ class RulerArray extends Bag
      * Constructor.
      *
      * @param   array  $data    Data.
-     * @return  void
      */
     public function __construct(array $data)
     {

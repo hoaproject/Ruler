@@ -59,7 +59,6 @@ class Scalar extends Bag
      * Constructor.
      *
      * @param   string  $value    Value.
-     * @return  void
      */
     public function __construct($value)
     {

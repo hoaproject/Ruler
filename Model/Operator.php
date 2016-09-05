@@ -96,7 +96,6 @@ class Operator implements Visitor\Element
      * @param   string  $name          Name.
      * @param   array   $arguments     Arguments.
      * @param   bool    $isFunction    Whether it is a function.
-     * @return  void
      */
     public function __construct(
         $name,
