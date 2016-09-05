@@ -34,20 +34,20 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Hoa\Ruler\Test\Unit;
+namespace Hoa\Ruler\Test\Integration;
 
 use Hoa\Ruler as LUT;
 use Hoa\Test;
 
 /**
- * Class \Hoa\Ruler\Test\Unit\Documentation.
+ * Class \Hoa\Ruler\Test\Integration\Documentation.
  *
  * Test suite of the examples in the documentation.
  *
  * @copyright  Copyright © 2007-2016 Hoa community
  * @license    New BSD License
  */
-class Documentation extends Test\Unit\Suite
+class Documentation extends Test\Integration\Suite
 {
     public function case_classical()
     {
