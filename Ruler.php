@@ -39,7 +39,7 @@ namespace Hoa\Ruler;
 use Hoa\Compiler;
 use Hoa\Consistency;
 use Hoa\File;
-use Hoa\Visitor as HVisitor;
+use Hoa\Visitor as HoaVisitor;
 
 /**
  * Class \Hoa\Ruler.
@@ -136,7 +136,7 @@ class Ruler
      * @param   \Hoa\Visitor\Visit  $visitor    Visitor.
      * @return  \Hoa\Visitor\Visit
      */
-    public function setAsserter(HVisitor\Visit $visitor)
+    public function setAsserter(HoaVisitor\Visit $visitor)
     {
         $old             = $this->_asserter;
         $this->_asserter = $visitor;
