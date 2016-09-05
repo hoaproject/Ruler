@@ -37,7 +37,7 @@
 namespace Hoa\Ruler\Test\Unit;
 
 use Hoa\Consistency;
-use Hoa\Ruler\DynamicCallable as CUT;
+use Hoa\Ruler\DynamicCallable as SUT;
 use Hoa\Test;
 
 /**
@@ -53,7 +53,7 @@ class DynamicCallable extends Test\Unit\Suite
     public function case_is_a_xcallable()
     {
         $this
-            ->when($dynamicCallable = new CUT(function () {}))
+            ->when($dynamicCallable = new SUT(function () {}))
             ->then
                 ->object($dynamicCallable)
                     ->isInstanceOf(Consistency\Xcallable::class);
