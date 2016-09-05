@@ -182,7 +182,7 @@ class Compiler extends Test\Unit\Suite
             "'He\llo, \'World\'!'",
             '$model = new \Hoa\Ruler\Model();' . "\n" .
             '$model->expression =' . "\n" .
-            '    \'He\llo, \'World\'!\';'
+            '    \'He\llo, \\\'World\\\'!\';'
         );
     }
 

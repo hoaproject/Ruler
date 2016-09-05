@@ -126,7 +126,7 @@ class Compiler implements Visitor\Visit
             } elseif (is_numeric($value)) {
                 $out .= (string) $value;
             } else {
-                $out .= '\'' . str_replace('\\', '\\\'', $value) . '\'';
+                $out .= '\'' . str_replace(['\'', '\\\\',], ['\\\'', '\\'], $value) . '\'';
             }
         } elseif ($element instanceof Ruler\Model\Bag\RulerArray) {
             $values = [];
