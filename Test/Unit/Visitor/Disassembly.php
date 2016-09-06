@@ -196,13 +196,13 @@ class Disassembly extends Test\Unit\Suite
         );
     }
 
-    protected function _case($rule, $compiled)
+    protected function _case($rule, $disassembled)
     {
         $this
             ->given($compiler = new SUT())
             ->when($result = $compiler->visit(LUT::interpret($rule)))
             ->then
                 ->string($result)
-                    ->isEqualTo($compiled);
+                    ->isEqualTo($disassembled);
     }
 }
