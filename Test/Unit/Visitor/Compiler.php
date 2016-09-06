@@ -270,7 +270,7 @@ class Compiler extends Test\Unit\Suite
         );
     }
 
-    public function _case($rule, $compiled)
+    protected function _case($rule, $compiled)
     {
         $this
             ->given($compiler = new SUT())
