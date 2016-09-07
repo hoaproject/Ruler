@@ -232,7 +232,7 @@ class Asserter implements Visitor\Visit
 
         if (!isset($context[$id])) {
             throw new Ruler\Exception\Asserter(
-                'Context reference %s does not exists.',
+                'Context reference %s does not exist.',
                 2,
                 $id
             );
