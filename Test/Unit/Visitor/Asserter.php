@@ -95,6 +95,282 @@ class Asserter extends Test\Unit\Suite
                     ->isIdenticalTo($context);
     }
 
+    public function case_operator_and_arity_0()
+    {
+        return $this->_case_boolean_operator('and', [], false);
+    }
+
+    public function case_operator_and_true()
+    {
+        return $this->_case_boolean_operator('and', [true], false);
+    }
+
+    public function case_operator_and_false()
+    {
+        return $this->_case_boolean_operator('and', [false], false);
+    }
+
+    public function case_operator_and_true_true()
+    {
+        return $this->_case_boolean_operator('and', [true, true], true);
+    }
+
+    public function case_operator_and_true_false()
+    {
+        return $this->_case_boolean_operator('and', [true, false], false);
+    }
+
+    public function case_operator_and_false_true()
+    {
+        return $this->_case_boolean_operator('and', [false, true], false);
+    }
+
+    public function case_operator_and_false_false()
+    {
+        return $this->_case_boolean_operator('and', [false, false], false);
+    }
+
+    public function case_operator_or_arity_0()
+    {
+        return $this->_case_boolean_operator('or', [], false);
+    }
+
+    public function case_operator_or_true()
+    {
+        return $this->_case_boolean_operator('or', [true], true);
+    }
+
+    public function case_operator_or_false()
+    {
+        return $this->_case_boolean_operator('or', [false], false);
+    }
+
+    public function case_operator_or_true_true()
+    {
+        return $this->_case_boolean_operator('or', [true, true], true);
+    }
+
+    public function case_operator_or_true_false()
+    {
+        return $this->_case_boolean_operator('or', [true, false], true);
+    }
+
+    public function case_operator_or_false_true()
+    {
+        return $this->_case_boolean_operator('or', [false, true], true);
+    }
+
+    public function case_operator_or_false_false()
+    {
+        return $this->_case_boolean_operator('or', [false, false], false);
+    }
+
+    public function case_operator_xor_true_true()
+    {
+        return $this->_case_boolean_operator('xor', [true, true], false);
+    }
+
+    public function case_operator_xor_true_false()
+    {
+        return $this->_case_boolean_operator('xor', [true, false], true);
+    }
+
+    public function case_operator_xor_false_true()
+    {
+        return $this->_case_boolean_operator('xor', [false, true], true);
+    }
+
+    public function case_operator_xor_false_false()
+    {
+        return $this->_case_boolean_operator('xor', [false, false], false);
+    }
+
+    public function case_operator_not_true()
+    {
+        return $this->_case_boolean_operator('not', [true], false);
+    }
+
+    public function case_operator_not_false()
+    {
+        return $this->_case_boolean_operator('not', [false], true);
+    }
+
+    public function case_operator_equal_7_42()
+    {
+        return $this->_case_boolean_operator('=', [7, 42], false);
+    }
+
+    public function case_operator_equal_7_7()
+    {
+        return $this->_case_boolean_operator('=', [7, 7], true);
+    }
+
+    public function case_operator_equal_7_7_casting()
+    {
+        return $this->_case_boolean_operator('=', [7, '7'], true);
+    }
+
+    public function case_operator_is_7_42()
+    {
+        return $this->_case_boolean_operator('is', [7, 42], false);
+    }
+
+    public function case_operator_is_7_7()
+    {
+        return $this->_case_boolean_operator('is', [7, 7], true);
+    }
+
+    public function case_operator_is_7_7_casting()
+    {
+        return $this->_case_boolean_operator('is', [7, '7'], true);
+    }
+
+    public function case_operator_not_equal_7_42()
+    {
+        return $this->_case_boolean_operator('!=', [7, 42], true);
+    }
+
+    public function case_operator_not_equal_7_7()
+    {
+        return $this->_case_boolean_operator('!=', [7, 7], false);
+    }
+
+    public function case_operator_not_equal_7_7_casting()
+    {
+        return $this->_case_boolean_operator('!=', [7, '7'], false);
+    }
+
+    public function case_operator_greater_than_7_42()
+    {
+        return $this->_case_boolean_operator('>', [7, 42], false);
+    }
+
+    public function case_operator_greater_than_42_7()
+    {
+        return $this->_case_boolean_operator('>', [42, 7], true);
+    }
+
+    public function case_operator_greater_than_7_7()
+    {
+        return $this->_case_boolean_operator('>', [7, 7], false);
+    }
+
+    public function case_operator_greater_than_or_equal_to_7_42()
+    {
+        return $this->_case_boolean_operator('>=', [7, 42], false);
+    }
+
+    public function case_operator_greater_than_or_equal_to_42_7()
+    {
+        return $this->_case_boolean_operator('>=', [42, 7], true);
+    }
+
+    public function case_operator_greater_than_or_equal_to_7_7()
+    {
+        return $this->_case_boolean_operator('>=', [7, 7], true);
+    }
+
+    public function case_operator_lower_than_7_42()
+    {
+        return $this->_case_boolean_operator('<', [7, 42], true);
+    }
+
+    public function case_operator_lower_than_42_7()
+    {
+        return $this->_case_boolean_operator('<', [42, 7], false);
+    }
+
+    public function case_operator_lower_than_7_7()
+    {
+        return $this->_case_boolean_operator('<', [7, 7], false);
+    }
+
+    public function case_operator_lower_than_or_equal_to_7_42()
+    {
+        return $this->_case_boolean_operator('<=', [7, 42], true);
+    }
+
+    public function case_operator_lower_than_or_equal_to_42_7()
+    {
+        return $this->_case_boolean_operator('<=', [42, 7], false);
+    }
+
+    public function case_operator_lower_than_or_equal_to_7_7()
+    {
+        return $this->_case_boolean_operator('<=', [7, 7], true);
+    }
+
+    public function case_operator_in_empty_array()
+    {
+        return $this->_case_boolean_operator('in', [7, []], false);
+    }
+
+    public function case_operator_in()
+    {
+        return $this->_case_boolean_operator('in', [7, [1, 3, 5, 7, 9]], true);
+    }
+
+    public function case_operator_in_falsy()
+    {
+        return $this->_case_boolean_operator('in', [42, [1, 3, 5, 7, 9]], false);
+    }
+
+    protected function _case_boolean_operator($operator, array $parameters, $expected)
+    {
+        $this
+            ->given(
+                $asserter = new SUT(),
+                $operator = $asserter->getOperator($operator)
+            )
+            ->when($result = call_user_func_array($operator, $parameters))
+            ->then
+                ->boolean($result)
+                    ->isEqualTo($expected);
+    }
+
+    public function case_operator_sum_arity_0()
+    {
+        return $this->_case_operator_sum([], 0);
+    }
+
+    public function case_operator_sum_arity_1()
+    {
+        return $this->_case_operator_sum([7], 7);
+    }
+
+    public function case_operator_sum()
+    {
+        return $this->_case_operator_sum([1, 2, 3, 4, 5, 6, 7, 8, 9], 45);
+    }
+
+    protected function _case_operator_sum(array $parameters, $expected)
+    {
+        $this
+            ->given(
+                $asserter = new SUT(),
+                $operator = $asserter->getOperator('sum')
+            )
+            ->when($result = call_user_func_array($operator, $parameters))
+            ->then
+                ->integer($result)
+                    ->isEqualTo($expected);
+    }
+
+    public function case_operator_matches()
+    {
+        return $this->_case_boolean_operator('matches', ['foo', '\w+'], true);
+    }
+
+    public function case_operator_matches_falsy()
+    {
+        return $this->_case_boolean_operator('matches', ['foo', '\d+'], false);
+    }
+
+    public function case_operator_matches_escaped_delimiter()
+    {
+        return $this->_case_boolean_operator('matches', ['`foo`', '`\w+`'], true);
+    }
+
     public function case_set_context()
     {
         $this
