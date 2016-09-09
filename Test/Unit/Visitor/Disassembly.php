@@ -80,7 +80,7 @@ class Disassembly extends Test\Unit\Suite
     {
         return $this->_case(
             'true and false',
-            'true and false'
+            '(true and false)'
         );
     }
 
@@ -120,7 +120,7 @@ class Disassembly extends Test\Unit\Suite
     {
         return $this->_case(
             'null and true',
-            'null and true'
+            '(null and true)'
         );
     }
 
