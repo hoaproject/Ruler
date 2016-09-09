@@ -123,6 +123,78 @@ class Compiler extends Test\Unit\Suite
         );
     }
 
+    public function case_function_with_array_dimension()
+    {
+        return $this->_case(
+            'x(7)[42]',
+            '$model = new \Hoa\Ruler\Model();' . "\n" .
+            '$model->expression =' . "\n" .
+            '    $model->func(' . "\n" .
+            '        \'x\',' . "\n" .
+            '        7' . "\n" .
+            '    )' . "\n" .
+            '        ->index(' . "\n" .
+            '            42' . "\n" .
+            '        );'
+        );
+    }
+
+    public function case_function_with_attribute_dimension()
+    {
+        return $this->_case(
+            'x(7).y',
+            '$model = new \Hoa\Ruler\Model();' . "\n" .
+            '$model->expression =' . "\n" .
+            '    $model->func(' . "\n" .
+            '        \'x\',' . "\n" .
+            '        7' . "\n" .
+            '    )' . "\n" .
+            '        ->attribute(\'y\');'
+        );
+    }
+
+    public function case_function_with_call_dimension()
+    {
+        return $this->_case(
+            'x(7).y(42)',
+            '$model = new \Hoa\Ruler\Model();' . "\n" .
+            '$model->expression =' . "\n" .
+            '    $model->func(' . "\n" .
+            '        \'x\',' . "\n" .
+            '        7' . "\n" .
+            '    )' . "\n" .
+            '        ->call(' . "\n" .
+            '            $model->func(' . "\n" .
+            '                \'y\',' . "\n" .
+            '                42' . "\n" .
+            '            )' . "\n" .
+            '        );'
+        );
+    }
+
+    public function case_function_with_many_dimensions()
+    {
+        return $this->_case(
+            'x(7).y(42).z[153]',
+            '$model = new \Hoa\Ruler\Model();' . "\n" .
+            '$model->expression =' . "\n" .
+            '    $model->func(' . "\n" .
+            '        \'x\',' . "\n" .
+            '        7' . "\n" .
+            '    )' . "\n" .
+            '        ->call(' . "\n" .
+            '            $model->func(' . "\n" .
+            '                \'y\',' . "\n" .
+            '                42' . "\n" .
+            '            )' . "\n" .
+            '        )' . "\n" .
+            '        ->attribute(\'z\')' . "\n" .
+            '        ->index(' . "\n" .
+            '            153' . "\n" .
+            '        );'
+        );
+    }
+
     public function case_scalar_true()
     {
         return $this->_case(
@@ -223,6 +295,22 @@ class Compiler extends Test\Unit\Suite
         );
     }
 
+    public function case_context_with_array_dimensions()
+    {
+        return $this->_case(
+            'x[7][42]',
+            '$model = new \Hoa\Ruler\Model();' . "\n" .
+            '$model->expression =' . "\n" .
+            '    $model->variable(\'x\')' . "\n" .
+            '        ->index(' . "\n" .
+            '            7' . "\n" .
+            '        )' . "\n" .
+            '        ->index(' . "\n" .
+            '            42' . "\n" .
+            '        );'
+        );
+    }
+
     public function case_context_with_attribute_dimension()
     {
         return $this->_case(
@@ -231,6 +319,18 @@ class Compiler extends Test\Unit\Suite
             '$model->expression =' . "\n" .
             '    $model->variable(\'x\')' . "\n" .
             '        ->attribute(\'y\');'
+        );
+    }
+
+    public function case_context_with_attribute_dimensions()
+    {
+        return $this->_case(
+            'x.y.z',
+            '$model = new \Hoa\Ruler\Model();' . "\n" .
+            '$model->expression =' . "\n" .
+            '    $model->variable(\'x\')' . "\n" .
+            '        ->attribute(\'y\')' . "\n" .
+            '        ->attribute(\'z\');'
         );
     }
 
@@ -250,10 +350,10 @@ class Compiler extends Test\Unit\Suite
         );
     }
 
-    public function case_context_with_many_dimensions()
+    public function case_context_with_call_dimensions()
     {
         return $this->_case(
-            'x.y(7).z[42]',
+            'x.y(7).z(42)',
             '$model = new \Hoa\Ruler\Model();' . "\n" .
             '$model->expression =' . "\n" .
             '    $model->variable(\'x\')' . "\n" .
@@ -263,10 +363,40 @@ class Compiler extends Test\Unit\Suite
             '                7' . "\n" .
             '            )' . "\n" .
             '        )' . "\n" .
-            '        ->attribute(\'z\')' . "\n" .
+            '        ->call(' . "\n" .
+            '            $model->func(' . "\n" .
+            '                \'z\',' . "\n" .
+            '                42' . "\n" .
+            '            )' . "\n" .
+            '        );'
+        );
+    }
+
+    public function case_context_with_many_dimensions()
+    {
+        return $this->_case(
+            'a.b(7).c[42].d.e(153).f',
+            '$model = new \Hoa\Ruler\Model();' . "\n" .
+            '$model->expression =' . "\n" .
+            '    $model->variable(\'a\')' . "\n" .
+            '        ->call(' . "\n" .
+            '            $model->func(' . "\n" .
+            '                \'b\',' . "\n" .
+            '                7' . "\n" .
+            '            )' . "\n" .
+            '        )' . "\n" .
+            '        ->attribute(\'c\')' . "\n" .
             '        ->index(' . "\n" .
             '            42' . "\n" .
-            '        );'
+            '        )' . "\n" .
+            '        ->attribute(\'d\')' . "\n" .
+            '        ->call(' . "\n" .
+            '            $model->func(' . "\n" .
+            '                \'e\',' . "\n" .
+            '                153' . "\n" .
+            '            )' . "\n" .
+            '        )' . "\n" .
+            '        ->attribute(\'f\');'
         );
     }
 

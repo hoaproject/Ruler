@@ -61,6 +61,16 @@ class Operator extends Test\Unit\Suite
                     ->isInstanceOf(Visitor\Element::class);
     }
 
+    public function case_is_a_context()
+    {
+        $this
+            ->given($name = 'foo')
+            ->when($result = new SUT($name))
+            ->then
+                ->object($result)
+                    ->isInstanceOf(LUT\Model\Bag\Context::class);
+    }
+
     public function case_constructor()
     {
         $this

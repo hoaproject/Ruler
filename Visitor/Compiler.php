@@ -110,9 +110,11 @@ class Compiler implements Visitor\Visit
                 $_handle[] = $argument->accept($this, $handle, $eldnah);
             }
 
-            --$this->_indentation;
+            $out .=
+                implode(',' . "\n", $_handle) . "\n" . $_ . ')' .
+                $this->visitContext($element, $handle, $eldnah, $_);
 
-            $out .= implode(',' . "\n", $_handle) . "\n" . $_ . ')';
+            --$this->_indentation;
         } elseif ($element instanceof Ruler\Model\Bag\Scalar) {
             $value = $element->getValue();
             $out   = $_;
@@ -142,38 +144,61 @@ class Compiler implements Visitor\Visit
                 implode(',' . "\n", $values) . "\n" .
                 $_ . ']';
         } elseif ($element instanceof Ruler\Model\Bag\Context) {
-            $out = $_ . '$model->variable(\'' . $element->getId() . '\')';
-            $this->_indentation += 2;
+            ++$this->_indentation;
 
-            foreach ($element->getDimensions() as $dimension) {
-                $value  = $dimension[Ruler\Model\Bag\Context::ACCESS_VALUE];
-                $out   .= "\n" . $_ . '    ->';
+            $out =
+                $_ . '$model->variable(\'' . $element->getId() . '\')' .
+                $this->visitContext($element, $handle, $eldnah, $_);
 
-                switch ($dimension[Ruler\Model\Bag\Context::ACCESS_TYPE]) {
-                    case Ruler\Model\Bag\Context::ARRAY_ACCESS:
-                        $out .=
-                            'index(' . "\n" .
-                            $value->accept($this, $handle, $eldnah) . "\n" .
-                            $_ . '    )';
+            --$this->_indentation;
+        }
 
-                        break;
+        return $out;
+    }
 
-                    case Ruler\Model\Bag\Context::ATTRIBUTE_ACCESS:
-                        $out .= 'attribute(\'' . $value . '\')';
+    /**
+     * Visit a context.
+     *
+     * @param   \Hoa\Ruler\Model\Bag\Context  $context    Context.
+     * @param   mixed                         &$handle    Handle (reference).
+     * @param   mixed                         $eldnah     Handle (not reference).
+     * @param   string                        $_          Indentation.
+     * @return  mixed
+     */
+    protected function visitContext(Ruler\Model\Bag\Context $context, &$handle, $eldnah, $_)
+    {
+        $out = null;
 
-                        break;
+        foreach ($context->getDimensions() as $dimension) {
+            ++$this->_indentation;
 
-                    case Ruler\Model\Bag\Context::METHOD_ACCESS:
-                        $out .=
-                            'call(' . "\n" .
-                            $value->accept($this, $handle, $eldnah) . "\n" .
-                            $_ . '    )';
+            $value  = $dimension[Ruler\Model\Bag\Context::ACCESS_VALUE];
+            $out   .= "\n" . $_ . '    ->';
 
-                        break;
-                }
+            switch ($dimension[Ruler\Model\Bag\Context::ACCESS_TYPE]) {
+                case Ruler\Model\Bag\Context::ARRAY_ACCESS:
+                    $out .=
+                        'index(' . "\n" .
+                        $value->accept($this, $handle, $eldnah) . "\n" .
+                        $_ . '    )';
+
+                    break;
+
+                case Ruler\Model\Bag\Context::ATTRIBUTE_ACCESS:
+                    $out .= 'attribute(\'' . $value . '\')';
+
+                    break;
+
+                case Ruler\Model\Bag\Context::METHOD_ACCESS:
+                    $out .=
+                        'call(' . "\n" .
+                        $value->accept($this, $handle, $eldnah) . "\n" .
+                        $_ . '    )';
+
+                    break;
             }
 
-            $this->_indentation -= 2;
+            --$this->_indentation;
         }
 
         return $out;

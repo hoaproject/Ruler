@@ -209,6 +209,94 @@ class Interpreter extends Test\Unit\Suite
         );
     }
 
+    public function case_function_with_array_dimension()
+    {
+        return $this->_case(
+            'x(7)[42]',
+            function () {
+                $model = new LUT\Model();
+                $model->expression =
+                    $model->func(
+                        'x',
+                        7
+                    )
+                        ->index(
+                            42
+                        );
+
+                return $model;
+            }
+        );
+    }
+
+    public function case_function_with_attribute_dimension()
+    {
+        return $this->_case(
+            'x(7).y',
+            function () {
+                $model = new LUT\Model();
+                $model->expression =
+                    $model->func(
+                        'x',
+                        7
+                    )
+                        ->attribute('y');
+
+                return $model;
+            }
+        );
+    }
+
+    public function case_function_with_call_dimension()
+    {
+        return $this->_case(
+            'x(7).y(42)',
+            function () {
+                $model = new LUT\Model();
+                $model->expression =
+                    $model->func(
+                        'x',
+                        7
+                    )
+                        ->call(
+                            $model->func(
+                                'y',
+                                42
+                            )
+                        );
+
+                return $model;
+            }
+        );
+    }
+
+    public function case_function_with_many_dimensions()
+    {
+        return $this->_case(
+            'x(7).y(42).z[153]',
+            function () {
+                $model = new LUT\Model();
+                $model->expression =
+                    $model->func(
+                        'x',
+                        7
+                    )
+                        ->call(
+                            $model->func(
+                                'y',
+                                42
+                            )
+                        )
+                        ->attribute('z')
+                        ->index(
+                            153
+                        );
+
+                return $model;
+            }
+        );
+    }
+
     public function case_scalar_true()
     {
         return $this->_case(
@@ -404,52 +492,6 @@ class Interpreter extends Test\Unit\Suite
                     $model->variable('x')
                         ->attribute('y')
                         ->attribute('z');
-
-                return $model;
-            }
-        );
-    }
-
-    public function case_context_with_call_dimension()
-    {
-        return $this->_case(
-            'x.y(7)',
-            function () {
-                $model = new LUT\Model();
-                $model->expression =
-                    $model->variable('x')
-                        ->call(
-                            $model->func(
-                                'y',
-                                7
-                            )
-                        );
-
-                return $model;
-            }
-        );
-    }
-
-    public function case_context_with_call_dimensions()
-    {
-        return $this->_case(
-            'x.y(7).z(42)',
-            function () {
-                $model = new LUT\Model();
-                $model->expression =
-                    $model->variable('x')
-                        ->call(
-                            $model->func(
-                                'y',
-                                7
-                            )
-                        )
-                        ->call(
-                            $model->func(
-                                'z',
-                                42
-                            )
-                        );
 
                 return $model;
             }
