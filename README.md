@@ -214,8 +214,8 @@ Have fun!
 
 ## Documentation
 
-Different documentations can be found on the website:
-[http://hoa-project.net/](http://hoa-project.net/).
+Different documentations can be found on the website in the 
+[hack book](http://hoa-project.net/Literature/Hack/Ruler.html).
 
 ## License
 
