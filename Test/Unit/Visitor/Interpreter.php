@@ -459,21 +459,29 @@ class Interpreter extends Test\Unit\Suite
     public function case_context_with_many_dimensions()
     {
         return $this->_case(
-            'x.y(7).z[42]',
+            'a.b(7).c[42].d.e(153).f',
             function () {
                 $model = new LUT\Model();
                 $model->expression =
-                    $model->variable('x')
+                    $model->variable('a')
                         ->call(
                             $model->func(
-                                'y',
+                                'b',
                                 7
                             )
                         )
-                        ->attribute('z')
+                        ->attribute('c')
                         ->index(
                             42
-                        );
+                        )
+                        ->attribute('d')
+                        ->call(
+                            $model->func(
+                                'e',
+                                153
+                            )
+                        )
+                        ->attribute('f');
 
                 return $model;
             }
