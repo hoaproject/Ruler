@@ -359,6 +359,26 @@ class Interpreter extends Test\Unit\Suite
         );
     }
 
+    public function case_context_with_array_dimensions()
+    {
+        return $this->_case(
+            'x[7][42]',
+            function () {
+                $model = new LUT\Model();
+                $model->expression =
+                    $model->variable('x')
+                        ->index(
+                            7
+                        )
+                        ->index(
+                            42
+                        );
+
+                return $model;
+            }
+        );
+    }
+
     public function case_context_with_attribute_dimension()
     {
         return $this->_case(
@@ -368,6 +388,22 @@ class Interpreter extends Test\Unit\Suite
                 $model->expression =
                     $model->variable('x')
                         ->attribute('y');
+
+                return $model;
+            }
+        );
+    }
+
+    public function case_context_with_attribute_dimensions()
+    {
+        return $this->_case(
+            'x.y.z',
+            function () {
+                $model = new LUT\Model();
+                $model->expression =
+                    $model->variable('x')
+                        ->attribute('y')
+                        ->attribute('z');
 
                 return $model;
             }
@@ -386,6 +422,32 @@ class Interpreter extends Test\Unit\Suite
                             $model->func(
                                 'y',
                                 7
+                            )
+                        );
+
+                return $model;
+            }
+        );
+    }
+
+    public function case_context_with_call_dimensions()
+    {
+        return $this->_case(
+            'x.y(7).z(42)',
+            function () {
+                $model = new LUT\Model();
+                $model->expression =
+                    $model->variable('x')
+                        ->call(
+                            $model->func(
+                                'y',
+                                7
+                            )
+                        )
+                        ->call(
+                            $model->func(
+                                'z',
+                                42
                             )
                         );
 
