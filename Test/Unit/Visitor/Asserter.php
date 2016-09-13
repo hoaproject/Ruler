@@ -1232,6 +1232,6 @@ class C
 
     public function new()
     {
-        return new C();
+        return new self();
     }
 }
