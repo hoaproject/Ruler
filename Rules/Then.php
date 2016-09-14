@@ -34,107 +34,67 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace Hoa\Ruler;
+namespace Hoa\Ruler\Rules;
 
-use Hoa\Ruler\Exception\NoResult;
+use Hoa\Ruler\Context;
 use Hoa\Ruler\Exception\RuleDoesNotValidate;
+use Hoa\Ruler\Model\Model;
+use Hoa\Ruler\Rule;
+use Hoa\Ruler\Ruler;
 
 /**
- * Class \Hoa\Ruler\Rules.
+ * Class \Hoa\Ruler\Rules\Then.
  *
- * A collection of rules ordered by priority.
+ * A rule returning a value when the assertion passes.
  *
  * @copyright  Copyright © 2007-2016 Hoa community
  * @license    New BSD License
  */
-class Rules
+class Then implements Rule
 {
     /**
-     * @var \SplPriorityQueue
+     * @var string|Model
      */
-    private $queue;
-
-    public function __construct()
-    {
-        $this->queue = new \SplPriorityQueue();
-    }
+    private $rule;
 
     /**
-     * @param string $name
-     * @param Rule   $rule
-     * @param int    $priority
-     *
-     * @return Rules
+     * @var mixed
      */
-    public function add($name, Rule $rule, $priority = -1)
+    private $result;
+
+    /**
+     * @param string $rule
+     * @param mixed  $result
+     */
+    public function __construct($rule, $result)
     {
-        $rules = clone $this;
-
-        $rules->queue->insert([$name, $rule], $priority);
-
-        return $rules;
+        $this->rule   = $rule;
+        $this->result = $result;
     }
 
     /**
      * @param Ruler   $ruler
      * @param Context $context
      *
-     * @throws NoResult
-     *
-     * @return Result
+     * @return bool
      */
-    public function getBestResult(Ruler $ruler, Context $context)
+    public function valid(Ruler $ruler, Context $context)
     {
-        $queue = clone $this->queue;
-
-        foreach ($queue as $nameAndRule) {
-            /**
-             * @var string $name
-             * @var Rule   $rule
-             */
-            list($name, $rule) = $nameAndRule;
-
-            try {
-                $context[$name] = $rule->execute($ruler, $context);
-            } catch (RuleDoesNotValidate $exception) {
-                $context[$name] = null;
-            }
-
-            if ($rule->valid($ruler, $context)) {
-                return new Result($name, $rule, $context[$name]);
-            }
-        }
-
-        throw new NoResult();
+        return $ruler->assert($this->rule, $context);
     }
 
     /**
-     * @param Ruler $ruler
-     * @param array $context
+     * @param Ruler   $ruler
+     * @param Context $context
      *
-     * @return Result[]
+     * @return mixed
      */
-    public function getAllResults(Ruler $ruler, Context $context)
+    public function execute(Ruler $ruler, Context $context)
     {
-        $queue    = clone $this->queue;
-        $outcomes = [];
-
-        foreach ($queue as $nameAndRule) {
-            /**
-             * @var string $name
-             * @var Rule   $rule
-             */
-            list($name, $rule) = $nameAndRule;
-
-            try {
-                $context[$name] = $rule->execute($ruler, $context);
-            } catch (RuleDoesNotValidate $exception) {
-                $context[$name] = null;
-            }
-
-            $outcomes[] = new Result($name, $rule, $context[$name]);
+        if ($this->valid($ruler, $context)) {
+            return $this->result;
         }
 
-        return $outcomes;
+        throw new RuleDoesNotValidate('Rule ' . $this->rule . ' does not validate');
     }
 }
