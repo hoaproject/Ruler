@@ -96,13 +96,13 @@ class Rules
             list($name, $rule) = $nameAndRule;
 
             try {
-                $context['#' . $name] = $rule->execute($ruler, $context);
+                $context['.' . $name] = $rule->execute($ruler, $context);
             } catch (RuleDoesNotValidate $exception) {
-                $context['#' . $name] = null;
+                $context['.' . $name] = null;
             }
 
             if ($rule->valid($ruler, $context)) {
-                return new Result($name, $rule, $context['#' . $name]);
+                return new Result($name, $rule, $context['.' . $name]);
             }
         }
 
@@ -129,12 +129,12 @@ class Rules
             list($name, $rule) = $nameAndRule;
 
             try {
-                $context['#' . $name] = $rule->execute($ruler, $context);
+                $context['.' . $name] = $rule->execute($ruler, $context);
             } catch (RuleDoesNotValidate $exception) {
-                $context['#' . $name] = null;
+                $context['.' . $name] = null;
             }
 
-            $results[] = new Result($name, $rule, $context['#' . $name]);
+            $results[] = new Result($name, $rule, $context['.' . $name]);
         }
 
         return $results;
@@ -154,8 +154,8 @@ class Rules
 
         $ruler = clone $ruler;
 
-        $ruler->getDefaultAsserter()->setOperator('rule', function ($id) use ($context) {
-            return $context['#' . $id];
+        $ruler->getDefaultAsserter()->setOperator('rule', function($id) use ($context) {
+            return $context['.' . $id];
         });
 
         return $ruler;
