@@ -36,7 +36,6 @@
 
 namespace Hoa\Ruler;
 
-use Hoa\Ruler\Exception\Exception;
 
 /**
  * @property string name
@@ -58,7 +57,7 @@ class Result
     /**
      * @var mixed
      */
-    private $outcome;
+    private $result;
 
     /**
      * @param string $name
@@ -100,7 +99,7 @@ class Result
                 return clone $this->rule;
 
             default:
-                throw new Exception('Unable to get property ' . $name);
+                throw new Exception\Exception('Unable to get property ' . $name);
         }
     }
 }

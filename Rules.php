@@ -85,6 +85,7 @@ class Rules
      */
     public function getBestResult(Ruler $ruler, Context $context)
     {
+        $ruler = self::initializeRuler($ruler, $context);
         $queue = clone $this->queue;
 
         foreach ($queue as $nameAndRule) {
@@ -95,13 +96,13 @@ class Rules
             list($name, $rule) = $nameAndRule;
 
             try {
-                $context[$name] = $rule->execute($ruler, $context);
+                $context['#' . $name] = $rule->execute($ruler, $context);
             } catch (RuleDoesNotValidate $exception) {
-                $context[$name] = null;
+                $context['#' . $name] = null;
             }
 
             if ($rule->valid($ruler, $context)) {
-                return new Result($name, $rule, $context[$name]);
+                return new Result($name, $rule, $context['#' . $name]);
             }
         }
 
@@ -109,15 +110,16 @@ class Rules
     }
 
     /**
-     * @param Ruler $ruler
-     * @param array $context
+     * @param Ruler   $ruler
+     * @param Context $context
      *
      * @return Result[]
      */
     public function getAllResults(Ruler $ruler, Context $context)
     {
-        $queue    = clone $this->queue;
-        $outcomes = [];
+        $ruler   = self::initializeRuler($ruler, $context);
+        $queue   = clone $this->queue;
+        $results = [];
 
         foreach ($queue as $nameAndRule) {
             /**
@@ -127,14 +129,35 @@ class Rules
             list($name, $rule) = $nameAndRule;
 
             try {
-                $context[$name] = $rule->execute($ruler, $context);
+                $context['#' . $name] = $rule->execute($ruler, $context);
             } catch (RuleDoesNotValidate $exception) {
-                $context[$name] = null;
+                $context['#' . $name] = null;
             }
 
-            $outcomes[] = new Result($name, $rule, $context[$name]);
+            $results[] = new Result($name, $rule, $context['#' . $name]);
         }
 
-        return $outcomes;
+        return $results;
+    }
+
+    /**
+     * @param Ruler $ruler
+     * @param array $context
+     *
+     * @return Ruler
+     */
+    private static function initializeRuler(Ruler $ruler, Context $context)
+    {
+        if ($ruler->getDefaultAsserter()->operatorExists('rule')) {
+            return $ruler;
+        }
+
+        $ruler = clone $ruler;
+
+        $ruler->getDefaultAsserter()->setOperator('rule', function ($id) use ($context) {
+            return $context['#' . $id];
+        });
+
+        return $ruler;
     }
 }
