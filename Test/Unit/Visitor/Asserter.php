@@ -418,6 +418,23 @@ class Asserter extends Test\Unit\Suite
                     ->isEqualTo(xcallable($operator));
     }
 
+    public function case_set_operator_insensitive()
+    {
+        $this
+            ->given(
+                $asserter     = new SUT(),
+                $operator     = function () {}
+            )
+            ->when($result = $asserter->setOperator('_FOO_', $operator))
+            ->then
+                ->boolean($asserter->operatorExists('_FOO_'))
+                    ->isFalse()
+                ->boolean($asserter->operatorExists('_foo_'))
+                    ->isTrue()
+                ->object($asserter->getOperator('_foo_'))
+                    ->isEqualTo(xcallable($operator));
+    }
+
     public function case_set_operator_overwrite()
     {
         $this

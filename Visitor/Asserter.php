@@ -499,7 +499,7 @@ class Asserter implements Visitor\Visit
      */
     public function setOperator($operator, $callable)
     {
-        $this->_operators[$operator] = $callable;
+        $this->_operators[mb_strtolower($operator)] = $callable;
 
         return $this;
     }
