@@ -1,0 +1,11 @@
+{
+    "bootstrap": "vendor/autoload.php",
+    "path": "Test/Benchmark",
+    "reports": {
+        "hoa": {
+            "extends": "aggregate",
+            "break": ["benchmark", "subject"],
+            "cols": [ "params", "revs", "its", "mem_peak", "best", "mean", "mode", "rstdev" ]
+        }
+    }
+}
