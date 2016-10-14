@@ -81,7 +81,7 @@ class RulerBench
      * @BeforeMethods({"setUpAssert"})
      * @ParamProviders({"provideRules"})
      */
-    public function benchAssert($params)
+    public function case_assert($params)
     {
         $this->ruler->assert($params['rule'], $this->context);
     }

@@ -30,7 +30,7 @@
     },
     "require-dev": {
         "hoa/test": "~2.0",
-        "phpbench/phpbench": "^0.12.0"
+        "phpbench/phpbench": "^0.12.2"
     },
     "autoload": {
         "psr-4": {

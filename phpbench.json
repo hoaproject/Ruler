@@ -1,6 +1,7 @@
 {
     "bootstrap": "vendor/autoload.php",
     "path": "Test/Benchmark",
+    "subject_pattern": "^case_.*",
     "reports": {
         "hoa": {
             "extends": "aggregate",
