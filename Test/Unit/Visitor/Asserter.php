@@ -546,6 +546,322 @@ class Asserter extends Test\Unit\Suite
                 ->hasMessage('Operator _foo_ does not exist.');
     }
 
+    public function case_visit_operator_array_dimension_1()
+    {
+        $this
+            ->given(
+                $operator = new LUT\Model\Operator('c', [7]),
+                $operator->index('x'),
+                $asserter = new SUT(),
+                $asserter->setOperator(
+                    'c',
+                    function ($x) {
+                        return ['x' => $x * 6];
+                    }
+                )
+            )
+            ->when($result = $this->invoke($asserter)->visitOperator($operator))
+            ->then
+                ->integer($result)
+                    ->isEqualTo(42)
+                ->integer($asserter->visit($operator))
+                    ->isIdenticalTo($result);
+    }
+
+    public function case_visit_operator_array_dimension_2()
+    {
+        $this
+            ->given(
+                $operator = new LUT\Model\Operator('c', [7]),
+                $operator->index('x'),
+                $operator->index('y'),
+                $asserter = new SUT(),
+                $asserter->setOperator(
+                    'c',
+                    function ($x) {
+                        return ['x' => ['y' => $x * 6]];
+                    }
+                )
+            )
+            ->when($result = $this->invoke($asserter)->visitOperator($operator))
+            ->then
+                ->integer($result)
+                    ->isEqualTo(42)
+                ->integer($asserter->visit($operator))
+                    ->isIdenticalTo($result);
+    }
+
+    public function case_visit_operator_array_dimension_1_undefined_index()
+    {
+        $this
+            ->given(
+                $operator = new LUT\Model\Operator('c', [7]),
+                $operator->index('z'),
+                $asserter = new SUT(),
+                $asserter->setOperator(
+                    'c',
+                    function ($x) {
+                        return ['x' => 42];
+                    }
+                )
+            )
+            ->exception(function () use ($asserter, $operator) {
+                $this->invoke($asserter)->visitOperator($operator);
+            })
+                ->isInstanceOf(LUT\Exception\Asserter::class)
+                ->hasMessage('Try to access to an undefined index: z (dimension number 1 of c()).')
+            ->exception(function () use ($asserter, $operator) {
+                $asserter->visit($operator);
+            })
+                ->isInstanceOf(LUT\Exception\Asserter::class)
+                ->hasMessage('Try to access to an undefined index: z (dimension number 1 of c()).');
+    }
+
+    public function case_visit_operator_array_dimension_1_not_an_array()
+    {
+        $this
+            ->given(
+                $operator = new LUT\Model\Operator('c', [7]),
+                $operator->index('y'),
+                $asserter = new SUT(),
+                $asserter->setOperator(
+                    'c',
+                    function ($x) {
+                        return 42;
+                    }
+                )
+            )
+            ->exception(function () use ($asserter, $operator) {
+                $this->invoke($asserter)->visitOperator($operator);
+            })
+                ->isInstanceOf(LUT\Exception\Asserter::class)
+                ->hasMessage('Try to access to an undefined index: y (dimension number 1 of c()), because it is not an array.')
+            ->exception(function () use ($asserter, $operator) {
+                $asserter->visit($operator);
+            })
+                ->isInstanceOf(LUT\Exception\Asserter::class)
+                ->hasMessage('Try to access to an undefined index: y (dimension number 1 of c()), because it is not an array.');
+    }
+
+    public function case_visit_operator_attribute_dimension_1()
+    {
+        $this
+            ->given(
+                $operator = new LUT\Model\Operator('c', [7]),
+                $operator->attribute('x'),
+                $asserter = new SUT(),
+                $asserter->setOperator(
+                    'c',
+                    function ($x) {
+                        return (object) ['x' => $x * 6];
+                    }
+                )
+            )
+            ->when($result = $this->invoke($asserter)->visitOperator($operator))
+            ->then
+                ->integer($result)
+                    ->isEqualTo(42)
+                ->integer($asserter->visit($operator))
+                    ->isIdenticalTo($result);
+    }
+
+    public function case_visit_operator_attribute_dimension_2()
+    {
+        $this
+            ->given(
+                $operator = new LUT\Model\Operator('c', [7]),
+                $operator->attribute('x'),
+                $operator->attribute('y'),
+                $asserter = new SUT(),
+                $asserter->setOperator(
+                    'c',
+                    function ($x) {
+                        return (object) ['x' => (object) ['y' => $x * 6]];
+                    }
+                )
+            )
+            ->when($result = $this->invoke($asserter)->visitOperator($operator))
+            ->then
+                ->integer($result)
+                    ->isEqualTo(42)
+                ->integer($asserter->visit($operator))
+                    ->isIdenticalTo($result);
+    }
+
+    public function case_visit_operator_attribute_dimension_1_undefined_name()
+    {
+        $this
+            ->given(
+                $operator = new LUT\Model\Operator('c', [7]),
+                $operator->attribute('y'),
+                $asserter = new SUT(),
+                $asserter->setOperator(
+                    'c',
+                    function ($x) {
+                        return (object) ['x' => $x * 6];
+                    }
+                )
+            )
+            ->exception(function () use ($asserter, $operator) {
+                $this->invoke($asserter)->visitOperator($operator);
+            })
+                ->isInstanceOf(LUT\Exception\Asserter::class)
+                ->hasMessage('Try to read an undefined attribute: y (dimension number 1 of c()).')
+            ->exception(function () use ($asserter, $operator) {
+                $asserter->visit($operator);
+            })
+                ->isInstanceOf(LUT\Exception\Asserter::class)
+                ->hasMessage('Try to read an undefined attribute: y (dimension number 1 of c()).');
+    }
+
+    public function case_visit_operator_attribute_dimension_1_not_an_object()
+    {
+        $this
+            ->given(
+                $operator = new LUT\Model\Operator('c', [7]),
+                $operator->attribute('x'),
+                $asserter = new SUT(),
+                $asserter->setOperator(
+                    'c',
+                    function ($x) {
+                        return $x * 6;
+                    }
+                )
+            )
+            ->exception(function () use ($asserter, $operator) {
+                $this->invoke($asserter)->visitOperator($operator);
+            })
+                ->isInstanceOf(LUT\Exception\Asserter::class)
+                ->hasMessage('Try to read an undefined attribute: x (dimension number 1 of c()), because it is not an object.')
+            ->exception(function () use ($asserter, $operator) {
+                $asserter->visit($operator);
+            })
+                ->isInstanceOf(LUT\Exception\Asserter::class)
+                ->hasMessage('Try to read an undefined attribute: x (dimension number 1 of c()), because it is not an object.');
+    }
+
+    public function case_visit_operator_method_dimension_1()
+    {
+        $this
+            ->given(
+                $operator = new LUT\Model\Operator('c'),
+                $operator->call(new LUT\Model\Operator('f', [7, 35])),
+                $context  = new LUT\Context(['x' => new C()]),
+                $asserter = new SUT($context),
+                $asserter->setOperator(
+                    'c',
+                    function () {
+                        return new C();
+                    }
+                )
+            )
+            ->when($result = $this->invoke($asserter)->visitOperator($operator))
+            ->then
+                ->integer($result)
+                    ->isEqualTo(42)
+                ->integer($asserter->visit($operator))
+                    ->isIdenticalTo($result);
+    }
+
+    public function case_visit_operator_method_dimension_2()
+    {
+        $this
+            ->given(
+                $operator = new LUT\Model\Operator('c'),
+                $operator->call(new LUT\Model\Operator('new')),
+                $operator->call(new LUT\Model\Operator('f', [7, 35])),
+                $asserter = new SUT(),
+                $asserter->setOperator(
+                    'c',
+                    function () {
+                        return new C();
+                    }
+                )
+            )
+            ->when($result = $this->invoke($asserter)->visitOperator($operator))
+            ->then
+                ->integer($result)
+                    ->isEqualTo(42)
+                ->integer($asserter->visit($operator))
+                    ->isIdenticalTo($result);
+    }
+
+    public function case_visit_operator_method_dimension_1_undefined_method()
+    {
+        $this
+            ->given(
+                $operator = new LUT\Model\Operator('c'),
+                $operator->call(new LUT\Model\Operator('h')),
+                $asserter = new SUT(),
+                $asserter->setOperator(
+                    'c',
+                    function () {
+                        return new C();
+                    }
+                )
+            )
+            ->exception(function () use ($asserter, $operator) {
+                $this->invoke($asserter)->visitOperator($operator);
+            })
+                ->isInstanceOf(LUT\Exception\Asserter::class)
+                ->hasMessage('Try to call an undefined method: h (dimension number 1 of c()).')
+            ->exception(function () use ($asserter, $operator) {
+                $asserter->visit($operator);
+            })
+                ->isInstanceOf(LUT\Exception\Asserter::class)
+                ->hasMessage('Try to call an undefined method: h (dimension number 1 of c()).');
+    }
+
+    public function case_visit_operator_method_dimension_1_not_an_object()
+    {
+        $this
+            ->given(
+                $operator = new LUT\Model\Operator('c'),
+                $operator->call(new LUT\Model\Operator('f', [7, 35])),
+                $asserter = new SUT(),
+                $asserter->setOperator(
+                    'c',
+                    function () {
+                        return 42;
+                    }
+                )
+            )
+            ->exception(function () use ($asserter, $operator) {
+                $this->invoke($asserter)->visitOperator($operator);
+            })
+                ->isInstanceOf(LUT\Exception\Asserter::class)
+                ->hasMessage('Try to call an undefined method: f (dimension number 1 of c()), because it is not an object.')
+            ->exception(function () use ($asserter, $operator) {
+                $asserter->visit($operator);
+            })
+                ->isInstanceOf(LUT\Exception\Asserter::class)
+                ->hasMessage('Try to call an undefined method: f (dimension number 1 of c()), because it is not an object.');
+    }
+
+    public function case_visit_operator_mixed_dimensions()
+    {
+        $this
+            ->given(
+                $operator = new LUT\Model\Operator('c'),
+                $operator->index('x'),
+                $operator->attribute('y'),
+                $operator->call(new LUT\Model\Operator('f', [7, 35])),
+                $asserter = new SUT(),
+                $asserter->setOperator(
+                    'c',
+                    function () {
+                        return ['x' => (object) ['y' => new C()]];
+                    }
+                )
+            )
+            ->when($result = $this->invoke($asserter)->visitOperator($operator))
+            ->then
+                ->integer($result)
+                    ->isEqualTo(42)
+                ->integer($asserter->visit($operator))
+                    ->isIdenticalTo($result);
+    }
+
     public function case_visit_scalar_null()
     {
         return $this->_case_visit_scalar(null);
@@ -640,7 +956,7 @@ class Asserter extends Test\Unit\Suite
                 ->hasMessage('Context reference x does not exist.');
     }
 
-    public function case_visit_context_dimension_0()
+    public function case_visit_context()
     {
         $this
             ->given(
@@ -916,6 +1232,6 @@ class C
 
     public function new()
     {
-        return new C();
+        return new self();
     }
 }

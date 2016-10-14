@@ -174,7 +174,15 @@ class Asserter implements Visitor\Visit
             );
         }
 
-        return $this->getOperator($name)->distributeArguments($arguments);
+        $value = $this->getOperator($name)->distributeArguments($arguments);
+
+        return $this->visitDimensions(
+            $element,
+            $name . '()',
+            $value,
+            $handle,
+            $eldnah
+        );
     }
 
     /**
@@ -238,18 +246,44 @@ class Asserter implements Visitor\Visit
             );
         }
 
-        $contextPointer = $context[$id];
+        return $this->visitDimensions(
+            $element,
+            $id,
+            $context[$id],
+            $handle,
+            $eldnah
+        );
+    }
+
+    /**
+     * Visit dimensions of a context.
+     *
+     * @param   \Hoa\Visitor\Element  $element      Element to visit.
+     * @param   string                $elementId    Element name.
+     * @param   mixed                 $subject      Current root to apply the dimensions.
+     * @param   mixed                 &$handle      Handle (reference).
+     * @param   mixed                 $eldnah       Handle (not reference).
+     * @return  mixed
+     */
+    protected function visitDimensions(
+        Ruler\Model\Bag\Context $element,
+        $elementId,
+        $subject,
+        &$handle = null,
+        $eldnah  = null
+    ) {
+        $pointer = $subject;
 
         foreach ($element->getDimensions() as $dimensionNumber => $dimension) {
             ++$dimensionNumber;
 
             switch ($dimension[Ruler\Model\Bag\Context::ACCESS_TYPE]) {
                 case Ruler\Model\Bag\Context::ARRAY_ACCESS:
-                    $this->visitContextArray(
-                        $contextPointer,
+                    $this->visitArrayDimension(
+                        $pointer,
                         $dimension,
                         $dimensionNumber,
-                        $id,
+                        $elementId,
                         $handle,
                         $eldnah
                     );
@@ -257,11 +291,11 @@ class Asserter implements Visitor\Visit
                     break;
 
                 case Ruler\Model\Bag\Context::ATTRIBUTE_ACCESS:
-                    $this->visitContextAttribute(
-                        $contextPointer,
+                    $this->visitAttributeDimension(
+                        $pointer,
                         $dimension,
                         $dimensionNumber,
-                        $id,
+                        $elementId,
                         $handle,
                         $eldnah
                     );
@@ -269,11 +303,11 @@ class Asserter implements Visitor\Visit
                     break;
 
                 case Ruler\Model\Bag\Context::METHOD_ACCESS:
-                    $this->visitContextMethod(
-                        $contextPointer,
+                    $this->visitMethodDimension(
+                        $pointer,
                         $dimension,
                         $dimensionNumber,
-                        $id,
+                        $elementId,
                         $handle,
                         $eldnah
                     );
@@ -282,11 +316,11 @@ class Asserter implements Visitor\Visit
             }
         }
 
-        return $contextPointer;
+        return $pointer;
     }
 
     /**
-     * Visit a context array
+     * Visit an array dimension.
      *
      * @param   mixed   &$contextPointer    Pointer to the current context.
      * @param   array   $dimension          Dimension bucket.
@@ -296,7 +330,7 @@ class Asserter implements Visitor\Visit
      * @param   mixed   $eldnah             Handle (not reference).
      * @return  void
      */
-    protected function visitContextArray(
+    protected function visitArrayDimension(
         &$contextPointer,
         array $dimension,
         $dimensionNumber,
@@ -333,7 +367,7 @@ class Asserter implements Visitor\Visit
 
 
     /**
-     * Visit a context attribute
+     * Visit an attribute dimension.
      *
      * @param   mixed   &$contextPointer    Pointer to the current context.
      * @param   array   $dimension          Dimension bucket.
@@ -343,7 +377,7 @@ class Asserter implements Visitor\Visit
      * @param   mixed   $eldnah             Handle (not reference).
      * @return  void
      */
-    protected function visitContextAttribute(
+    protected function visitAttributeDimension(
         &$contextPointer,
         array $dimension,
         $dimensionNumber,
@@ -378,7 +412,7 @@ class Asserter implements Visitor\Visit
     }
 
     /**
-     * Visit a context method
+     * Visit a method dimension.
      *
      * @param   mixed   &$contextPointer    Pointer to the current context.
      * @param   array   $dimension          Dimension bucket.
@@ -388,7 +422,7 @@ class Asserter implements Visitor\Visit
      * @param   mixed   $eldnah             Handle (not reference).
      * @return  void
      */
-    protected function visitContextMethod(
+    protected function visitMethodDimension(
         &$contextPointer,
         array $dimension,
         $dimensionNumber,

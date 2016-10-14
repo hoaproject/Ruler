@@ -100,6 +100,38 @@ class Disassembly extends Test\Unit\Suite
         );
     }
 
+    public function case_function_with_array_dimensions()
+    {
+        return $this->_case(
+            'x(7)[42]',
+            'x(7)[42]'
+        );
+    }
+
+    public function case_function_with_attribute_dimensions()
+    {
+        return $this->_case(
+            'x(7).y',
+            'x(7).y'
+        );
+    }
+
+    public function case_function_with_call_dimensions()
+    {
+        return $this->_case(
+            'x(7).y(42)',
+            'x(7).y(42)'
+        );
+    }
+
+    public function case_function_with_many_dimensions()
+    {
+        return $this->_case(
+            'x(7).y(42).z[153]',
+            'x(7).y(42).z[153]'
+        );
+    }
+
     public function case_scalar_true()
     {
         return $this->_case(

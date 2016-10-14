@@ -82,6 +82,8 @@ class Disassembly implements Visitor\Visit
 
                 $out .= $_out;
             }
+
+            $out .= $this->visitContext($element, $handle, $eldnah);
         } elseif ($element instanceof Ruler\Model\Bag\Scalar) {
             $value = $element->getValue();
 
@@ -105,30 +107,45 @@ class Disassembly implements Visitor\Visit
 
             $out .= '[' . implode(', ', $values) . ']';
         } elseif ($element instanceof Ruler\Model\Bag\Context) {
-            $out .= $element->getId();
+            $out .= $element->getId() . $this->visitContext($element, $handle, $eldnah);
+        }
 
-            foreach ($element->getDimensions() as $dimension) {
-                $value = $dimension[Ruler\Model\Bag\Context::ACCESS_VALUE];
+        return $out;
+    }
 
-                switch ($dimension[Ruler\Model\Bag\Context::ACCESS_TYPE]) {
-                    case Ruler\Model\Bag\Context::ARRAY_ACCESS:
-                        $out .=
-                            '[' .
-                            $value->accept($this, $handle, $eldnah) .
-                            ']';
+    /**
+     * Visit a context.
+     *
+     * @param   \Hoa\Ruler\Model\Bag\Context  $context    Context.
+     * @param   mixed                         &$handle    Handle (reference).
+     * @param   mixed                         $eldnah     Handle (not reference).
+     * @return  mixed
+     */
+    protected function visitContext(Ruler\Model\Bag\Context $context, &$handle, $eldnah)
+    {
+        $out = null;
 
-                        break;
+        foreach ($context->getDimensions() as $dimension) {
+            $value = $dimension[Ruler\Model\Bag\Context::ACCESS_VALUE];
 
-                    case Ruler\Model\Bag\Context::ATTRIBUTE_ACCESS:
-                        $out .= '.' . $value;
+            switch ($dimension[Ruler\Model\Bag\Context::ACCESS_TYPE]) {
+                case Ruler\Model\Bag\Context::ARRAY_ACCESS:
+                    $out .=
+                        '[' .
+                        $value->accept($this, $handle, $eldnah) .
+                        ']';
 
-                        break;
+                    break;
 
-                    case Ruler\Model\Bag\Context::METHOD_ACCESS:
-                        $out .= '.' . $value->accept($this, $handle, $eldnah);
+                case Ruler\Model\Bag\Context::ATTRIBUTE_ACCESS:
+                    $out .= '.' . $value;
 
-                        break;
-                }
+                    break;
+
+                case Ruler\Model\Bag\Context::METHOD_ACCESS:
+                    $out .= '.' . $value->accept($this, $handle, $eldnah);
+
+                    break;
             }
         }
 

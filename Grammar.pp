@@ -83,12 +83,15 @@ operand:
 value:
     ::not:: logical_operation() #not
   | <true> | <false> | <null> | <float> | <integer> | <string>
-  | variable()
   | array_declaration()
-  | function_call()
+  | chain()
+
+chain:
+    ( variable() | function_call() )
+    ( ( array_access() | object_access() ) #variable_access )*
 
 variable:
-    <identifier> ( ( array_access() | object_access() ) #variable_access )*
+    <identifier>
 
 #array_access:
     ::bracket_:: value() ::_bracket::
