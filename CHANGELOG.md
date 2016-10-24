@@ -1,3 +1,12 @@
+# 2.16.10.24
+
+  * Documentation: New `README.md` file. (Ivan Enderlin, 2016-10-14T23:10:14+02:00)
+  * Grammar: Chain dimensions on function. (Ivan Enderlin, 2016-10-14T08:37:12+02:00)
+  * Documentation: Update `support` properties. (Ivan Enderlin, 2016-10-11T11:54:40+02:00)
+  * Test: Update according to previous commit. (Ivan Enderlin, 2016-09-09T16:55:21+02:00)
+  * Disassembly: Always add parenthesis around operators. (Ivan Enderlin, 2016-01-16T08:09:28+01:00)
+  * Test: Add test cases for `…uler\Visitor\Asserter`. (Ivan Enderlin, 2016-09-09T08:04:49+02:00)
+
 # 2.16.09.07
 
   * Test: Write `…\Ruler\Visitor\Asserter` test suite. (Ivan Enderlin, 2016-09-07T15:06:46+02:00)
