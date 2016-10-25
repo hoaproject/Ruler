@@ -47,7 +47,7 @@ use Hoa\Test;
  * @copyright  Copyright © 2007-2016 Hoa community
  * @license    New BSD License
  */
-class Documentation extends Test\Integration\Suite
+class Documentation extends Test\Integration\Suite implements Test\Decorrelated
 {
     public function case_classical()
     {
