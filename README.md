@@ -5,8 +5,8 @@
 ---
 
 <p align="center">
-  <a href="https://travis-ci.org/hoaproject/ruler"><img src="https://img.shields.io/travis/hoaproject/ruler/master.svg" alt="Build status" /></a>
-  <a href="https://coveralls.io/github/hoaproject/ruler?branch=master"><img src="https://img.shields.io/coveralls/hoaproject/ruler/master.svg" alt="Code coverage" /></a>
+  <a href="https://travis-ci.org/hoaproject/Ruler"><img src="https://img.shields.io/travis/hoaproject/Ruler/master.svg" alt="Build status" /></a>
+  <a href="https://coveralls.io/github/hoaproject/Ruler?branch=master"><img src="https://img.shields.io/coveralls/hoaproject/Ruler/master.svg" alt="Code coverage" /></a>
   <a href="https://packagist.org/packages/hoa/ruler"><img src="https://img.shields.io/packagist/dt/hoa/ruler.svg" alt="Packagist" /></a>
   <a href="https://hoa-project.net/LICENSE"><img src="https://img.shields.io/packagist/l/hoa/ruler.svg" alt="License" /></a>
 </p>
