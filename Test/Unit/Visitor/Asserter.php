@@ -768,7 +768,7 @@ class Asserter extends Test\Unit\Suite
         $this
             ->given(
                 $operator = new LUT\Model\Operator('c'),
-                $operator->call(new LUT\Model\Operator('new')),
+                $operator->call(new LUT\Model\Operator('newMe')),
                 $operator->call(new LUT\Model\Operator('f', [7, 35])),
                 $asserter = new SUT(),
                 $asserter->setOperator(
@@ -1148,7 +1148,7 @@ class Asserter extends Test\Unit\Suite
         $this
             ->given(
                 $bag = new LUT\Model\Bag\Context('x'),
-                $bag->call(new LUT\Model\Operator('new')),
+                $bag->call(new LUT\Model\Operator('newMe')),
                 $bag->call(new LUT\Model\Operator('f', [7, 35])),
                 $context  = new LUT\Context(['x' => new C()]),
                 $asserter = new SUT($context)
@@ -1230,7 +1230,7 @@ class C
         return $x + $y;
     }
 
-    public function new()
+    public function newMe()
     {
         return new self();
     }
