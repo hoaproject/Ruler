@@ -425,13 +425,13 @@ class Asserter extends Test\Unit\Suite
                 $asserter     = new SUT(),
                 $operator     = function () {}
             )
-            ->when($result = $asserter->setOperator('_FOO_', $operator))
+            ->when($result = $asserter->setOperator('_FΛO_', $operator))
             ->then
-                ->boolean($asserter->operatorExists('_FOO_'))
-                    ->isFalse()
-                ->boolean($asserter->operatorExists('_foo_'))
+                ->boolean($asserter->operatorExists('_FΛO_'))
                     ->isTrue()
-                ->object($asserter->getOperator('_foo_'))
+                ->boolean($asserter->operatorExists('_fλo_'))
+                    ->isTrue()
+                ->object($asserter->getOperator('_fλo_'))
                     ->isEqualTo(xcallable($operator));
     }
 
