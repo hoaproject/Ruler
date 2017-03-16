@@ -404,7 +404,8 @@ class Asserter extends Test\Unit\Suite
             ->given(
                 $asserter     = new SUT(),
                 $oldOperators = $asserter->getOperators(),
-                $operator     = function () {}
+                $operator     = function () {
+                }
             )
             ->when($result = $asserter->setOperator('_foo_', $operator))
             ->then
@@ -423,7 +424,8 @@ class Asserter extends Test\Unit\Suite
         $this
             ->given(
                 $asserter     = new SUT(),
-                $operator     = function () {}
+                $operator     = function () {
+                }
             )
             ->when($result = $asserter->setOperator('_FΛO_', $operator))
             ->then
@@ -440,9 +442,11 @@ class Asserter extends Test\Unit\Suite
         $this
             ->given(
                 $asserter = new SUT(),
-                $asserter->setOperator('_foo_', function () {}),
+                $asserter->setOperator('_foo_', function () {
+                }),
                 $oldOperators = $asserter->getOperators(),
-                $operator = function () {}
+                $operator = function () {
+                }
             )
             ->when($result = $asserter->setOperator('_foo_', $operator))
             ->then
@@ -461,7 +465,8 @@ class Asserter extends Test\Unit\Suite
         $this
             ->given(
                 $asserter = new SUT(),
-                $asserter->setOperator('_foo_', function () {})
+                $asserter->setOperator('_foo_', function () {
+                })
             )
             ->when($result = $asserter->operatorExists('_foo_'))
             ->then
@@ -484,7 +489,8 @@ class Asserter extends Test\Unit\Suite
         $this
             ->given(
                 $asserter = new SUT(),
-                $operator = function () {},
+                $operator = function () {
+                },
                 $asserter->setOperator('_foo_', $operator)
             )
             ->when($result = $asserter->getOperator('_foo_'))
