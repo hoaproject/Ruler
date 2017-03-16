@@ -512,7 +512,7 @@ class Asserter implements Visitor\Visit
      */
     public function operatorExists($operator)
     {
-        return true === array_key_exists($operator, $this->_operators);
+        return true === array_key_exists(mb_strtolower($operator), $this->_operators);
     }
 
     /**
@@ -526,6 +526,8 @@ class Asserter implements Visitor\Visit
         if (false === $this->operatorExists($operator)) {
             return null;
         }
+
+        $operator = mb_strtolower($operator);
 
         $handle = &$this->_operators[$operator];
 
