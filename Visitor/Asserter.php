@@ -341,7 +341,9 @@ class Asserter implements Visitor\Visit
         $value = $dimension[Ruler\Model\Bag\Context::ACCESS_VALUE];
         $key   = $value->accept($this, $handle, $eldnah);
 
-        if (!is_array($contextPointer)) {
+        $implementsArrayAccess = ($contextPointer instanceof \ArrayAccess);
+
+        if (!is_array($contextPointer) && !$implementsArrayAccess) {
             throw new Ruler\Exception\Asserter(
                 'Try to access to an undefined index: %s ' .
                 '(dimension number %d of %s), because it is ' .
@@ -351,7 +353,7 @@ class Asserter implements Visitor\Visit
             );
         }
 
-        if (false === array_key_exists($key, $contextPointer)) {
+        if ((!$implementsArrayAccess && false === array_key_exists($key, $contextPointer)) && ($implementsArrayAccess && !$contextPointer->offsetExists($key))) {
             throw new Ruler\Exception\Asserter(
                 'Try to access to an undefined index: %s ' .
                 '(dimension number %d of %s).',
