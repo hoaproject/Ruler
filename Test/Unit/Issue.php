@@ -79,4 +79,43 @@ class Issue extends Test\Unit\Suite implements Test\Decorrelated
                 ->boolean($result)
                     ->isTrue();
     }
+
+    public function case_github_100_1()
+    {
+        $this
+            ->given(
+                $ruler = new LUT(),
+                $rule  = '(false and true) or true'
+            )
+            ->when($result = $ruler->assert($rule))
+            ->then
+                ->boolean($result)
+                    ->isTrue();
+    }
+
+    public function case_github_100_2()
+    {
+        $this
+            ->given(
+                $ruler = new LUT(),
+                $rule  = 'false and true or true'
+            )
+            ->when($result = $ruler->assert($rule))
+            ->then
+                ->boolean($result)
+                    ->isTrue();
+    }
+
+    public function case_github_100_3()
+    {
+        $this
+            ->given(
+                $ruler = new LUT(),
+                $rule  = 'true or true and false'
+            )
+            ->when($result = $ruler->assert($rule))
+            ->then
+                ->boolean($result)
+                    ->isTrue();
+    }
 }

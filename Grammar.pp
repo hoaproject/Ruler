@@ -67,21 +67,25 @@
 %token  identifier    [^\s\(\)\[\],\.]+
 
 #expression:
-    logical_operation()
+    logical_operation_primary()
 
-logical_operation:
+logical_operation_primary:
+    logical_operation_secondary()
+    ( ( ::or:: #or | ::xor:: #xor ) logical_operation_primary() )?
+
+logical_operation_secondary:
     operation()
-    ( ( ::and:: #and | ::or:: #or | ::xor:: #xor ) logical_operation() )?
+    ( ::and:: #and logical_operation_secondary() )?
 
 operation:
-    operand() ( <identifier> logical_operation() #operation )?
+    operand() ( <identifier> logical_operation_primary() #operation )?
 
 operand:
-    ::parenthesis_:: logical_operation() ::_parenthesis::
+    ::parenthesis_:: logical_operation_primary() ::_parenthesis::
   | value()
 
 value:
-    ::not:: logical_operation() #not
+    ::not:: logical_operation_primary() #not
   | <true> | <false> | <null> | <float> | <integer> | <string>
   | array_declaration()
   | chain()
@@ -104,5 +108,5 @@ object_access:
 
 #function_call:
     <identifier> ::parenthesis_::
-    ( logical_operation() ( ::comma:: logical_operation() )* )?
+    ( logical_operation_primary() ( ::comma:: logical_operation_primary() )* )?
     ::_parenthesis::
