@@ -1,3 +1,10 @@
+# 2.17.04.26
+
+  * Grammar: Logical operators are left-associative. (Ivan Enderlin, 2017-03-24T14:39:19+01:00)
+  * CS: Fix copyright. (Ivan Enderlin, 2017-03-13T14:59:05+01:00)
+  * Test: Support PHP 5.x syntax. (Ivan Enderlin, 2017-03-13T14:44:33+01:00)
+  * CI: Set up Travis. (Ivan Enderlin, 2017-03-13T14:16:45+01:00)
+
 # 2.17.01.13
 
   * Quality: Happy new year! (Alexis von Glasow, 2017-01-09T21:37:11+01:00)
