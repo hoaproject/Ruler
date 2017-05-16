@@ -197,6 +197,16 @@ class Ruler
 
         return static::$_compiler;
     }
+
+    /**
+     * Create a new context.
+     *
+     * @return \Hoa\Ruler\Context
+     */
+    public function getNewContext()
+    {
+        return new Context();
+    }
 }
 
 /**
