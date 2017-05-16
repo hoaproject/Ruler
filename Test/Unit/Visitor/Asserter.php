@@ -36,6 +36,7 @@
 
 namespace Hoa\Ruler\Test\Unit\Visitor;
 
+use ArrayObject;
 use Hoa\Ruler as LUT;
 use Hoa\Ruler\Visitor\Asserter as SUT;
 use Hoa\Test;
@@ -591,6 +592,51 @@ class Asserter extends Test\Unit\Suite
                     ->isIdenticalTo($result);
     }
 
+    public function case_visit_operator_array_like_dimension_1()
+    {
+        $this
+            ->given(
+                $operator = new LUT\Model\Operator('c', [7]),
+                $operator->index('x'),
+                $asserter = new SUT(),
+                $asserter->setOperator(
+                    'c',
+                    function ($x) {
+                        return new ArrayObject(['x' => $x * 6]);
+                    }
+                )
+            )
+            ->when($result = $this->invoke($asserter)->visitOperator($operator))
+            ->then
+                ->integer($result)
+                    ->isEqualTo(42)
+                ->integer($asserter->visit($operator))
+                    ->isIdenticalTo($result);
+    }
+
+    public function case_visit_operator_array_like_dimension_2()
+    {
+        $this
+            ->given(
+                $operator = new LUT\Model\Operator('c', [7]),
+                $operator->index('x'),
+                $operator->index('y'),
+                $asserter = new SUT(),
+                $asserter->setOperator(
+                    'c',
+                    function ($x) {
+                        return new ArrayObject(['x' => new ArrayObject(['y' => $x * 6])]);
+                    }
+                )
+            )
+            ->when($result = $this->invoke($asserter)->visitOperator($operator))
+            ->then
+                ->integer($result)
+                    ->isEqualTo(42)
+                ->integer($asserter->visit($operator))
+                    ->isIdenticalTo($result);
+    }
+
     public function case_visit_operator_array_dimension_1_undefined_index()
     {
         $this
@@ -641,6 +687,32 @@ class Asserter extends Test\Unit\Suite
             })
                 ->isInstanceOf(LUT\Exception\Asserter::class)
                 ->hasMessage('Try to access to an undefined index: y (dimension number 1 of c()), because it is not an array.');
+    }
+
+    public function case_visit_operator_array_like_dimension_1_undefined_index()
+    {
+        $this
+            ->given(
+                $operator = new LUT\Model\Operator('c', [7]),
+                $operator->index('z'),
+                $asserter = new SUT(),
+                $asserter->setOperator(
+                    'c',
+                    function ($x) {
+                        return new ArrayObject(['x' => 42]);
+                    }
+                )
+            )
+            ->exception(function () use ($asserter, $operator) {
+                $this->invoke($asserter)->visitOperator($operator);
+            })
+                ->isInstanceOf(LUT\Exception\Asserter::class)
+                ->hasMessage('Try to access to an undefined index: z (dimension number 1 of c()).')
+            ->exception(function () use ($asserter, $operator) {
+                $asserter->visit($operator);
+            })
+                ->isInstanceOf(LUT\Exception\Asserter::class)
+                ->hasMessage('Try to access to an undefined index: z (dimension number 1 of c()).');
     }
 
     public function case_visit_operator_attribute_dimension_1()
