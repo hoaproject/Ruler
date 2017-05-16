@@ -36,6 +36,7 @@
 
 namespace Hoa\Ruler\Visitor;
 
+use ArrayAccess;
 use Hoa\Consistency;
 use Hoa\Ruler;
 use Hoa\Visitor;
@@ -341,9 +342,10 @@ class Asserter implements Visitor\Visit
         $value = $dimension[Ruler\Model\Bag\Context::ACCESS_VALUE];
         $key   = $value->accept($this, $handle, $eldnah);
 
-        $implementsArrayAccess = ($contextPointer instanceof \ArrayAccess);
+        $isArray     = is_array($contextPointer);
+        $isArrayLike = !$isArray && $contextPointer instanceof ArrayAccess;
 
-        if (!is_array($contextPointer) && !$implementsArrayAccess) {
+        if (false === $isArray && false === $isArrayLike) {
             throw new Ruler\Exception\Asserter(
                 'Try to access to an undefined index: %s ' .
                 '(dimension number %d of %s), because it is ' .
@@ -353,7 +355,8 @@ class Asserter implements Visitor\Visit
             );
         }
 
-        if ((!$implementsArrayAccess && false === array_key_exists($key, $contextPointer)) && ($implementsArrayAccess && !$contextPointer->offsetExists($key))) {
+        if ((true === $isArray     && false === array_key_exists($key, $contextPointer)) ||
+            (true === $isArrayLike && false === $contextPointer->offsetExists($key))) {
             throw new Ruler\Exception\Asserter(
                 'Try to access to an undefined index: %s ' .
                 '(dimension number %d of %s).',
