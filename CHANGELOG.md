@@ -1,3 +1,7 @@
+# 2.17.05.16
+
+  * Asserter: Can visit array-like dimensions. (Arne Groskurth, 2017-05-16T09:42:29+02:00)
+
 # 2.17.04.26
 
   * Grammar: Logical operators are left-associative. (Ivan Enderlin, 2017-03-24T14:39:19+01:00)
