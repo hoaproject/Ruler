@@ -12,18 +12,8 @@ matrix:
       env:
         - ENABLE_DEVTOOLS=true
     - php: nightly
-    - php: hhvm-3.12
-      sudo: required
-      dist: trusty
-      group: edge
-    - php: hhvm
-      sudo: required
-      dist: trusty
-      group: edge
   allow_failures:
     - php: nightly
-    - php: hhvm-3.12
-    - php: hhvm
   fast_finish: true
 
 os:
