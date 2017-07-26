@@ -544,7 +544,7 @@ var_dump(
   <h3 id="Compiler_object_model_to_PHP" for="main-toc">Compiler: Object model to
   PHP</h3>
 
-  <p>The object model can be created manually by instanciating all the objects
+  <p>The object model can be created manually by instantiating all the objects
   of kind <code>Hoa\Ruler\Model\<em>*</em></code> and by combining them
   together.</p>
 
@@ -691,11 +691,11 @@ var_dump(
   <strong>simple</strong> business rules inspired by the SQL language for the
   syntax. The language can be <strong>transformed</strong> in many ways: To an
   object model in order to be executed, or from this object model, into PHP code
-  or into the original language. The instanciation of the variables present in
+  or into the original language. The instantiation of the variables present in
   the language relies on a <strong>context</strong>. All these operations are
   hidden through a simple and clear interface.</p>
   <p>The <strong>performance</strong> aspect has been addressed and two
-  solutions have been proposed. Today used by the industry on important
+  solutions have been proposed. Today it is used by the industry on important
   projects, <code>Hoa\Ruler</code> is able to support heavy loads if these
   simple methodologies are applied.</p>
 
