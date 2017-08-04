@@ -23,6 +23,7 @@
         "source": "https://central.hoa-project.net/Resource/Library/Ruler"
     },
     "require": {
+        "php"            : ">=5.5.0",
         "hoa/compiler"   : "~3.0",
         "hoa/consistency": "~1.0",
         "hoa/exception"  : "~1.0",
