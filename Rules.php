@@ -36,6 +36,7 @@
 
 namespace Hoa\Ruler;
 
+use Hoa\Heap\Max;
 use Hoa\Ruler\Exception\NoResult;
 use Hoa\Ruler\Exception\RuleDoesNotValidate;
 
@@ -50,13 +51,13 @@ use Hoa\Ruler\Exception\RuleDoesNotValidate;
 class Rules
 {
     /**
-     * @var \SplPriorityQueue
+     * @var Max
      */
     private $queue;
 
     public function __construct()
     {
-        $this->queue = new \SplPriorityQueue();
+        $this->queue = new Max();
     }
 
     /**
@@ -68,11 +69,9 @@ class Rules
      */
     public function add($name, Rule $rule, $priority = -1)
     {
-        $rules = clone $this;
+        $this->queue->insert([$name, $rule], $priority);
 
-        $rules->queue->insert([$name, $rule], $priority);
-
-        return $rules;
+        return $this;
     }
 
     /**
@@ -86,9 +85,8 @@ class Rules
     public function getBestResult(Ruler $ruler, Context $context)
     {
         $ruler = self::initializeRuler($ruler, $context);
-        $queue = clone $this->queue;
 
-        foreach ($queue as $nameAndRule) {
+        foreach ($this->queue as $nameAndRule) {
             /**
              * @var string $name
              * @var Rule   $rule
@@ -118,10 +116,9 @@ class Rules
     public function getAllResults(Ruler $ruler, Context $context)
     {
         $ruler   = self::initializeRuler($ruler, $context);
-        $queue   = clone $this->queue;
         $results = [];
 
-        foreach ($queue as $nameAndRule) {
+        foreach ($this->queue as $nameAndRule) {
             /**
              * @var string $name
              * @var Rule   $rule
