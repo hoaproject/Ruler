@@ -1,5 +1,11 @@
 language: php
 
+branches:
+  only:
+    - staging
+    - trying
+    - master
+
 matrix:
   include:
     - php: 5.5
