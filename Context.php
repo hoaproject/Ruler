@@ -145,4 +145,28 @@ class Context implements \ArrayAccess
 
         return;
     }
+
+    /**
+     * Get a data as context property
+     *
+     * @param   string $name
+     * @return  mixed
+     * @throws  \Hoa\Ruler\Exception
+     */
+    public function __get($name)
+    {
+        return $this->offsetGet($name);
+    }
+
+    /**
+     * Set a data as context property
+     *
+     * @param   string  $id       ID.
+     * @param   mixed   $value    Value.
+     * @return  void
+     */
+    public function __set($id, $value)
+    {
+        $this->offsetSet($id, $value);
+    }
 }
