@@ -244,6 +244,24 @@ class Context extends Test\Unit\Suite
             ->when($result = $context['foo']);
     }
 
+    public function case_access_as_properties()
+    {
+        $this
+            ->given(
+                $self = $this,
+                $context = new CUT(),
+                $context['foo'] = 42
+            )
+            ->when($result = $context->foo)
+            ->then
+                ->integer($result)
+                    ->isEqualTo(42)
+            ->when($context->bar = 24)
+            ->then
+                ->integer($context['bar'])
+                    ->isEqualTo(24);
+    }
+
     public function fakeCallable()
     {
         return fakeCallable();
