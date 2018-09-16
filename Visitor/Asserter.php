@@ -78,19 +78,43 @@ class Asserter implements Visitor\Visit
             $this->setContext($context);
         }
 
-        $this->setOperator('and', function ($a = false, $b = false) { return $a && $b; });
-        $this->setOperator('or',  function ($a = false, $b = false) { return $a || $b; });
-        $this->setOperator('xor', function ($a, $b) { return (bool) ($a ^ $b); });
-        $this->setOperator('not', function ($a) { return !$a; });
-        $this->setOperator('=',   function ($a, $b) { return $a == $b; });
-        $this->setOperator('is',  $this->getOperator('='));
-        $this->setOperator('!=',  function ($a, $b) { return $a != $b; });
-        $this->setOperator('>',   function ($a, $b) { return $a >  $b; });
-        $this->setOperator('>=',  function ($a, $b) { return $a >= $b; });
-        $this->setOperator('<',   function ($a, $b) { return $a <  $b; });
-        $this->setOperator('<=',  function ($a, $b) { return $a <= $b; });
-        $this->setOperator('in',  function ($a, array $b) { return in_array($a, $b); });
-        $this->setOperator('sum', function () { return array_sum(func_get_args()); });
+        $this->setOperator('and', function ($a = false, $b = false) {
+            return $a && $b;
+        });
+        $this->setOperator('or', function ($a = false, $b = false) {
+            return $a || $b;
+        });
+        $this->setOperator('xor', function ($a, $b) {
+            return (bool) ($a ^ $b);
+        });
+        $this->setOperator('not', function ($a) {
+            return !$a;
+        });
+        $this->setOperator('=', function ($a, $b) {
+            return $a == $b;
+        });
+        $this->setOperator('is', $this->getOperator('='));
+        $this->setOperator('!=', function ($a, $b) {
+            return $a != $b;
+        });
+        $this->setOperator('>', function ($a, $b) {
+            return $a > $b;
+        });
+        $this->setOperator('>=', function ($a, $b) {
+            return $a >= $b;
+        });
+        $this->setOperator('<', function ($a, $b) {
+            return $a < $b;
+        });
+        $this->setOperator('<=', function ($a, $b) {
+            return $a <= $b;
+        });
+        $this->setOperator('in', function ($a, array $b) {
+            return in_array($a, $b);
+        });
+        $this->setOperator('sum', function () {
+            return array_sum(func_get_args());
+        });
         $this->setOperator('matches', function ($subject, $pattern) {
             $escapedPattern = preg_replace('/(?<!\\\)`/', '\`', $pattern);
 
@@ -504,7 +528,7 @@ class Asserter implements Visitor\Visit
      */
     public function setOperator($operator, $callable)
     {
-        $this->_operators[$operator] = $callable;
+        $this->_operators[mb_strtolower($operator)] = $callable;
 
         return $this;
     }
@@ -517,7 +541,7 @@ class Asserter implements Visitor\Visit
      */
     public function operatorExists($operator)
     {
-        return true === array_key_exists($operator, $this->_operators);
+        return true === array_key_exists(mb_strtolower($operator), $this->_operators);
     }
 
     /**
@@ -531,6 +555,8 @@ class Asserter implements Visitor\Visit
         if (false === $this->operatorExists($operator)) {
             return null;
         }
+
+        $operator = mb_strtolower($operator);
 
         $handle = &$this->_operators[$operator];
 

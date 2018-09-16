@@ -47,9 +47,7 @@ use Hoa\Visitor;
  * @copyright  Copyright © 2007-2017 Hoa community
  * @license    New BSD License
  */
-class          Operator
-    extends    Ruler\Model\Bag\Context
-    implements Visitor\Element
+class Operator extends Ruler\Model\Bag\Context implements Visitor\Element
 {
     /**
      * Lazy evaluation should break.

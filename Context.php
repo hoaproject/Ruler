@@ -112,7 +112,7 @@ class Context implements \ArrayAccess
         }
 
         if (true === is_callable($value)) {
-            if (true  === is_string($value) &&
+            if (true === is_string($value) &&
                 false === in_array(strtolower($value), get_defined_functions()['user'])) {
                 return $value;
             }

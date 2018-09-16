@@ -100,7 +100,7 @@ class Compiler implements Visitor\Visit
 
                 $out .= '(' . "\n";
             } else {
-                $out       .= 'func(' . "\n" . $_ . '    ';
+                $out .= 'func(' . "\n" . $_ . '    ';
                 $_handle[]  = '\'' . $name . '\'';
             }
 
@@ -173,7 +173,7 @@ class Compiler implements Visitor\Visit
             ++$this->_indentation;
 
             $value  = $dimension[Ruler\Model\Bag\Context::ACCESS_VALUE];
-            $out   .= "\n" . $_ . '    ->';
+            $out .= "\n" . $_ . '    ->';
 
             switch ($dimension[Ruler\Model\Bag\Context::ACCESS_TYPE]) {
                 case Ruler\Model\Bag\Context::ARRAY_ACCESS:

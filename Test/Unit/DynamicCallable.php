@@ -53,7 +53,8 @@ class DynamicCallable extends Test\Unit\Suite
     public function case_is_a_xcallable()
     {
         $this
-            ->when($result = new SUT(function () {}))
+            ->when($result = new SUT(function () {
+            }))
             ->then
                 ->object($result)
                     ->isInstanceOf(Consistency\Xcallable::class);

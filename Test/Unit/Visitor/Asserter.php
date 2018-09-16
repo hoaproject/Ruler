@@ -405,7 +405,8 @@ class Asserter extends Test\Unit\Suite
             ->given(
                 $asserter     = new SUT(),
                 $oldOperators = $asserter->getOperators(),
-                $operator     = function () {}
+                $operator     = function () {
+                }
             )
             ->when($result = $asserter->setOperator('_foo_', $operator))
             ->then
@@ -419,14 +420,34 @@ class Asserter extends Test\Unit\Suite
                     ->isEqualTo(xcallable($operator));
     }
 
+    public function case_set_operator_insensitive()
+    {
+        $this
+            ->given(
+                $asserter     = new SUT(),
+                $operator     = function () {
+                }
+            )
+            ->when($result = $asserter->setOperator('_FΛO_', $operator))
+            ->then
+                ->boolean($asserter->operatorExists('_FΛO_'))
+                    ->isTrue()
+                ->boolean($asserter->operatorExists('_fλo_'))
+                    ->isTrue()
+                ->object($asserter->getOperator('_fλo_'))
+                    ->isEqualTo(xcallable($operator));
+    }
+
     public function case_set_operator_overwrite()
     {
         $this
             ->given(
                 $asserter = new SUT(),
-                $asserter->setOperator('_foo_', function () {}),
+                $asserter->setOperator('_foo_', function () {
+                }),
                 $oldOperators = $asserter->getOperators(),
-                $operator = function () {}
+                $operator = function () {
+                }
             )
             ->when($result = $asserter->setOperator('_foo_', $operator))
             ->then
@@ -445,7 +466,8 @@ class Asserter extends Test\Unit\Suite
         $this
             ->given(
                 $asserter = new SUT(),
-                $asserter->setOperator('_foo_', function () {})
+                $asserter->setOperator('_foo_', function () {
+                })
             )
             ->when($result = $asserter->operatorExists('_foo_'))
             ->then
@@ -468,7 +490,8 @@ class Asserter extends Test\Unit\Suite
         $this
             ->given(
                 $asserter = new SUT(),
-                $operator = function () {},
+                $operator = function () {
+                },
                 $asserter->setOperator('_foo_', $operator)
             )
             ->when($result = $asserter->getOperator('_foo_'))
