@@ -32,7 +32,8 @@
         "hoa/visitor"    : "~2.0"
     },
     "require-dev": {
-        "hoa/test": "~2.0"
+        "hoa/test": "~2.0",
+        "phpbench/phpbench": "^0.12.2"
     },
     "autoload": {
         "psr-4": {
