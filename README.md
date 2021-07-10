@@ -288,5 +288,6 @@ The following projects are using this library:
     Specification pattern in PHP,
   * [ownCloud](https://owncloud.org/), A safe home for all your data,
   * [PhpMetrics](http://www.phpmetrics.org/), Static analysis tool for PHP,
+  * [`hiqdev/php-billing`](https://github.com/hiqdev/php-billing), a billing library in PHP 
   * [`atoum/ruler-extension`](https://github.com/atoum/ruler-extension), This
     extension allows to filter test results in [atoum](http://atoum.org/).
