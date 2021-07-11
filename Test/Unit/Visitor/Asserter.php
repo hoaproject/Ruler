@@ -308,12 +308,18 @@ class Asserter extends Test\Unit\Suite
 
     public function case_operator_in()
     {
-        return $this->_case_boolean_operator('in', [7, [1, 3, 5, 7, 9]], true);
+        $this->_case_boolean_operator('in', [7, [1, 3, 5, 7, 9]], true);
+
+        $generator = function () { yield 1; yield 7;};
+        $this->_case_boolean_operator('in', [7, $generator()], true);
     }
 
     public function case_operator_in_falsy()
     {
-        return $this->_case_boolean_operator('in', [42, [1, 3, 5, 7, 9]], false);
+        $this->_case_boolean_operator('in', [42, [1, 3, 5, 7, 9]], false);
+
+        $generator = function () { yield 1; yield 7;};
+        $this->_case_boolean_operator('in', [42, $generator()], false);
     }
 
     protected function _case_boolean_operator($operator, array $parameters, $expected)

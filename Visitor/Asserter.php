@@ -89,7 +89,19 @@ class Asserter implements Visitor\Visit
         $this->setOperator('>=',  function ($a, $b) { return $a >= $b; });
         $this->setOperator('<',   function ($a, $b) { return $a <  $b; });
         $this->setOperator('<=',  function ($a, $b) { return $a <= $b; });
-        $this->setOperator('in',  function ($a, array $b) { return in_array($a, $b); });
+        $this->setOperator('in',  function ($a, $b) {
+            if (false === is_array($b) && !$b instanceof \Traversable) {
+                throw new \InvalidArgumentException(sprintf('Expect iterable, got %s', get_class($b)));
+            }
+
+            foreach ($b as $element) {
+                if ($a == $element) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
         $this->setOperator('sum', function () { return array_sum(func_get_args()); });
         $this->setOperator('matches', function ($subject, $pattern) {
             $escapedPattern = preg_replace('/(?<!\\\)`/', '\`', $pattern);
