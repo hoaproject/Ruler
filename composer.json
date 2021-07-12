@@ -28,6 +28,7 @@
         "hoa/consistency": "~1.0",
         "hoa/exception"  : "~1.0",
         "hoa/file"       : "~1.0",
+        "hoa/heap"       : "~0.0@dev",
         "hoa/protocol"   : "~1.0",
         "hoa/visitor"    : "~2.0"
     },
